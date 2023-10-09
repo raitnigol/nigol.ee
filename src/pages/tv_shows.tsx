@@ -19,7 +19,7 @@ export default function TvShows() {
 
 			<p className="text-lg mb-4">Some TV Shows and movies I&apos;ve watched.</p>
 
-			{anime.map(({ name, description, image, url }, i) => (
+			{tv_shows.map(({ name, description, image, url }, i) => (
 				<a
 					key={name}
 					href={url}
