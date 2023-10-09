@@ -15,7 +15,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export default function Games() {
-  const [shuffledGames, setShuffledGames] = useState([]);
+  const [shuffledGames, setShuffledGames] = useState<Games[]>([]); // Provide initial state
 
   useEffect(() => {
     // Shuffle the games array and store it in the state
