@@ -9,7 +9,7 @@ const formatter = new Intl.DateTimeFormat("en-US", {
 	minute: "numeric",
 	second: "numeric",
 	hour12: false,
-	timeZone: "America/New_York",
+	timeZone: "Europe/Tallinn",
 	timeZoneName: "short"
 });
 
@@ -26,5 +26,10 @@ export function Clock() {
 		return () => clearInterval(id);
 	}, []);
 
-	return <>{formatter.format(now).replace(" at", " ·")}</>;
+	const formattedTime = formatter.format(now);
+	
+	// Check if it's midnight (00:00) and replace "24" with "00"
+	const displayTime = formattedTime.replace(" at", " · ").replace(" 24:", " 00:");
+	
+	return <>{displayTime}</>;
 }
