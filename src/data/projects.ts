@@ -23,8 +23,21 @@ export const projects: ProjectInfo[] = [
 		name: "HYPERVM-GUI",
 		description:
 			"A GUI written in PowerShell to manage HYPERVM Virtual Machines",
-		image: "/images/projects/sona.png",
+		image: "/images/projects/hypervmgui.png",
 		url: "https://github.com/raitnigol/HYPERVM-GUI",
+		stack: [
+			{
+				name: "PowerShell",
+				icon: "powershell"
+			}
+		]
+	},
+	{
+		name: "CLEANDESKTOP",
+		description:
+			"A GUI written in PowerShell to clean desktop from junk.",
+		image: "/images/projects/cleandesktop_project.png",
+		url: "https://github.com/raitnigol/CLEANDESKTOP-REVAMPED",
 		stack: [
 			{
 				name: "PowerShell",
@@ -36,7 +49,7 @@ export const projects: ProjectInfo[] = [
 		name: "IHA.EE - TASUTA VIP",
 		description:
 			"An UserScript for Estonian erotica & dating site iha.ee to preview paid images for free.",
-		image: "/images/projects/sona.png",
+		image: "/images/projects/cubedhuang.webp",
 		url: "https://github.com/raitnigol/IHA.EE-TASUTA-VIP",
 		stack: [
 			{
@@ -46,10 +59,10 @@ export const projects: ProjectInfo[] = [
 		]
 	},
 	{
-		name: "FiveM Loading Screen",
+		name: "Tartu Tänavad FiveM loading screen",
 		description:
 			"A FiveM loading screen that was used in my Estonian FiveM server 'Tartu Tänavad'.",
-		image: "/images/projects/sona.png",
+		image: "/images/projects/tartutanavad_loadingscreen_project.png",
 		url: "https://github.com/raitnigol/fivem-loadingscreen",
 		stack: [
 			{
