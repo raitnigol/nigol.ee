@@ -8,8 +8,8 @@ export default function Anime() {
 	return (
 		<>
 			<GenericMeta
-				title="Anime ✨"
-				description="Some anime I've watched."
+				title="TV Shows ✨"
+				description="Some TV shows and movies I've watched."
 			/>
 
 			<h1 className="heading mb-2">
@@ -17,7 +17,7 @@ export default function Anime() {
 				<SparklesIcon className="ml-4 h-12 w-12 text-yellow-300" />
 			</h1>
 
-			<p className="text-lg mb-4">Some anime I&apos;ve watched.</p>
+			<p className="text-lg mb-4">Some TV Shows and movies I&apos;ve watched.</p>
 
 			{anime.map(({ name, description, image, url }, i) => (
 				<a
