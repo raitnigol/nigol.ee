@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<>
 			<Head>
-				<title>Daniel</title>
+				<title>nigol.ee</title>
 
 				<meta
 					name="viewport"
