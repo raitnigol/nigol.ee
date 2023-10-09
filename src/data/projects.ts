@@ -50,7 +50,7 @@ export const projects: ProjectInfo[] = [
 		description:
 			"A FiveM loading screen that was used in my Estonian FiveM server 'Tartu Tänavad'.",
 		image: "/images/projects/sona.png",
-		url: "https://github.com/raitnigol/IHA.EE-TASUTA-VIP",
+		url: "https://github.com/raitnigol/fivem-loadingscreen",
 		stack: [
 			{
 				name: "HTML",
