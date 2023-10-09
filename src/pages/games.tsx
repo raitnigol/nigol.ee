@@ -2,24 +2,24 @@ import { SparklesIcon } from "@heroicons/react/solid";
 import Image from "next/future/image";
 
 import GenericMeta from "../components/GenericMeta";
-import { anime } from "../data/anime";
+import { games } from "../data/games";
 
-export default function Anime() {
+export default function Games() {
 	return (
 		<>
 			<GenericMeta
-				title="TV Shows ✨"
-				description="Some TV shows and movies I've watched."
+				title="Games ✨"
+				description="PC and console games I have completed"
 			/>
 
 			<h1 className="heading mb-2">
-				Anime{" "}
+				PC and console games I have completed{" "}
 				<SparklesIcon className="ml-4 h-12 w-12 text-yellow-300" />
 			</h1>
 
-			<p className="text-lg mb-4">Some TV Shows and movies I&apos;ve watched.</p>
+			<p className="text-lg mb-4">PC and console games I have completed.</p>
 
-			{anime.map(({ name, description, image, url }, i) => (
+			{games.map(({ name, description, image, url }, i) => (
 				<a
 					key={name}
 					href={url}
