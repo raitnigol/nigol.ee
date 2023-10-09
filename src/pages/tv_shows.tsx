@@ -4,7 +4,7 @@ import Image from "next/future/image";
 import GenericMeta from "../components/GenericMeta";
 import { tv_shows } from "../data/tv_shows";
 
-export default function Anime() {
+export default function TvShows() {
 	return (
 		<>
 			<GenericMeta
