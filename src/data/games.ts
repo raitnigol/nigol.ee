@@ -89,5 +89,4 @@ export const games: Games[] = [
 	{'name': 'Ratchet & Clank: Size Matters', 'description': '', 'image': '/images/games/placeholder.jpeg', 'url': 'https://placeholder.url/ratchet_&_clank:_size_matters'},
 	{'name': 'Ratchet & Clank: Tools of Destruction', 'description': '', 'image': '/images/games/placeholder.jpeg', 'url': 'https://placeholder.url/ratchet_&_clank:_tools_of_destruction'},
 	{'name': 'Ratchet & Clank: A Crack In Time', 'description': '', 'image': '/images/games/placeholder.jpeg', 'url': 'https://placeholder.url/ratchet_&_clank:_a_crack_in_time'}
-> 
 ];
