@@ -75,16 +75,19 @@ export const skills: SkillInfo[] = [
     name: "FreeBSD",
     icon: "freebsd",
     href: "https://www.freebsd.org/",
+    image: "/images/freebsd.png",
   },
   {
     name: "DNS Servers",
     icon: "dns",
     href: "https://en.wikipedia.org/wiki/Domain_Name_System",
+    image: "/images/dns.png",
   },
   {
     name: "Elasticsearch / Elastic Stack",
     icon: "elasticsearch",
     href: "https://www.elastic.co/",
+    image: "/images/elasticstack.png"
   },
   {
     name: "Git",
