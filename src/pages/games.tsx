@@ -5,6 +5,14 @@ import { useEffect, useState } from "react";
 import GenericMeta from "../components/GenericMeta";
 import { games } from "../data/games";
 
+// Define the interface for a single game
+export interface GameInfo {
+  name: string;
+  description: string;
+  image: string;
+  url: string;
+}
+
 // Function to shuffle an array in place
 function shuffleArray<T>(array: T[]): T[] {
   for (let i = array.length - 1; i > 0; i--) {
@@ -15,7 +23,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export default function Games() {
-  const [shuffledGames, setShuffledGames] = useState<Games[]>([]); // Provide initial state
+  const [shuffledGames, setShuffledGames] = useState<GameInfo[]>([]); // Provide initial state
 
   useEffect(() => {
     // Shuffle the games array and store it in the state
