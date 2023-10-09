@@ -13,7 +13,7 @@ export default function TvShows() {
 			/>
 
 			<h1 className="heading mb-2">
-				Anime{" "}
+				TvShow{" "}
 				<SparklesIcon className="ml-4 h-12 w-12 text-yellow-300" />
 			</h1>
 
