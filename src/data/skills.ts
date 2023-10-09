@@ -25,12 +25,6 @@ export const skills: SkillInfo[] = [
     bg: "#3076bd",
   },
   {
-    name: "Rust",
-    icon: "rust",
-    href: "https://www.rust-lang.org/",
-    bg: "#d73c22",
-  },
-  {
     name: "Docker",
     icon: "docker",
     href: "https://www.docker.com/",
