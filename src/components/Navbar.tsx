@@ -4,7 +4,6 @@ import {
 	HomeIcon,
 	MusicNoteIcon,
 	SparklesIcon,
-	ControllerIcon
 } from "@heroicons/react/solid";
 
 import ActiveLink from "./ActiveLink";
