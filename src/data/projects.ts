@@ -33,6 +33,41 @@ export const projects: ProjectInfo[] = [
 		]
 	},
 	{
+		name: "IHA.EE - TASUTA VIP",
+		description:
+			"An UserScript for Estonian erotica & dating site iha.ee to preview paid images for free.",
+		image: "/images/projects/sona.png",
+		url: "https://github.com/raitnigol/IHA.EE-TASUTA-VIP",
+		stack: [
+			{
+				name: "JavaScript",
+				icon: "js"
+			}
+		]
+	},
+	{
+		name: "FiveM Loading Screen",
+		description:
+			"A FiveM loading screen that was used in my Estonian FiveM server 'Tartu Tänavad'.",
+		image: "/images/projects/sona.png",
+		url: "https://github.com/raitnigol/IHA.EE-TASUTA-VIP",
+		stack: [
+			{
+				name: "HTML",
+				icon: "html"
+			},
+			{
+				name: "CSS",
+				icon: "css"
+			},
+			{
+				name: "JavaScript",
+				icon: "js"
+			}
+		]
+	},
+	
+	{
 		name: "nimi.li",
 		description:
 			"Online, interactive toki pona dictionary which uses public data about popular words and compounds.",
