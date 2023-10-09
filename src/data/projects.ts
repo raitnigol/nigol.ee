@@ -20,6 +20,19 @@ export interface ProjectInfo {
 
 export const projects: ProjectInfo[] = [
 	{
+		name: "HYPERVM-GUI",
+		description:
+			"A GUI written in PowerShell to manage HYPERVM Virtual Machines",
+		image: "/images/projects/sona.png",
+		url: "https://github.com/raitnigol/HYPERVM-GUI",
+		stack: [
+			{
+				name: "PowerShell",
+				icon: "powershell"
+			}
+		]
+	},
+	{
 		name: "nimi.li",
 		description:
 			"Online, interactive toki pona dictionary which uses public data about popular words and compounds.",
