@@ -26,7 +26,7 @@ export default function Home({
 		<>
 			<GenericMeta
 				title="nigol.ee"
-				description="My portfolio and personal website."
+				description="Rait Nigol is a system administrator at Estonian Internet Foundation."
 			/>
 
 			<h1 className="heading mb-2">
