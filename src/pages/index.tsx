@@ -36,7 +36,7 @@ export default function Home({
 			<p className="mb-4">
 				Hi! I&apos;m Nigol, a{" "}
 				<span className="text-blue-400">{age}-year-old sysadmin</span>{" "}
-				from <span className="text-rose-400">Tartu</span>, Estonia. <br>
+				from <span className="text-rose-400">Tartu</span>, Estonia. <br />
 				I am currently employed by <span className="text-blue-400">Estonian Internet Foundation</span>
 			</p>
 
