@@ -99,7 +99,7 @@ export const games: Games[] = [
   {
     name: 'Resident Evil 6',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/residentevil6.jpg',
     url: 'https://store.steampowered.com/app/221040/Resident_Evil_6/'
   },
   {
@@ -117,19 +117,19 @@ export const games: Games[] = [
   {
     name: 'Bright Memory',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/brightmemory.jpg',
     url: 'https://store.steampowered.com/app/955050/Bright_Memory/'
   },
   {
     name: 'Call of Juarez Gunslinger',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/callofjuarezgunslinger.jpg',
     url: 'https://store.steampowered.com/app/204450/Call_of_Juarez_Gunslinger/'
   },
   {
     name: 'Clustertruck',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/clustertruck.png',
     url: 'https://store.steampowered.com/app/397950/Clustertruck/'
   },
   {
@@ -141,19 +141,19 @@ export const games: Games[] = [
   {
     name: 'Cyberpunk 2077',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/cyberpunk2077.jpg',
     url: 'https://store.steampowered.com/app/1091500/Cyberpunk_2077/'
   },
   {
     name: 'DIRT Showdown',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/dirtshowdown.jpg',
     url: 'https://store.steampowered.com/app/201700/DIRT_Showdown/'
   },
   {
     name: 'DOOM (1993)',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/doom1993.jpg',
     url: 'https://store.steampowered.com/app/2280/DOOM/'
   },
   {
@@ -165,19 +165,19 @@ export const games: Games[] = [
   {
     name: 'F.E.A.R. 2: Project Origin',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/fear2.jpg',
     url: 'https://store.steampowered.com/app/16450/FEAR_2_Project_Origin/'
   },
   {
     name: "Hellblade: Senua's Sacrifice",
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/hellblade.jpg',
     url: "https://store.steampowered.com/app/414340/Hellblade_Senuas_Sacrifice/"
   },
   {
     name: 'HITMAN',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/hitman.jpg',
     url: 'https://store.steampowered.com/app/863550/HITMAN/'
   },
   {
@@ -195,25 +195,25 @@ export const games: Games[] = [
   {
     name: 'In Fear I Trust',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/infearitrust.jpg',
     url: 'https://store.steampowered.com/app/307110/In_Fear_I_Trust_Episode_1/'
   },
   {
     name: 'Just Cause 3',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/justcause3.jpg',
     url: 'https://store.steampowered.com/app/225540/Just_Cause_3/'
   },
   {
     name: 'Just Cause 4',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/justcause4.jpg',
     url: 'https://store.steampowered.com/app/517630/Just_Cause_4/'
   },
   {
     name: 'Late Shift',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/lateshift.jpg',
     url: 'https://store.steampowered.com/app/584980/Late_Shift/'
   },
   {
@@ -225,49 +225,49 @@ export const games: Games[] = [
   {
     name: 'Life is Strange',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/lifeisstrange.jpg',
     url: 'https://store.steampowered.com/app/319630/Life_is_Strange/'
   },
   {
     name: 'Lovely Planet',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/lovelyplanet.jpg',
     url: 'https://store.steampowered.com/app/298600/Lovely_Planet/'
   },
   {
     name: 'Mafia II (Classic)',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/mafia2.jpg',
     url: 'https://store.steampowered.com/app/50130/Mafia_II/'
   },
   {
     name: "Mirror's Edge",
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/mirrorsedge.jpg',
     url: "https://store.steampowered.com/app/17410/Mirrors_Edge/"
   },
   {
     name: 'Plants vs. Zombies',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/plantsvszombies.jpg',
     url: 'https://store.steampowered.com/app/3590/Plants_vs_Zombies_Game_of_the_Year/'
   },
   {
     name: 'Portal',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/portal.jpg',
     url: 'https://store.steampowered.com/app/400/Portal/'
   },
   {
     name: 'POSTAL 2',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/postal2.jpg',
     url: 'https://store.steampowered.com/app/223470/POSTAL_2/'
   },
   {
     name: 'Ratchet & Clank: Rift Apart',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/ratchetandclankriftapart.jpg',
     url: 'https://www.playstation.com/en-us/games/ratchet-and-clank-rift-apart/'
   },
   {
@@ -279,43 +279,43 @@ export const games: Games[] = [
   {
     name: 'Saints Row: The Third',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/saintsrow3.jpg',
     url: 'https://store.steampowered.com/app/55230/Saints_Row_The_Third/'
   },
   {
     name: 'Saints Row IV',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/saintsrow4.jpg',
     url: 'https://store.steampowered.com/app/206420/Saints_Row_IV/'
   },
   {
     name: 'SEUM: Speedrunners from Hell',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/seumspeedrunnersfromhell.png',
     url: 'https://store.steampowered.com/app/457210/SEUM_Speedrunners_from_Hell/'
   },
   {
     name: 'Shadow of the Tomb Raider',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/shadowofthetombraider.jpg',
     url: 'https://store.steampowered.com/app/750920/Shadow_of_the_Tomb_Raider/'
   },
   {
     name: 'Sleeping Dogs',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/sleepingdogs.jpg',
     url: 'https://store.steampowered.com/app/202170/Sleeping_Dogs/'
   },
   {
     name: 'Spore',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/spore.jpg',
     url: 'https://store.steampowered.com/app/17390/Spore/'
   },
   {
     name: 'A Story About My Uncle',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/astoryaboutmyuncle.jpg',
     url: 'https://store.steampowered.com/app/278360/A_Story_About_My_Uncle/'
   },
   {
@@ -333,31 +333,31 @@ export const games: Games[] = [
   {
     name: 'Superliminal',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/superliminal.jpg',
     url: 'https://store.steampowered.com/app/1049410/Superliminal/'
   },
   {
     name: 'Tomb Raider',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/tombraider.jpg',
     url: 'https://store.steampowered.com/app/203160/Tomb_Raider/'
   },
   {
     name: 'Grand Theft Auto V',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/grandtheftauto5.jpg',
     url: 'https://store.steampowered.com/app/271590/Grand_Theft_Auto_V/'
   },
   {
     name: 'Ratchet & Clank (2002)',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/ratchetandclank.jpg',
     url: 'https://www.playstation.com/en-us/games/ratchet-and-clank/'
   },
   {
     name: 'Ratchet & Clank: Going Commando',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/ratchetandclankgoingcommando.jpg',
     url: 'https://www.playstation.com/en-us/games/ratchet-and-clank-going-commando/'
   },
   {
@@ -369,7 +369,7 @@ export const games: Games[] = [
   {
     name: 'Ratchet & Clank: Deadlocked',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/ratchetandclankdeadlocked.jpg',
     url: 'https://www.ign.com/games/ratchet-and-clank-deadlocked'
   },
   {
@@ -381,7 +381,7 @@ export const games: Games[] = [
   {
     name: 'Ratchet & Clank Future: Tools of Destruction',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/ratchetandclanktoolsofdestruction.jpg',
     url: 'https://www.ign.com/games/ratchet-clank-future-tools-of-destruction'
   },
   {
