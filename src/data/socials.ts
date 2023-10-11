@@ -7,22 +7,27 @@ export interface SocialInfo {
 export const socials: SocialInfo[] = [
     {
         name: "GitHub",
-        image: "/images/github.png",
+        image: "/images/logos/github.png",
         url: "https://github.com/raitnigol"
     },
     {
         name: "Facebook",
-        image: "/images/facebook.png",
+        image: "/images/logos/facebook.png",
         url: "https://facebook.com/rait.nigol"
     },
     {
         name: "Spotify",
-        image: "/images/spotify.png",
+        image: "/images/logos/spotify.png",
         url: "https://open.spotify.com/user/1190538422"
     },
     {
         name: "LinkedIn",
-        image: "/images/linkedin.png",
+        image: "/images/logos/linkedin.png",
         url: "https://www.linkedin.com/in/raitnigol/"
+    },
+    {
+        name: "Steam",
+        image: "/images/logos/steam.png",
+        url: "https://steamcommunity.com/id/nigol_"
     },
 ];
