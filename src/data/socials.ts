@@ -21,13 +21,23 @@ export const socials: SocialInfo[] = [
         url: "https://open.spotify.com/user/1190538422"
     },
     {
-        name: "LinkedIn",
-        image: "/images/logos/linkedin.png",
-        url: "https://www.linkedin.com/in/raitnigol/"
+        name: "Reddit",
+        image: "/images/logos/reddit.png",
+        url: "https://www.reddit.com/user/xdNigol/"
+    },
+    {
+        name: "Youtube",
+        image: "/images/logos/youtube.png",
+        url: "https://www.youtube.com/@Nigol/featured"
     },
     {
         name: "Steam",
         image: "/images/logos/steam.png",
         url: "https://steamcommunity.com/id/nigol_"
+    },
+    {
+        name: "LinkedIn",
+        image: "/images/logos/linkedin.png",
+        url: "https://www.linkedin.com/in/raitnigol/"
     },
 ];
