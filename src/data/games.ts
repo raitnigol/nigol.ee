@@ -105,7 +105,7 @@ export const games: Games[] = [
   {
     name: 'Stardew Valley',
     description: '',
-    image: '/images/games/placeholder.jpeg',
+    image: '/images/games/stardewvalley.jpg',
     url: 'https://store.steampowered.com/app/413150/Stardew_Valley/'
   },
   {
@@ -389,5 +389,17 @@ export const games: Games[] = [
     description: '',
     image: '/images/games/ratchetandclankacrackintime.jpg',
     url: 'https://www.ign.com/games/ratchet-clank-future-a-crack-in-time'
-  }
+  },
+  {
+    name: 'Ratchet & Clank Future: Into the Nexus',
+    description: '',
+    image: '/images/games/placeholder.jpeg',
+    url: 'https://www.ign.com/games/ratchet-clank-future-a-crack-in-time'
+  },
+  {
+    name: 'Ratchet & Clank Full Frontal Assault',
+    description: '',
+    image: '/images/games/placeholder.jpeg',
+    url: 'https://www.ign.com/games/ratchet-clank-future-a-crack-in-time'
+  },
 ];
