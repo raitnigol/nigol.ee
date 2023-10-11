@@ -79,6 +79,7 @@ export const skills: SkillInfo[] = [
     name: "Ansible",
     icon: "ansible",
     href: "https://www.ansible.com/",
+    bg: "transparent",
   },
   {
     name: "Atom",
