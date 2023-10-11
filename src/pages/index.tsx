@@ -67,7 +67,7 @@ export default function Home({
 
 			<Discord />
 			<Spotify />
-			<iframe src='https://widgets.sociablekit.com/instagram-feed/iframe/208212' frameborder='0' width='100%' height='1000'></iframe>
+			<iframe src='https://widgets.sociablekit.com/instagram-feed/iframe/208212' frameBorder='0' width='100%' height='1000'></iframe>
 		</>
 	);
 }
