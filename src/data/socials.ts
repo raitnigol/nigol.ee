@@ -31,13 +31,13 @@ export const socials: SocialInfo[] = [
         url: "https://steamcommunity.com/id/nigol_"
     },
     {
-        name: "Youtube",
-        image: "/images/logos/youtube.png",
-        url: "https://www.youtube.com/@Nigol/featured"
-    },
-    {
         name: "LinkedIn",
         image: "/images/logos/linkedin.png",
         url: "https://www.linkedin.com/in/raitnigol/"
+    },
+    {
+        name: "Youtube",
+        image: "/images/logos/youtube.png",
+        url: "https://www.youtube.com/@Nigol/featured"
     },
 ];
