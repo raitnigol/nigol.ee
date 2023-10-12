@@ -26,14 +26,14 @@ export const socials: SocialInfo[] = [
         url: "https://www.reddit.com/user/xdNigol/"
     },
     {
-        name: "Youtube",
-        image: "/images/logos/youtube.png",
-        url: "https://www.youtube.com/@Nigol/featured"
-    },
-    {
         name: "Steam",
         image: "/images/logos/steam.png",
         url: "https://steamcommunity.com/id/nigol_"
+    },
+    {
+        name: "Youtube",
+        image: "/images/logos/youtube.png",
+        url: "https://www.youtube.com/@Nigol/featured"
     },
     {
         name: "LinkedIn",
