@@ -39,10 +39,8 @@ export default function Home({
 				from <span className="text-rose-400">Tartu</span>, Estonia. <br />
 				I am currently employed by <span className="text-blue-400">Estonian Internet Foundation</span>.
 				<br />
-				I have also been part of multiple gaming communities and have acted as a middleman since 2016, overseeing and facilitating more than 1000 successful transactions.
 				<br />
-				I place winner of IT Systems &quotAasta Tegija&quot competition @ Tartu VOCO in 2020.
-				II place winner of IT Systems &quotAasta Tegija&quot competition @ Tartu VOCO in 2021.
+				I have also been part of multiple gaming communities and have acted as a middleman since 2016, overseeing and facilitating more than 1000 successful transactions.
 			</p>
 
 			<p className="mb-2 flex flex-wrap gap-2 items-center">
