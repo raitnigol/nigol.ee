@@ -40,7 +40,7 @@ export default function Home({
 				I am currently employed by <span className="text-blue-400">Estonian Internet Foundation</span>.
 				<br />
 				<br />
-				I have also been part of multiple gaming communities and have acted as a middleman since 2016, overseeing and facilitating more than 1000 successful transactions.
+				I have also been part of multiple gaming communities and have acted as a <span className="text-rose-400">middleman since 2016</span>, overseeing and facilitating more than <span className="text-rose-400">1000 successful transactions</span> with a value of more than 50 000 €.
 			</p>
 
 			<p className="mb-2 flex flex-wrap gap-2 items-center">
