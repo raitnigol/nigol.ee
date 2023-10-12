@@ -37,7 +37,12 @@ export default function Home({
 				Hi! I&apos;m Nigol, a{" "}
 				<span className="text-blue-400">{age}-year-old sysadmin</span>{" "}
 				from <span className="text-rose-400">Tartu</span>, Estonia. <br />
-				I am currently employed by <span className="text-blue-400">Estonian Internet Foundation</span>
+				I am currently employed by <span className="text-blue-400">Estonian Internet Foundation</span>.
+				<br />
+				I have also been part of multiple gaming communities and have acted as a middleman since 2016, overseeing and facilitating more than 1000 successful transactions.
+				<br />
+				I place winner of IT Systems "Aasta Tegija" competition @ Tartu VOCO in 2020.
+				II place winner of IT Systems "Aasta Tegija" competition @ Tartu VOCO in 2021.
 			</p>
 
 			<p className="mb-2 flex flex-wrap gap-2 items-center">
