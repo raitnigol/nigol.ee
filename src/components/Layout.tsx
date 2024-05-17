@@ -1,5 +1,6 @@
 import Navbar from "./Navbar";
 import Transition from "./Transition";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function Layout({ children }: React.PropsWithChildren<{}>) {
   return (
@@ -8,6 +9,7 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
       <main>
         <Transition>{children}</Transition>
       </main>
+      <Analytics />
     </div>
   );
 }
