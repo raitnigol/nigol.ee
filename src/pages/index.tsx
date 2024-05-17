@@ -9,6 +9,7 @@ import Discord from "../components/Discord";
 import GenericMeta from "../components/GenericMeta";
 import Spotify from "../components/Spotify";
 import { socials } from "../data/socials";
+import BeholdWidget from "../components/BeholdWidget";
 
 const birthday = new Date(2002, 5, 26);
 
@@ -23,13 +24,6 @@ export async function getStaticProps() {
 export default function Home({
   age
 }: InferGetServerSidePropsType<typeof getStaticProps>) {
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.type = "module";
-    script.src = "https://w.behold.so/widget.js";
-    document.head.appendChild(script);
-  }, []);
-
   return (
     <>
       <GenericMeta
@@ -80,7 +74,7 @@ export default function Home({
       <div style={{ marginBottom: '30px' }}>
         <Spotify />
       </div>
-      <div data-behold-id="3x6yLpBwvqfwMzEaMvCz"></div>
+      <BeholdWidget />
     </>
   );
 }
