@@ -77,7 +77,6 @@ export default function Home({
 
       <hr className="mb-4 bg-slate-800 border-none h-0.5" />
 
-      <Discord />
       <div style={{ marginBottom: '30px' }}>
         <Spotify />
       </div>
