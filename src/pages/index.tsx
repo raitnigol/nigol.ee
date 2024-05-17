@@ -1,3 +1,4 @@
+// Remove the BeholdWidget import
 import { useEffect } from "react";
 import { HomeIcon } from "@heroicons/react/solid";
 import differenceInYears from "date-fns/differenceInYears";
@@ -9,7 +10,6 @@ import Discord from "../components/Discord";
 import GenericMeta from "../components/GenericMeta";
 import Spotify from "../components/Spotify";
 import { socials } from "../data/socials";
-import BeholdWidget from "../components/BeholdWidget";
 
 const birthday = new Date(2002, 5, 26);
 
@@ -74,7 +74,6 @@ export default function Home({
       <div style={{ marginBottom: '30px' }}>
         <Spotify />
       </div>
-      <BeholdWidget />
     </>
   );
 }
