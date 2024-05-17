@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { HomeIcon } from "@heroicons/react/solid";
 import differenceInYears from "date-fns/differenceInYears";
 import type { InferGetServerSidePropsType } from "next";
@@ -22,6 +23,13 @@ export async function getStaticProps() {
 export default function Home({
 	age
 }: InferGetServerSidePropsType<typeof getStaticProps>) {
+	useEffect(() => {
+		const script = document.createElement("script");
+		script.type = "module";
+		script.src = "https://w.behold.so/widget.js";
+		document.head.appendChild(script);
+	}, []);
+
 	return (
 		<>
 			<GenericMeta
@@ -73,7 +81,7 @@ export default function Home({
 			<div style={{ marginBottom: '30px' }}>
 				<Spotify />
 			</div>
-			<iframe src='https://widgets.sociablekit.com/instagram-feed/iframe/208212' frameBorder='0' width='100%' height='1000'></iframe>
+			<div data-behold-id="3x6yLpBwvqfwMzEaMvCz"></div>
 		</>
 	);
 }
