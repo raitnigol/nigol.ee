@@ -1,9 +1,7 @@
 import {
 	CollectionIcon,
 	CubeIcon,
-	HomeIcon,
 	MusicNoteIcon,
-	SparklesIcon,
 } from "@heroicons/react/solid";
 
 import ActiveLink from "./ActiveLink";
@@ -34,18 +32,7 @@ const pages: PageData[] = [
 		Icon: CubeIcon,
 		color: "text-rose-400"
 	},
-	{
-		href: "/tv_shows",
-		title: "TV Shows",
-		Icon: HomeIcon,
-		color: "text-yellow-300"
-	},
-	{
-		href: "/games",
-		title: "Games",
-		Icon: SparklesIcon,
-		color: "text-green-400"
-	},
+
 	{
 		href: "/music",
 		title: "Music",
