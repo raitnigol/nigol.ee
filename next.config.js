@@ -17,9 +17,6 @@ const config = {
 	},
 	experimental: {
 		esmExternals: false,
-		images: {
-			allowFutureImage: true
-		}
 	}
 };
 
