@@ -11,12 +11,12 @@ export default function Transition({ children }: PropsWithChildren<{}>) {
       setCurrentChild(children);
     }, 200);
 
-    return () => clearTimeout(id); // Cleanup the timeout if the component unmounts or children changes
-
+    return () => clearTimeout(id);
   }, [children, currentChild]);
 
   return (
-    // Render the current child
-    {currentChild}
+    <div>
+      {currentChild}
+    </div>
   );
 }
