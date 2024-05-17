@@ -70,7 +70,9 @@ export default function Home({
 			<hr className="mb-4 bg-slate-800 border-none h-0.5" />
 
 			<Discord />
-            <Spotify style={{ marginBottom: '30px' }} />
+			<div style={{ marginBottom: '30px' }}>
+				<Spotify />
+			</div>
 			<iframe src='https://widgets.sociablekit.com/instagram-feed/iframe/208212' frameBorder='0' width='100%' height='1000'></iframe>
 		</>
 	);
