@@ -1,8 +1,8 @@
 import { useEffect } from "preact/hooks";
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useState, ReactNode } from "react";
 
-export default function Transition({ children }: PropsWithChildren<{}>) {
-  const [currentChild, setCurrentChild] = useState(children);
+export default function Transition({ children }: PropsWithChildren<{}>): JSX.Element {
+  const [currentChild, setCurrentChild] = useState<ReactNode>(children);
 
   useEffect(() => {
     if (currentChild === children) return;
@@ -14,9 +14,5 @@ export default function Transition({ children }: PropsWithChildren<{}>) {
     return () => clearTimeout(id);
   }, [children, currentChild]);
 
-  return (
-    <div>
-      {currentChild}
-    </div>
-  );
+  return <>{currentChild}</>;
 }
