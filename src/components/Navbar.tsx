@@ -2,6 +2,8 @@ import {
 	CollectionIcon,
 	CubeIcon,
 	MusicNoteIcon,
+	HomeIcon,
+	SparklesIcon
 } from "@heroicons/react/solid";
 
 import ActiveLink from "./ActiveLink";
