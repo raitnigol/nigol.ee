@@ -11,6 +11,8 @@
 		"start": "next start"
 	},
 	"dependencies": {
+		"@babel/core": "^7.24.5",
+		"@babel/plugin-transform-react-jsx": "^7.23.4",
 		"@behold/react": "^0.1.10",
 		"@heroicons/react": "^1.0.6",
 		"@next/bundle-analyzer": "^12.2.1",

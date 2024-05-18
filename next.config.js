@@ -31,6 +31,7 @@ const config = {
     config.module.rules.push({
       test: /\.cjs$/,
       include: /node_modules/,
+      exclude: /node_modules\/(?!(your-package|another-package)\/).*/,
       use: {
         loader: 'babel-loader',
         options: {
