@@ -16,7 +16,7 @@ const config = {
 		contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
 	},
 	experimental: {
-		esmExternals: false,
+		esmExternals: true,
 	}
 };
 
