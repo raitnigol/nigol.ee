@@ -5,7 +5,7 @@ import GenericMeta from "../components/GenericMeta";
 import { TrackList } from "../components/TrackList";
 import type { TopMusicResponseSuccess } from "./api/topMusic";
 
-export default function Projects() {
+export default function Music() {
 	const [topMusic, setTopMusic] = useState<TopMusicResponseSuccess | null>(
 		null
 	);
