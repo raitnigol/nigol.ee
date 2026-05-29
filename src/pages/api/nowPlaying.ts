@@ -63,8 +63,10 @@ export default async function handler(
 			}
 		}
 
-		console.log(response);
-
+		res.setHeader(
+			"Cache-Control",
+			"public, s-maxage=5, stale-while-revalidate=10"
+		);
 		res.status(200).json(response);
 	} catch (err) {
 		res.status(500).json({ error: (err as any)?.message });

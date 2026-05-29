@@ -19,6 +19,15 @@ const formatDuration = (ms: number) => {
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
+const SPOTIFY_LOGO = "/images/logos/spotify.png";
+const EMPTY_ALBUM_ART = "/images/emptysong.jpg";
+
+function getAlbumArtUrl(track: SpotifyApi.TrackObjectFull | null | undefined) {
+	const images = track?.album?.images;
+	if (!images?.length) return EMPTY_ALBUM_ART;
+	return images[1]?.url ?? images[0]?.url ?? images.at(-1)?.url ?? EMPTY_ALBUM_ART;
+}
+
 export default function Spotify() {
 	const { data } = useSWR<NowPlayingResponseSuccess, NowPlayingResponseError>(
 		"/api/nowPlaying",
@@ -29,17 +38,24 @@ export default function Spotify() {
 	const [time, setTime] = useState(0);
 
 	useEffect(() => {
-		if (!data?.progessMs || !data.track) return;
+		if (!data?.track) return;
+
+		if (!data.isPlayingNow) {
+			setTime(0);
+			return;
+		}
+
+		setTime(data.progessMs ?? 0);
 
 		const started = Date.now();
 
 		const interval = setInterval(() => {
 			setTime(
 				data.isPaused
-					? data.progessMs
+					? data.progessMs ?? 0
 					: Math.min(
-							data.progessMs! + Date.now() - started,
-							data?.track?.duration_ms!
+							(data.progessMs ?? 0) + Date.now() - started,
+							data.track!.duration_ms
 					  )
 			);
 		}, 100);
@@ -47,20 +63,34 @@ export default function Spotify() {
 		return () => clearInterval(interval);
 	}, [data]);
 
+	const albumArtUrl = data?.track ? getAlbumArtUrl(data.track) : null;
+	const isRemoteAlbumArt = albumArtUrl?.startsWith("http") ?? false;
+	const showProgress = Boolean(data?.track);
+	const progressMs = data?.isPlayingNow ? time : 0;
+
 	return (
 		<div className="flex gap-2 items-center text-base leading-snug">
 			<div className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0">
-				<Image
-					src={
-						data?.track?.album.images[0]?.url ??
-						"/images/emptysong.jpg"
-					}
-					alt="Spotify Album Art"
-					width={256}
-					height={256}
-					priority={true}
-					className="w-16 h-16 md:w-20 md:h-20 object-cover object-center rounded-lg"
-				/>
+				{albumArtUrl ? (
+					<Image
+						src={albumArtUrl}
+						alt={
+							data?.track
+								? `${data.track.name} album art`
+								: "Spotify album art"
+						}
+						width={256}
+						height={256}
+						priority={true}
+						unoptimized={isRemoteAlbumArt}
+						className="w-16 h-16 md:w-20 md:h-20 object-cover object-center rounded-lg"
+					/>
+				) : (
+					<div
+						className="w-16 h-16 md:w-20 md:h-20 rounded-lg bg-slate-800"
+						aria-hidden
+					/>
+				)}
 			</div>
 			<div className="basis-full">
 				<p>
@@ -110,52 +140,61 @@ export default function Spotify() {
 						</>
 					) : null}
 				</p>
-				<p className="opacity-80 flex items-center gap-1">
-					{data?.isPlayingNow && data.track ? (
-						<span className="block w-full max-w-sm mt-2">
-							<span className="block h-0.5 rounded overflow-hidden bg-[#5e5e5e]">
-								<span
-									className="block h-full bg-white"
-									style={{
-										width: `${
-											(time! / data.track.duration_ms) *
-											100
-										}%`
-									}}
-								/>
+				{showProgress && data?.track ? (
+					<div className="opacity-80 mt-2 w-full max-w-sm">
+						<span className="block h-0.5 rounded overflow-hidden bg-[#5e5e5e]">
+							<span
+								className="block h-full bg-white"
+								style={{
+									width: `${
+										(progressMs / data.track.duration_ms) * 100
+									}%`
+								}}
+							/>
+						</span>
+						<span className="flex items-center text-sm mt-2 gap-1">
+							<span className="basis-full">
+								{formatDuration(progressMs)}
 							</span>
-							<span className="flex items-center text-sm">
-								<span className="basis-full">
-									{formatDuration(time!)}
-								</span>
-								<span>
-									{data?.isPaused ? (
+							<span className="flex items-center justify-center">
+								{data.isPlayingNow ? (
+									data.isPaused ? (
 										<PlayIcon className="text-white h-4 w-4" />
 									) : (
 										<PauseIcon className="text-white h-4 w-4" />
-									)}
-								</span>
-								<span className="basis-full text-right">
-									{formatDuration(data.track.duration_ms)}
-								</span>
+									)
+								) : (
+									<Image
+										src={SPOTIFY_LOGO}
+										alt=""
+										width={16}
+										height={16}
+										className="w-4 h-4"
+									/>
+								)}
+							</span>
+							<span className="basis-full text-right">
+								{formatDuration(data.track.duration_ms)}
 							</span>
 						</span>
-					) : (
-						<>
-							<span className="w-4 h-4">
-								<Image
-									src="/images/spotify.png"
-									alt=""
-									width={48}
-									height={48}
-									className="w-4 h-4"
-								/>
-							</span>
-							{data?.track ? <>Last Played on </> : null}
-							Spotify
-						</>
-					)}
-				</p>
+						{!data.isPlayingNow ? (
+							<p className="text-sm mt-1">Last played on Spotify</p>
+						) : null}
+					</div>
+				) : (
+					<p className="opacity-80 flex items-center gap-1">
+						<span className="w-4 h-4 relative block flex-shrink-0">
+							<Image
+								src={SPOTIFY_LOGO}
+								alt=""
+								width={16}
+								height={16}
+								className="w-4 h-4"
+							/>
+						</span>
+						Spotify
+					</p>
+				)}
 			</div>
 		</div>
 	);

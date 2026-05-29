@@ -14,7 +14,7 @@ const formatter = new Intl.DateTimeFormat("en-US", {
 });
 
 export function Clock() {
-	const [now, setNow] = useState(0);
+	const [now, setNow] = useState<number | null>(null);
 
 	useEffect(() => {
 		setNow(Date.now());
@@ -26,10 +26,18 @@ export function Clock() {
 		return () => clearInterval(id);
 	}, []);
 
+	if (now === null) {
+		return (
+			<span className="invisible" aria-hidden>
+				Loading time
+			</span>
+		);
+	}
+
 	const formattedTime = formatter.format(now);
-	
-	// Check if it's midnight (00:00) and replace "24" with "00"
-	const displayTime = formattedTime.replace(" at", " · ").replace(" 24:", " 00:");
-	
+	const displayTime = formattedTime
+		.replace(" at", " · ")
+		.replace(" 24:", " 00:");
+
 	return <>{displayTime}</>;
 }

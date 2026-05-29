@@ -23,8 +23,9 @@ export default function Projects() {
 	return (
 		<>
 			<GenericMeta
-				title="Music 🎶"
+				title="Music"
 				description="My top music on Spotify."
+				path="/music"
 			/>
 
 			<h1 className="heading mb-2">

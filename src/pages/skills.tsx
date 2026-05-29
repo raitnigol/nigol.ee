@@ -10,8 +10,9 @@ export default function Skills() {
 	return (
 		<>
 			<GenericMeta
-				title="Skills 💻"
+				title="Skills"
 				description="Skills I've picked up over the years."
+				path="/skills"
 			/>
 
 			<h1 className="heading mb-2">
