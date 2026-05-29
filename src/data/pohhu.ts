@@ -28,7 +28,7 @@ export const pohhuManifestoBeforeCore: string[] = [
 	"{{$.pohhu¥}} is a creative collective from **Tartu, Estonia**, built around artists, makers, friends, and people who kept making things even when there was no clear reason to expect money, attention, or permission.",
 	"Founded in **late 2022**, {{$.pohhu¥}} started as a one-man army. In the beginning it was barely a collective at all. It was a name, an instinct, and a stubborn excuse to keep making things. Tracks, covers, visuals, files, discs, ideas, inside jokes, half-serious plans, and small pieces of culture that felt worth saving before anyone else had decided they mattered.",
 	"The point was never to wait for the industry to notice. The point was to **act like the scene was already worth documenting**.",
-	"The first real expansion came when **Kevilnius** entered the picture. What started as one person carrying the name slowly became a wider circle of artists and collaborators. By the end of **2024**, Kevilnius became an official core member during the formation of **Dimensional Records Estonia OÜ**, a more formal label structure created by people already moving inside the {{$.pohhu¥}} world.",
+	"The first real expansion came when **Kevilnius** joined in **2023**. What started as one person carrying the name slowly became a wider circle of artists and collaborators. By the end of **2024**, Kevilnius became an official core member during the formation of **Dimensional Records Estonia OÜ**, a more formal label structure created by people already moving inside the {{$.pohhu¥}} world.",
 	"The easiest way to understand the structure is that {{$.pohhu¥}} is the **wider umbrella**. It is the collective, the attitude, the shared history, and the place where the different projects connect. Under that sit names like **Dimensional Records Estonia OÜ** and **’59 Records Mõisavahe**. Some parts are formal. Some parts started as jokes. Some parts became real because people actually put their time, money, work, equipment, files, covers, songs, videos, and sleep into them."
 ];
 
@@ -67,6 +67,66 @@ export const pohhuManifestoPullquote = "{{$.pohhu¥ exists against that.}}";
 export const pohhuManifestoClosing: string[] = [
 	"{{$.pohhu¥}} exists because someone has to **care before the algorithm does**. Someone has to burn the discs, make the covers, upload the files, save the folders, fund the dumb idea, and treat the small artist like they are **already worth documenting**."
 ];
+
+export interface KiviArtShowLink {
+	label: string;
+	href: string;
+}
+
+export interface KiviArtShowGalleryImage {
+	image: string;
+	alt: string;
+	/** Spans both columns on md+ (use for banner.jpg). */
+	banner?: boolean;
+}
+
+export const kiviArtShow = {
+	title: "Kivi Baar × {{$.pohhu¥}} Art Show",
+	paragraphs: [
+		"On **7 January 2026**, **Kivi Baar** let **Nigol** and **Kevilnius** display their digital art — printed out and hung across the venue.",
+		"The display consisted mainly of **Kevilnius**' art pieces, whereas **Nigol** brought out only a few pieces.",
+		"One piece from Nigol sold, and countless pieces from Kevilnius sold. The rest was donated to friends and family.",
+		"None of this should have been possible without our friend **Tairi**, who managed the internal communication and forwarded it to us — the key that let it really happen.",
+		"The gallery was open from **7 January 2026, 21:00** until the **start of February 2026**."
+	],
+	links: [
+		{
+			label: "Event on Facebook",
+			href: "https://www.facebook.com/events/1416542453257884"
+		},
+		{
+			label: "Kivi Baar on Facebook",
+			href: "https://www.facebook.com/baarikivi"
+		},
+		{
+			label: "Kivi Baar on Instagram",
+			href: "https://www.instagram.com/baarikivi/"
+		}
+	] as KiviArtShowLink[],
+	gallery: [
+		{
+			image: "/images/pohhu/kivi-art-show/banner.jpg",
+			alt: "Kivi Baar × $.pohhu¥ art show banner",
+			banner: true
+		},
+		{
+			image: "/images/pohhu/kivi-art-show/01.jpg",
+			alt: "Art show at Kivi Baar — photo 1"
+		},
+		{
+			image: "/images/pohhu/kivi-art-show/02.jpg",
+			alt: "Art show at Kivi Baar — photo 2"
+		},
+		{
+			image: "/images/pohhu/kivi-art-show/03.jpg",
+			alt: "Art show at Kivi Baar — photo 3"
+		},
+		{
+			image: "/images/pohhu/kivi-art-show/04.jpg",
+			alt: "Art show at Kivi Baar — photo 4"
+		}
+	] as KiviArtShowGalleryImage[]
+};
 
 export const fundedReleases: FundedRelease[] = [
 	{

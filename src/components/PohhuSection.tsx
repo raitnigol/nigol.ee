@@ -5,6 +5,7 @@ import {
 	certifiedArtists,
 	collectionPhotos,
 	fundedReleases,
+	kiviArtShow,
 	pohhuFundedReleasesIntro,
 	pohhuFoundingCore,
 	pohhuFoundingCoreIntro,
@@ -14,7 +15,8 @@ import {
 	pohhuManifestoPullquote,
 	type CertifiedArtistProfile,
 	type CollectionPhoto,
-	type FundedRelease
+	type FundedRelease,
+	type KiviArtShowGalleryImage
 } from "../data/pohhu";
 import { FormattedText } from "./FormattedText";
 import { getArtistImageUrl } from "../lib/spotify";
@@ -100,6 +102,37 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 					<p className="mt-1 text-xs text-gray-500">{release.format}</p>
 				</div>
 			</a>
+		</li>
+	);
+}
+
+function ExternalLinkButton({ href, label }: { href: string; label: string }) {
+	return (
+		<a
+			href={href}
+			target="_blank"
+			rel="noopener noreferrer"
+			className="inline-flex items-center rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm font-bold text-violet-300 transition hover:border-violet-500/40 hover:bg-slate-900 hover:text-violet-200"
+		>
+			{label} →
+		</a>
+	);
+}
+
+function KiviArtShowGalleryItem({ item }: { item: KiviArtShowGalleryImage }) {
+	return (
+		<li className={item.banner ? "md:col-span-2" : undefined}>
+			<div
+				className={`overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 ring-1 ring-inset ring-white/5 ${
+					item.banner ? "relative aspect-[2/1] w-full" : "relative aspect-square w-full"
+				}`}
+			>
+				<LocalCoverImage
+					src={item.image}
+					alt={item.alt}
+					className="h-full w-full object-cover"
+				/>
+			</div>
 		</li>
 	);
 }
@@ -290,9 +323,32 @@ export default function PohhuSection() {
 					<ManifestoParagraph key={`releases-intro-${i}`} text={paragraph} />
 				))}
 			</div>
-			<ul className="mb-10 grid gap-4 md:grid-cols-2">
+			<ul className="mb-12 grid gap-4 md:grid-cols-2">
 				{fundedReleases.map(release => (
 					<FundedReleaseCard key={release.spotifyUrl} release={release} />
+				))}
+			</ul>
+
+			<h4 className="mb-5 font-bold text-lg md:text-xl text-white">
+				<FormattedText text={kiviArtShow.title} />
+			</h4>
+			<div className="mb-5 max-w-none">
+				{kiviArtShow.paragraphs.map((paragraph, i) => (
+					<ManifestoParagraph key={`kivi-${i}`} text={paragraph} />
+				))}
+			</div>
+			<div className="mb-8 flex flex-wrap gap-3">
+				{kiviArtShow.links.map(link => (
+					<ExternalLinkButton
+						key={link.href}
+						href={link.href}
+						label={link.label}
+					/>
+				))}
+			</div>
+			<ul className="mb-10 grid gap-4 md:grid-cols-2">
+				{kiviArtShow.gallery.map(item => (
+					<KiviArtShowGalleryItem key={item.image} item={item} />
 				))}
 			</ul>
 
