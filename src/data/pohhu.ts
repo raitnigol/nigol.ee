@@ -8,11 +8,18 @@ export interface FundedRelease {
 	coverImage: string;
 }
 
+export interface CertifiedArtistPlaylist {
+	/** Spotify playlist ID for embed (open.spotify.com/playlist/{id}). */
+	id: string;
+	title: string;
+}
+
 export interface CertifiedArtistProfile {
 	spotifyId: string;
 	/** Local override; falls back to Spotify artist image if missing on disk. */
 	profileImage: string;
 	bio: string;
+	playlist?: CertifiedArtistPlaylist;
 }
 
 export interface CollectionPhoto {
@@ -52,6 +59,12 @@ export const pohhuManifestoAfterCore: string[] = [
 	"As of **2026**, **Benakanister** and **Annupannu** have parted ways with {{$.pohhu¥}}. The rest of the core continues forward.",
 	"Modern digital media has made it normal for art to be measured by stream counts, playlist placement, retention curves, and algorithmic obedience. The machine rewards scale, repetition, and content churn. It does not care whether something meant anything to the people who made it."
 ];
+
+export const pohhuPhysicalMediaDivider = "— OUR DEDICATION TO PHYSICAL MEDIA —";
+
+export const pohhuLineupDivider = "— OUR LINEUP —";
+
+export const pohhuFundedReleasesTitle = "PHYSICAL RELEASES FUNDED BY $.POHHU¥";
 
 /** Physical media, funded releases, and artifacts — shown under the releases block. */
 export const pohhuFundedReleasesIntro: string[] = [
@@ -153,7 +166,11 @@ export const certifiedArtists: CertifiedArtistProfile[] = [
 	{
 		spotifyId: "1TP2IwbXVJvlH5acCxmPZL",
 		profileImage: "/images/pohhu/artists/kevilnius.jpg",
-		bio: "Based in Estonia, Kevilnius emerged onto the music scene in 2018. His artistic journey began as a cascade of daydreams, which has been an inspiration for his music. Fusing his passion for cloudy/dreamy melodies mixed with trap-style production, each of his tracks is a hypnotic journey through a cybernetic dreamscape, where crystalline beats interlace with vapor trails of melody, guiding listeners into a neverending bliss."
+		bio: "Based in Estonia, Kevilnius emerged onto the music scene in 2018. His artistic journey began as a cascade of daydreams, which has been an inspiration for his music. Fusing his passion for cloudy/dreamy melodies mixed with trap-style production, each of his tracks is a hypnotic journey through a cybernetic dreamscape, where crystalline beats interlace with vapor trails of melody, guiding listeners into a neverending bliss.",
+		playlist: {
+			id: "1ppZiVsWl1qqWGUkg8HEcd",
+			title: "Kevilnius × $.pohhu¥"
+		}
 	}
 ];
 
@@ -163,10 +180,5 @@ export const collectionPhotos: CollectionPhoto[] = [
 		description:
 			"Small collection: 4 cassettes and 2 CDs, including the two funded releases.",
 		image: "/images/pohhu/photos/collection.jpg"
-	},
-	{
-		title: "",
-		description: "",
-		placeholder: true
 	}
 ];

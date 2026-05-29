@@ -21,7 +21,7 @@ const pages: PageData[] = [
 		color: "text-orange-400"
 	},
 	{
-		href: "/music",
+		href: "/music#pohhu-heading",
 		title: "$.pohhu¥",
 		color: "text-violet-300"
 	},
@@ -50,7 +50,7 @@ export default function Navbar() {
 					nonActiveClass="after:opacity-0 after:inset-x-1/2 hover:after:opacity-100 hover:after:inset-x-1/4"
 				>
 					<a
-						className={`py-2 flex items-center relative after:absolute after:bottom-0 after:h-0.5 after:bg-white after:rounded after:transition-all ${
+						className={`focus-ring py-2 flex items-center relative after:absolute after:bottom-0 after:h-0.5 after:bg-white after:rounded after:transition-all ${
 							color ? color : ""
 						}`}
 					>

@@ -7,6 +7,9 @@ import {
 	fundedReleases,
 	kiviArtShow,
 	pohhuFundedReleasesIntro,
+	pohhuFundedReleasesTitle,
+	pohhuLineupDivider,
+	pohhuPhysicalMediaDivider,
 	pohhuFoundingCore,
 	pohhuFoundingCoreIntro,
 	pohhuManifestoAfterCore,
@@ -14,11 +17,12 @@ import {
 	pohhuManifestoClosing,
 	pohhuManifestoPullquote,
 	type CertifiedArtistProfile,
-	type CollectionPhoto,
-	type FundedRelease,
-	type KiviArtShowGalleryImage
+	type FundedRelease
 } from "../data/pohhu";
 import { FormattedText } from "./FormattedText";
+import { ImageLightboxGallery } from "./ImageLightboxGallery";
+import { PohhuLogoReveal } from "./PohhuLogoReveal";
+import { SectionDivider } from "./SectionDivider";
 import { getArtistImageUrl } from "../lib/spotify";
 import type { SpotifyArtistResponseSuccess } from "../pages/api/spotifyArtist";
 
@@ -26,9 +30,12 @@ function formatFollowers(count: number) {
 	return new Intl.NumberFormat("en-US").format(count);
 }
 
+const sectionHeadingClass =
+	"scroll-anchor mb-5 font-bold text-2xl text-white md:text-3xl";
+
 function ManifestoParagraph({ text }: { text: string }) {
 	return (
-		<p className="mb-4 text-base md:text-lg text-gray-300 leading-relaxed">
+		<p className="mb-4 text-base leading-relaxed md:text-lg">
 			<FormattedText text={text} />
 		</p>
 	);
@@ -36,7 +43,7 @@ function ManifestoParagraph({ text }: { text: string }) {
 
 function ManifestoPullquote({ text }: { text: string }) {
 	return (
-		<p className="my-6 border-l-2 border-violet-500/50 pl-4 text-lg md:text-xl font-semibold leading-snug">
+		<p className="my-6 border-l-2 border-violet-500/50 pl-4 text-lg font-semibold leading-snug md:text-xl">
 			<FormattedText text={text} />
 		</p>
 	);
@@ -82,7 +89,7 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 				href={release.spotifyUrl}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="group block h-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 transition hover:border-violet-500/35 hover:bg-slate-900/80"
+				className="focus-ring group block h-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 transition hover:border-violet-500/35 hover:bg-slate-900/80"
 			>
 				<div className="relative aspect-square w-full bg-slate-900 ring-1 ring-inset ring-white/5">
 					<LocalCoverImage
@@ -112,66 +119,39 @@ function ExternalLinkButton({ href, label }: { href: string; label: string }) {
 			href={href}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="inline-flex items-center rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm font-bold text-violet-300 transition hover:border-violet-500/40 hover:bg-slate-900 hover:text-violet-200"
+			className="focus-ring inline-flex items-center rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm font-bold text-violet-300 transition hover:border-violet-500/40 hover:bg-slate-900 hover:text-violet-200"
 		>
 			{label} →
 		</a>
 	);
 }
 
-function KiviArtShowGalleryItem({ item }: { item: KiviArtShowGalleryImage }) {
+function SpotifyPlaylistEmbed({
+	playlistId,
+	title
+}: {
+	playlistId: string;
+	title: string;
+}) {
+	const embedSrc = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`;
+
 	return (
-		<li className={item.banner ? "md:col-span-2" : undefined}>
-			<div
-				className={`overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 ring-1 ring-inset ring-white/5 ${
-					item.banner ? "relative aspect-[2/1] w-full" : "relative aspect-square w-full"
-				}`}
-			>
-				<LocalCoverImage
-					src={item.image}
-					alt={item.alt}
-					className="h-full w-full object-cover"
-				/>
+		<div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 ring-1 ring-inset ring-white/5">
+			<div className="border-b border-slate-800/90 px-4 py-3">
+				<p className="text-xs font-bold uppercase tracking-[0.12em] text-violet-400">
+					{title}
+				</p>
 			</div>
-		</li>
-	);
-}
-
-function CollectionPhotoCard({ photo }: { photo: CollectionPhoto }) {
-	if (photo.placeholder) {
-		return (
-			<li aria-hidden>
-				<div className="aspect-square w-full rounded-xl border border-dashed border-slate-700/80 bg-slate-950/30" />
-			</li>
-		);
-	}
-
-	return (
-		<li>
-			<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60">
-				<div className="relative aspect-square w-full bg-slate-900 ring-1 ring-inset ring-white/5">
-					{photo.image ? (
-						<LocalCoverImage
-							src={photo.image}
-							alt={photo.title}
-							className="h-full w-full object-cover"
-						/>
-					) : null}
-				</div>
-				{(photo.title || photo.description) && (
-					<div className="px-4 py-3">
-						{photo.title ? (
-							<p className="text-sm font-bold text-white">{photo.title}</p>
-						) : null}
-						{photo.description ? (
-							<p className="mt-1 text-xs text-gray-400">
-								{photo.description}
-							</p>
-						) : null}
-					</div>
-				)}
-			</article>
-		</li>
+			<iframe
+				title={`Spotify playlist: ${title}`}
+				src={embedSrc}
+				width="100%"
+				height={352}
+				className="block w-full border-0 bg-slate-900"
+				allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+				loading="lazy"
+			/>
+		</div>
 	);
 }
 
@@ -211,7 +191,8 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 	const useSpotifyCdn = imageSrc?.startsWith("http") ?? false;
 
 	return (
-		<article className="rounded-xl border border-slate-800 bg-slate-950/50 overflow-hidden">
+		<div className="space-y-6">
+			<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/50">
 			<div className="flex flex-col md:flex-row md:items-stretch">
 				<div className="relative aspect-square w-full md:w-56 lg:w-64 flex-shrink-0 overflow-hidden bg-slate-900">
 					{imageSrc ? (
@@ -238,7 +219,7 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 								href={spotifyUrl}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="text-white border-b border-transparent hover:border-violet-400 transition-colors"
+								className="focus-ring text-white border-b border-transparent hover:border-violet-400 transition-colors"
 							>
 								{artist?.name ?? "…"}
 							</a>
@@ -268,29 +249,50 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 						href={spotifyUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="mt-5 inline-flex w-fit items-center text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
+						className="focus-ring mt-5 inline-flex w-fit items-center text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
 					>
 						Open on Spotify →
 					</a>
 				</div>
 			</div>
 		</article>
+
+			{profile.playlist ? (
+				<SpotifyPlaylistEmbed
+					playlistId={profile.playlist.id}
+					title={profile.playlist.title}
+				/>
+			) : null}
+		</div>
 	);
 }
+
+const collectionGalleryItems = collectionPhotos
+	.filter(
+		(photo): photo is typeof photo & { image: string } =>
+			Boolean(photo.image) && !photo.placeholder
+	)
+	.map(photo => ({
+		image: photo.image,
+		alt: photo.title || "Collection photo",
+		title: photo.title,
+		description: photo.description
+	}));
 
 export default function PohhuSection() {
 	return (
 		<section className="mb-4" aria-labelledby="pohhu-heading">
-			<h2 id="pohhu-heading" className="mb-8 text-center">
-				<span className="block font-heading text-5xl font-extrabold tracking-tighter text-violet-400 md:text-6xl">
-					$.pohhu¥
+			<h2 id="pohhu-heading" className="scroll-anchor mb-8 text-center">
+				<span className="sr-only">$.pohhu¥</span>
+				<span className="block">
+					<PohhuLogoReveal />
 				</span>
-				<p className="mt-4 font-heading text-base font-semibold uppercase tracking-[0.2em] text-gray-200 md:text-lg md:tracking-[0.24em]">
+				<p className="pohhu-tagline-reveal mt-4 font-heading text-base font-semibold uppercase tracking-[0.2em] text-gray-200 md:text-lg md:tracking-[0.24em]">
 					will take over the world
 				</p>
 			</h2>
 
-			<div className="mb-10 max-w-none">
+			<div className="prose-readable mb-10">
 				{pohhuManifestoBeforeCore.map((paragraph, i) => (
 					<ManifestoParagraph key={`before-${i}`} text={paragraph} />
 				))}
@@ -315,10 +317,19 @@ export default function PohhuSection() {
 				))}
 			</div>
 
-			<h3 className="mb-5 mt-10 font-bold text-xl md:text-2xl uppercase tracking-[0.12em] text-white">
-				$.POHHU¥ FUNDED RELEASES IN ESTONIA
+			<SectionDivider
+				label={pohhuPhysicalMediaDivider}
+				className="mt-10 mb-8"
+				ariaLabel="Our dedication to physical media"
+			/>
+
+			<h3
+				id="pohhu-funded-releases"
+				className={`${sectionHeadingClass} uppercase tracking-[0.12em]`}
+			>
+				{pohhuFundedReleasesTitle}
 			</h3>
-			<div className="mb-6 max-w-none">
+			<div className="prose-readable mb-6">
 				{pohhuFundedReleasesIntro.map((paragraph, i) => (
 					<ManifestoParagraph key={`releases-intro-${i}`} text={paragraph} />
 				))}
@@ -329,10 +340,10 @@ export default function PohhuSection() {
 				))}
 			</ul>
 
-			<h4 className="mb-5 font-bold text-lg md:text-xl text-white">
+			<h3 id="pohhu-kivi-art-show" className={sectionHeadingClass}>
 				<FormattedText text={kiviArtShow.title} />
-			</h4>
-			<div className="mb-5 max-w-none">
+			</h3>
+			<div className="prose-readable mb-5">
 				{kiviArtShow.paragraphs.map((paragraph, i) => (
 					<ManifestoParagraph key={`kivi-${i}`} text={paragraph} />
 				))}
@@ -346,25 +357,29 @@ export default function PohhuSection() {
 					/>
 				))}
 			</div>
-			<ul className="mb-10 grid gap-4 md:grid-cols-2">
-				{kiviArtShow.gallery.map(item => (
-					<KiviArtShowGalleryItem key={item.image} item={item} />
-				))}
-			</ul>
+			<ImageLightboxGallery
+				items={kiviArtShow.gallery}
+				dialogLabel="Kivi Baar art show gallery"
+			/>
 
-			<h3 className="mb-5 mt-4 font-bold text-xl md:text-2xl uppercase tracking-[0.12em] text-gray-400">
+			<h3
+				id="pohhu-photos"
+				className={`${sectionHeadingClass} mt-4 uppercase tracking-[0.12em]`}
+			>
 				Photos
 			</h3>
-			<ul className="mb-10 grid gap-4 md:grid-cols-2">
-				{collectionPhotos.map((photo, i) => (
-					<CollectionPhotoCard
-						key={photo.placeholder ? `placeholder-${i}` : photo.image}
-						photo={photo}
-					/>
-				))}
-			</ul>
+			<ImageLightboxGallery
+				items={collectionGalleryItems}
+				dialogLabel="Physical collection photos"
+			/>
 
-			<h3 className="font-bold text-2xl md:text-3xl mb-5 text-white">
+			<SectionDivider
+				label={pohhuLineupDivider}
+				className="mt-4 mb-8"
+				ariaLabel="Our lineup"
+			/>
+
+			<h3 id="pohhu-certified-artists" className={sectionHeadingClass}>
 				<span className="text-violet-400">$.pohhu¥</span> Certified Artists
 			</h3>
 

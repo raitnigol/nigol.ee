@@ -8,6 +8,16 @@ export interface ActiveLinkProps extends LinkProps {
 	nonActiveClass?: string;
 }
 
+function linkPathname(href: ActiveLinkProps["href"]): string {
+	if (typeof href === "string") {
+		return href.split("#")[0] || "/";
+	}
+	if (typeof href === "object" && href.pathname) {
+		return href.pathname.split("#")[0];
+	}
+	return "/";
+}
+
 export default function ActiveLink({
 	children,
 	href,
@@ -16,12 +26,13 @@ export default function ActiveLink({
 	...props
 }: ActiveLinkProps) {
 	const router = useRouter();
+	const isActive = router.pathname === linkPathname(href);
 
 	return (
 		<Link href={href} {...props}>
 			{cloneElement(children, {
 				className:
-					router.pathname === href
+					isActive
 						? children.props.className
 							? `${children.props.className} ${activeClass}`
 							: activeClass

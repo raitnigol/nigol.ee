@@ -5,6 +5,7 @@ import GenericMeta from "../components/GenericMeta";
 import PohhuSection from "../components/PohhuSection";
 import { SectionDivider } from "../components/SectionDivider";
 import { TrackList } from "../components/TrackList";
+import { scrollToHashElement } from "../lib/scrollToHash";
 import type { TopMusicResponseSuccess } from "./api/topMusic";
 
 const trackSections = [
@@ -31,11 +32,23 @@ export default function Music() {
 			.catch(console.error);
 	}, []);
 
+	useEffect(() => {
+		const scrollToHash = () => {
+			if (window.location.hash) {
+				scrollToHashElement(window.location.hash);
+			}
+		};
+
+		scrollToHash();
+		window.addEventListener("hashchange", scrollToHash);
+		return () => window.removeEventListener("hashchange", scrollToHash);
+	}, []);
+
 	return (
 		<>
 			<GenericMeta
-				title="Music"
-				description="$.pohhu¥, funded releases, certified artists, and my Spotify listening."
+				title="$.pohhu¥"
+				description="$.pohhu¥ — creative collective from Tartu. Manifesto, funded physical releases in Estonia, Kivi Baar art show, certified artists, and personal Spotify listening stats."
 				path="/music"
 			/>
 
@@ -45,10 +58,13 @@ export default function Music() {
 
 			<SectionDivider label="Listening" />
 
-			<h1 className="heading mb-2">MUSIC</h1>
+			<h1 id="spotify-listening" className="heading scroll-anchor mb-2">
+				MUSIC
+			</h1>
 
 			<p className="text-lg mb-8 text-gray-300">
-				My all-time top tracks on Spotify.
+				My top tracks and artists on Spotify — past month, past six months, and
+				all time.
 			</p>
 
 			{trackSections.map((section, index) => (

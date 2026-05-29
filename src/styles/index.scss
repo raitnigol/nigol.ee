@@ -8,7 +8,7 @@
 @layer base {
 	html,
 	body {
-		@apply bg-black;
+		@apply bg-black font-sans text-gray-100 antialiased;
 	}
 
 	html {
@@ -16,11 +16,23 @@
 		-webkit-tap-highlight-color: transparent;
 		scrollbar-color: #fff2 #000;
 		scrollbar-width: thin;
+		text-rendering: optimizeLegibility;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
+	}
+
+	*:focus {
+		outline: none;
 	}
 
 	*:focus-visible {
-		outline: 2px solid white;
-		outline-offset: 4px;
+		outline: 2px solid #c4b5fd;
+		outline-offset: 3px;
+		border-radius: 2px;
 	}
 
 	::-webkit-scrollbar {
@@ -112,11 +124,102 @@
 		}
 	}
 
+	@keyframes pohhu-logo-core-expand {
+		from {
+			max-width: 0;
+			opacity: 0;
+		}
+		to {
+			max-width: 3.6em;
+			opacity: 1;
+		}
+	}
+
+	@keyframes pohhu-logo-text-unfold {
+		from {
+			transform: scaleX(0.15);
+			letter-spacing: -0.12em;
+		}
+		to {
+			transform: scaleX(1);
+			letter-spacing: inherit;
+		}
+	}
+
+	@keyframes pohhu-tagline-in {
+		from {
+			opacity: 0;
+			transform: translateY(0.35rem);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
 }
 
 @layer components {
 	.heading {
 		@apply flex items-center font-heading font-extrabold text-6xl tracking-tighter;
+	}
+
+	/** Long-form copy: comfortable measure and line height. */
+	.prose-readable {
+		max-width: 65ch;
+		line-height: 1.75;
+	}
+
+	.prose-readable p {
+		@apply text-gray-300;
+	}
+
+	.scroll-anchor {
+		scroll-margin-top: 6rem;
+	}
+
+	.focus-ring:focus {
+		outline: none;
+	}
+
+	.focus-ring:focus-visible {
+		outline: 2px solid #c4b5fd;
+		outline-offset: 3px;
+		border-radius: 2px;
+	}
+
+	.pohhu-logo-reveal__core {
+		display: inline-block;
+		overflow: hidden;
+		max-width: 0;
+		opacity: 0;
+		vertical-align: bottom;
+		animation: pohhu-logo-core-expand 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.4s
+			forwards;
+	}
+
+	.pohhu-logo-reveal__text {
+		display: inline-block;
+		transform-origin: center center;
+		animation: pohhu-logo-text-unfold 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.4s
+			forwards;
+	}
+
+	.pohhu-tagline-reveal {
+		opacity: 0;
+		animation: pohhu-tagline-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.05s forwards;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.pohhu-logo-reveal__core,
+		.pohhu-logo-reveal__text,
+		.pohhu-tagline-reveal {
+			animation: none;
+			opacity: 1;
+			max-width: none;
+			transform: none;
+			letter-spacing: inherit;
+		}
 	}
 }
 
@@ -126,5 +229,17 @@
 	}
 	.no-scrollbar::-webkit-scrollbar {
 		display: none;
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
 	}
 }

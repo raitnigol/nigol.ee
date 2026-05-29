@@ -166,7 +166,7 @@ function CarouselArrow({
 			disabled={disabled}
 			onClick={onClick}
 			aria-label={label}
-			className="p-2 text-white transition-[opacity,transform] duration-200 enabled:opacity-90 enabled:hover:opacity-100 disabled:cursor-default disabled:opacity-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-4"
+			className="focus-ring p-2 text-white transition-[opacity,transform] duration-200 enabled:opacity-90 enabled:hover:opacity-100 disabled:cursor-default disabled:opacity-20"
 		>
 			<Icon
 				className={`h-7 w-7 md:h-8 md:w-8 ${
