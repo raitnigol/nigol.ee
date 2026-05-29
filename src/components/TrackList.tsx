@@ -71,7 +71,7 @@ export function TrackList({
 			className="overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth pb-1"
 			onPointerDown={handleActivate}
 		>
-			<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-5 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[15.5rem] lg:auto-cols-[16.5rem]">
+			<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-6 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[10rem] lg:auto-cols-[10.5rem]">
 				{tracks
 					? tracks.map(track => (
 							<Track
@@ -83,12 +83,12 @@ export function TrackList({
 					: [...new Array(24)].map((_, i) => (
 							<div
 								key={i}
-								className="snap-start snap-always flex flex-col md:flex-row md:items-center md:gap-3 animate-pulse"
+								className="snap-start snap-always flex flex-col animate-pulse"
 							>
-								<div className="aspect-square w-full md:w-[9.25rem] md:flex-shrink-0 rounded-lg bg-slate-900" />
-								<div className="hidden md:flex flex-1 flex-col gap-2 py-1">
-									<div className="h-4 w-full rounded bg-slate-800" />
-									<div className="h-3 w-2/3 rounded bg-slate-800" />
+								<div className="aspect-square w-full rounded-lg bg-slate-900" />
+								<div className="mt-2 hidden flex-col gap-1.5 md:flex">
+									<div className="h-3.5 w-full rounded bg-slate-800" />
+									<div className="h-3 w-4/5 rounded bg-slate-800" />
 								</div>
 							</div>
 					  ))}
@@ -115,7 +115,7 @@ export function TrackList({
 			aria-roledescription="carousel"
 		>
 			<div className="relative left-1/2 flex w-screen max-w-[100vw] -translate-x-1/2 items-center">
-				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-end sm:w-12 md:min-h-[10.5rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
+				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-end sm:w-12 md:min-h-[15rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
 					<CarouselArrow
 						direction="left"
 						disabled={!canScrollLeft}
@@ -128,7 +128,7 @@ export function TrackList({
 					{trackGrid}
 				</div>
 
-				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-start sm:w-12 md:min-h-[10.5rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
+				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-start sm:w-12 md:min-h-[15rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
 					<CarouselArrow
 						direction="right"
 						disabled={!canScrollRight}
@@ -193,9 +193,9 @@ function Track({ track, priority }: TrackProps) {
 			href={track.external_urls.spotify}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="group relative flex snap-start snap-always flex-col md:flex-row md:items-center md:gap-3"
+			className="group flex snap-start snap-always flex-col"
 		>
-			<div className="relative aspect-square w-full flex-shrink-0 overflow-hidden rounded-lg bg-slate-900 md:w-[9.25rem]">
+			<div className="relative aspect-square w-full overflow-hidden rounded-lg bg-slate-900">
 				{coverUrl ? (
 					<Image
 						src={coverUrl}
@@ -220,11 +220,11 @@ function Track({ track, priority }: TrackProps) {
 				</div>
 			</div>
 
-			<div className="hidden min-w-0 flex-1 flex-col justify-center md:flex md:py-1">
+			<div className="mt-2 hidden min-w-0 flex-col md:flex">
 				<p className="font-bold text-sm leading-snug text-white line-clamp-2 transition group-hover:text-violet-300">
 					{track.name}
 				</p>
-				<p className="mt-1 text-xs leading-snug text-gray-400 line-clamp-2">
+				<p className="mt-0.5 text-xs leading-snug text-gray-400 line-clamp-2">
 					{artistLine}
 				</p>
 			</div>
