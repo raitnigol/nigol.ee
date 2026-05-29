@@ -63,6 +63,18 @@ export default function Music() {
 				</section>
 			))}
 
+			<div
+				className="my-10 flex items-center gap-3"
+				role="separator"
+				aria-label="Top artists section"
+			>
+				<div className="h-px flex-1 bg-slate-800/90" />
+				<span className="text-xs font-medium uppercase tracking-[0.18em] text-gray-600">
+					Artists
+				</span>
+				<div className="h-px flex-1 bg-slate-800/90" />
+			</div>
+
 			<section className="mb-4">
 				<h2
 					className={`font-bold text-3xl mb-4 transition-colors duration-300 ${
@@ -73,7 +85,7 @@ export default function Music() {
 				>
 					Top Artists
 				</h2>
-				<p className="mb-4 text-base text-gray-400">All time</p>
+				<p className="mb-4 text-sm text-gray-500">All time</p>
 				<ArtistList
 					artists={topMusic?.artists.items}
 					isActive={activeCarousel === ARTISTS_SECTION_INDEX}

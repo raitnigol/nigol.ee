@@ -74,7 +74,7 @@ export function ArtistList({
 			className="overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth pb-1"
 			onPointerDown={handleActivate}
 		>
-			<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-5 auto-cols-[7.5rem] xs:auto-cols-[8rem] md:auto-cols-[8.5rem] lg:auto-cols-[9rem]">
+			<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-6 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[10rem] lg:auto-cols-[10.5rem]">
 				{artists
 					? artists.map((artist, index) => (
 							<ArtistCard
@@ -89,7 +89,7 @@ export function ArtistList({
 								key={i}
 								className="snap-start snap-always flex flex-col items-center animate-pulse"
 							>
-								<div className="aspect-square w-full rounded-full bg-slate-900" />
+								<div className="aspect-square w-full rounded-lg bg-slate-900" />
 								<div className="mt-2 h-3 w-full rounded bg-slate-800" />
 							</div>
 					  ))}
@@ -116,7 +116,7 @@ export function ArtistList({
 			aria-roledescription="carousel"
 		>
 			<div className="relative left-1/2 flex w-screen max-w-[100vw] -translate-x-1/2 items-center">
-				<div className="flex min-h-[10rem] w-10 flex-shrink-0 items-center justify-end sm:w-12 md:min-h-[13rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
+				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-end sm:w-12 md:min-h-[15rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
 					<CarouselArrow
 						direction="left"
 						disabled={!canScrollLeft}
@@ -129,7 +129,7 @@ export function ArtistList({
 					{artistGrid}
 				</div>
 
-				<div className="flex min-h-[10rem] w-10 flex-shrink-0 items-center justify-start sm:w-12 md:min-h-[13rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
+				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-start sm:w-12 md:min-h-[15rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
 					<CarouselArrow
 						direction="right"
 						disabled={!canScrollRight}
@@ -194,9 +194,9 @@ function ArtistCard({ artist, rank, priority }: ArtistCardProps) {
 			href={artist.external_urls.spotify}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="group flex snap-start snap-always flex-col items-center text-center"
+			className="group flex snap-start snap-always flex-col"
 		>
-			<div className="relative aspect-square w-full overflow-hidden rounded-full bg-slate-900 ring-1 ring-white/10 transition group-hover:ring-violet-400/50">
+			<div className="relative aspect-square w-full overflow-hidden rounded-lg bg-slate-900">
 				<RankBadge rank={rank} />
 				{imageUrl ? (
 					<Image
@@ -206,7 +206,7 @@ function ArtistCard({ artist, rank, priority }: ArtistCardProps) {
 						height={320}
 						priority={priority}
 						unoptimized={isRemoteImage}
-						className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+						className="h-full w-full object-cover rounded-lg transition duration-300 group-hover:scale-[1.02]"
 					/>
 				) : (
 					<div className="flex h-full w-full items-center justify-center text-2xl font-bold text-gray-600">
