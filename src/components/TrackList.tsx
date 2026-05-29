@@ -3,6 +3,7 @@ import Image from "next/future/image";
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
 import { getReleaseYear } from "../lib/spotify";
+import { RankBadge } from "./RankBadge";
 
 interface TrackListProps {
 	tracks?: SpotifyApi.TrackObjectFull[];
@@ -75,10 +76,11 @@ export function TrackList({
 		>
 			<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-6 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[10rem] lg:auto-cols-[10.5rem]">
 				{tracks
-					? tracks.map(track => (
+					? tracks.map((track, index) => (
 							<Track
 								key={track.id}
 								track={track}
+								rank={index + 1}
 								priority={priority}
 							/>
 					  ))
@@ -182,10 +184,11 @@ function CarouselArrow({
 
 interface TrackProps {
 	track: SpotifyApi.TrackObjectFull;
+	rank: number;
 	priority: boolean;
 }
 
-function Track({ track, priority }: TrackProps) {
+function Track({ track, rank, priority }: TrackProps) {
 	const coverUrl = track.album.images[0]?.url;
 	const isRemoteCover = coverUrl?.startsWith("http") ?? false;
 	const artistLine = track.artists.map(artist => artist.name).join(", ");
@@ -199,6 +202,7 @@ function Track({ track, priority }: TrackProps) {
 			className="group flex snap-start snap-always flex-col"
 		>
 			<div className="relative aspect-square w-full overflow-hidden rounded-lg bg-slate-900">
+				<RankBadge rank={rank} />
 				{coverUrl ? (
 					<Image
 						src={coverUrl}

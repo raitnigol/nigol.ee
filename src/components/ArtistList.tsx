@@ -3,6 +3,7 @@ import Image from "next/future/image";
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
 import { getArtistImageUrl } from "../lib/spotify";
+import { RankBadge } from "./RankBadge";
 
 interface ArtistListProps {
 	artists?: SpotifyApi.ArtistObjectFull[];
@@ -75,10 +76,11 @@ export function ArtistList({
 		>
 			<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-5 auto-cols-[7.5rem] xs:auto-cols-[8rem] md:auto-cols-[8.5rem] lg:auto-cols-[9rem]">
 				{artists
-					? artists.map(artist => (
+					? artists.map((artist, index) => (
 							<ArtistCard
 								key={artist.id}
 								artist={artist}
+								rank={index + 1}
 								priority={priority}
 							/>
 					  ))
@@ -179,10 +181,11 @@ function CarouselArrow({
 
 interface ArtistCardProps {
 	artist: SpotifyApi.ArtistObjectFull;
+	rank: number;
 	priority: boolean;
 }
 
-function ArtistCard({ artist, priority }: ArtistCardProps) {
+function ArtistCard({ artist, rank, priority }: ArtistCardProps) {
 	const imageUrl = getArtistImageUrl(artist);
 	const isRemoteImage = imageUrl?.startsWith("http") ?? false;
 
@@ -194,6 +197,7 @@ function ArtistCard({ artist, priority }: ArtistCardProps) {
 			className="group flex snap-start snap-always flex-col items-center text-center"
 		>
 			<div className="relative aspect-square w-full overflow-hidden rounded-full bg-slate-900 ring-1 ring-white/10 transition group-hover:ring-violet-400/50">
+				<RankBadge rank={rank} />
 				{imageUrl ? (
 					<Image
 						src={imageUrl}
