@@ -80,23 +80,23 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 				href={release.spotifyUrl}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="group flex h-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 transition hover:border-violet-500/35 hover:bg-slate-900/80"
+				className="group block h-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 transition hover:border-violet-500/35 hover:bg-slate-900/80"
 			>
-				<div className="relative w-28 flex-shrink-0 sm:w-32 md:w-36 aspect-square bg-slate-900 ring-1 ring-inset ring-white/5">
+				<div className="relative aspect-square w-full bg-slate-900 ring-1 ring-inset ring-white/5">
 					<LocalCoverImage
 						src={release.coverImage}
 						alt={`${release.title} cover art`}
 						className="h-full w-full object-cover"
 					/>
 				</div>
-				<div className="flex min-w-0 flex-1 flex-col justify-center gap-1 py-4 pl-4 pr-5">
+				<div className="px-4 py-3">
 					<span className="text-xs font-bold uppercase tracking-wider text-violet-400">
 						{release.releaseYear}
 					</span>
-					<p className="text-lg font-bold leading-tight text-white transition group-hover:text-violet-300">
+					<p className="mt-1 text-sm font-bold text-white transition group-hover:text-violet-300">
 						{release.title}
 					</p>
-					<p className="text-sm text-gray-400">{release.artists}</p>
+					<p className="mt-1 text-xs text-gray-400">{release.artists}</p>
 					<p className="mt-1 text-xs text-gray-500">{release.format}</p>
 				</div>
 			</a>
@@ -248,11 +248,13 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 export default function PohhuSection() {
 	return (
 		<section className="mb-4" aria-labelledby="pohhu-heading">
-			<h2
-				id="pohhu-heading"
-				className="heading mb-6 text-center text-5xl md:text-6xl tracking-tighter text-violet-400"
-			>
-				$.pohhu¥ will take over the world
+			<h2 id="pohhu-heading" className="mb-8 text-center">
+				<span className="block font-heading text-5xl font-extrabold tracking-tighter text-violet-400 md:text-6xl">
+					$.pohhu¥
+				</span>
+				<p className="mt-4 font-heading text-base font-semibold uppercase tracking-[0.2em] text-gray-200 md:text-lg md:tracking-[0.24em]">
+					will take over the world
+				</p>
 			</h2>
 
 			<div className="mb-10 max-w-none">
