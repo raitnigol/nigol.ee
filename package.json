@@ -3,6 +3,10 @@
 	"license": "GPL-3.0",
 	"version": "0.1.0",
 	"private": false,
+	"engines": {
+		"node": "22.x"
+	},
+	"packageManager": "yarn@1.22.22",
 	"scripts": {
 		"dev": "next dev",
 		"format": "prettier --write .",
