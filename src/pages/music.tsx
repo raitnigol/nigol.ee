@@ -2,6 +2,8 @@ import { useEffect, useState } from "preact/hooks";
 
 import { ArtistList } from "../components/ArtistList";
 import GenericMeta from "../components/GenericMeta";
+import PohhuSection from "../components/PohhuSection";
+import { SectionDivider } from "../components/SectionDivider";
 import { TrackList } from "../components/TrackList";
 import type { TopMusicResponseSuccess } from "./api/topMusic";
 
@@ -33,9 +35,15 @@ export default function Music() {
 		<>
 			<GenericMeta
 				title="Music"
-				description="My all-time top tracks and artists on Spotify."
+				description="$.pohhu¥, funded releases, certified artists, and my Spotify listening."
 				path="/music"
 			/>
+
+			<SectionDivider label="Manifesto" className="mb-8 mt-0" />
+
+			<PohhuSection />
+
+			<SectionDivider label="Listening" />
 
 			<h1 className="heading mb-2">MUSIC</h1>
 
@@ -63,17 +71,7 @@ export default function Music() {
 				</section>
 			))}
 
-			<div
-				className="my-10 flex items-center gap-3"
-				role="separator"
-				aria-label="Top artists section"
-			>
-				<div className="h-px flex-1 bg-slate-800/90" />
-				<span className="text-xs font-medium uppercase tracking-[0.18em] text-gray-600">
-					Artists
-				</span>
-				<div className="h-px flex-1 bg-slate-800/90" />
-			</div>
+			<SectionDivider label="Artists" />
 
 			<section className="mb-4">
 				<h2
