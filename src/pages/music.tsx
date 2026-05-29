@@ -1,14 +1,17 @@
 import { useEffect, useState } from "preact/hooks";
 
+import { ArtistList } from "../components/ArtistList";
 import GenericMeta from "../components/GenericMeta";
 import { TrackList } from "../components/TrackList";
 import type { TopMusicResponseSuccess } from "./api/topMusic";
 
-const sections = [
+const trackSections = [
 	{ id: "short", title: "Past Month", tracksKey: "short" as const },
 	{ id: "medium", title: "Past 6 Months", tracksKey: "medium" as const },
 	{ id: "long", title: "All Time", tracksKey: "long" as const }
 ];
+
+const ARTISTS_SECTION_INDEX = trackSections.length;
 
 export default function Music() {
 	const [topMusic, setTopMusic] = useState<TopMusicResponseSuccess | null>(
@@ -30,7 +33,7 @@ export default function Music() {
 		<>
 			<GenericMeta
 				title="Music"
-				description="My all-time top tracks on Spotify."
+				description="My all-time top tracks and artists on Spotify."
 				path="/music"
 			/>
 
@@ -40,7 +43,7 @@ export default function Music() {
 				My all-time top tracks on Spotify.
 			</p>
 
-			{sections.map((section, index) => (
+			{trackSections.map((section, index) => (
 				<section key={section.id} className="mb-4">
 					<h2
 						className={`font-bold text-3xl mb-4 transition-colors duration-300 ${
@@ -59,6 +62,24 @@ export default function Music() {
 					/>
 				</section>
 			))}
+
+			<section className="mb-4">
+				<h2
+					className={`font-bold text-3xl mb-4 transition-colors duration-300 ${
+						activeCarousel === ARTISTS_SECTION_INDEX
+							? "text-white"
+							: "text-gray-500"
+					}`}
+				>
+					Top Artists
+				</h2>
+				<p className="mb-4 text-base text-gray-400">All time</p>
+				<ArtistList
+					artists={topMusic?.artists.items}
+					isActive={activeCarousel === ARTISTS_SECTION_INDEX}
+					onActivate={() => setActiveCarousel(ARTISTS_SECTION_INDEX)}
+				/>
+			</section>
 		</>
 	);
 }

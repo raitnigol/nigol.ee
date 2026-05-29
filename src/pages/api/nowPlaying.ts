@@ -8,6 +8,8 @@ export interface NowPlayingResponseSuccess {
 	isPlayingNow: boolean;
 	isPaused: boolean;
 	progessMs: number;
+	/** ISO 8601 timestamp when the track was last played (recently-played fallback only). */
+	playedAt: string | null;
 	track: SpotifyApi.TrackObjectFull | null;
 }
 export type NowPlayingResponseError = { error: unknown };
@@ -43,6 +45,7 @@ export default async function handler(
 			isPlayingNow: false,
 			isPaused: false,
 			progessMs: 0,
+			playedAt: null,
 			track: null
 		};
 		const playing = await api.getMyCurrentPlayingTrack();
@@ -57,9 +60,10 @@ export default async function handler(
 				limit: 1
 			});
 
-			if (lastPlayed.body?.items[0]?.track) {
-				response.track = lastPlayed.body.items[0]
-					.track as SpotifyApi.TrackObjectFull;
+			const lastItem = lastPlayed.body?.items[0];
+			if (lastItem?.track) {
+				response.track = lastItem.track as SpotifyApi.TrackObjectFull;
+				response.playedAt = lastItem.played_at ?? null;
 			}
 		}
 

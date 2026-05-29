@@ -2,21 +2,21 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import Image from "next/future/image";
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
-import { getReleaseYear } from "../lib/spotify";
+import { getArtistImageUrl } from "../lib/spotify";
 
-interface TrackListProps {
-	tracks?: SpotifyApi.TrackObjectFull[];
+interface ArtistListProps {
+	artists?: SpotifyApi.ArtistObjectFull[];
 	priority?: boolean;
 	isActive?: boolean;
 	onActivate?: () => void;
 }
 
-export function TrackList({
-	tracks,
+export function ArtistList({
+	artists,
 	priority = false,
 	isActive = false,
 	onActivate
-}: TrackListProps) {
+}: ArtistListProps) {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const [canScrollLeft, setCanScrollLeft] = useState(false);
 	const [canScrollRight, setCanScrollRight] = useState(false);
@@ -49,7 +49,7 @@ export function TrackList({
 			el.removeEventListener("scroll", onScroll);
 			resizeObserver.disconnect();
 		};
-	}, [tracks, updateScrollState, onActivate]);
+	}, [artists, updateScrollState, onActivate]);
 
 	const scrollBy = (direction: "left" | "right") => {
 		const el = scrollRef.current;
@@ -67,31 +67,28 @@ export function TrackList({
 
 	const handleActivate = () => onActivate?.();
 
-	const trackGrid = (
+	const artistGrid = (
 		<div
 			ref={scrollRef}
 			className="overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth pb-1"
 			onPointerDown={handleActivate}
 		>
-			<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-6 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[10rem] lg:auto-cols-[10.5rem]">
-				{tracks
-					? tracks.map(track => (
-							<Track
-								key={track.id}
-								track={track}
+			<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-5 auto-cols-[7.5rem] xs:auto-cols-[8rem] md:auto-cols-[8.5rem] lg:auto-cols-[9rem]">
+				{artists
+					? artists.map(artist => (
+							<ArtistCard
+								key={artist.id}
+								artist={artist}
 								priority={priority}
 							/>
 					  ))
 					: [...new Array(24)].map((_, i) => (
 							<div
 								key={i}
-								className="snap-start snap-always flex flex-col animate-pulse"
+								className="snap-start snap-always flex flex-col items-center animate-pulse"
 							>
-								<div className="aspect-square w-full rounded-lg bg-slate-900" />
-								<div className="mt-2 hidden flex-col gap-1.5 md:flex">
-									<div className="h-3.5 w-full rounded bg-slate-800" />
-									<div className="h-3 w-4/5 rounded bg-slate-800" />
-								</div>
+								<div className="aspect-square w-full rounded-full bg-slate-900" />
+								<div className="mt-2 h-3 w-full rounded bg-slate-800" />
 							</div>
 					  ))}
 			</div>
@@ -102,10 +99,10 @@ export function TrackList({
 		return (
 			<section
 				className="mb-12 min-w-0 rounded-xl transition-opacity duration-300 opacity-75 hover:opacity-90"
-				aria-label="Top tracks"
+				aria-label="Top artists"
 				onPointerDown={handleActivate}
 			>
-				{trackGrid}
+				{artistGrid}
 			</section>
 		);
 	}
@@ -113,30 +110,30 @@ export function TrackList({
 	return (
 		<section
 			className="mb-12 min-w-0"
-			aria-label="Top tracks"
+			aria-label="Top artists"
 			aria-roledescription="carousel"
 		>
 			<div className="relative left-1/2 flex w-screen max-w-[100vw] -translate-x-1/2 items-center">
-				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-end sm:w-12 md:min-h-[15rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
+				<div className="flex min-h-[10rem] w-10 flex-shrink-0 items-center justify-end sm:w-12 md:min-h-[13rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
 					<CarouselArrow
 						direction="left"
 						disabled={!canScrollLeft}
 						onClick={() => scrollBy("left")}
-						label="Scroll tracks left"
+						label="Scroll artists left"
 					/>
 				</div>
 
 				<div className="min-w-0 w-full flex-shrink-0 md:w-[700px] lg:w-[800px]">
-					{trackGrid}
+					{artistGrid}
 				</div>
 
-				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-start sm:w-12 md:min-h-[15rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
+				<div className="flex min-h-[10rem] w-10 flex-shrink-0 items-center justify-start sm:w-12 md:min-h-[13rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
 					<CarouselArrow
 						direction="right"
 						disabled={!canScrollRight}
 						nudge={canScrollRight}
 						onClick={() => scrollBy("right")}
-						label="Scroll tracks right"
+						label="Scroll artists right"
 					/>
 				</div>
 			</div>
@@ -180,60 +177,42 @@ function CarouselArrow({
 	);
 }
 
-interface TrackProps {
-	track: SpotifyApi.TrackObjectFull;
+interface ArtistCardProps {
+	artist: SpotifyApi.ArtistObjectFull;
 	priority: boolean;
 }
 
-function Track({ track, priority }: TrackProps) {
-	const coverUrl = track.album.images[0]?.url;
-	const isRemoteCover = coverUrl?.startsWith("http") ?? false;
-	const artistLine = track.artists.map(artist => artist.name).join(", ");
-	const releaseYear = getReleaseYear(track.album.release_date);
+function ArtistCard({ artist, priority }: ArtistCardProps) {
+	const imageUrl = getArtistImageUrl(artist);
+	const isRemoteImage = imageUrl?.startsWith("http") ?? false;
 
 	return (
 		<a
-			href={track.external_urls.spotify}
+			href={artist.external_urls.spotify}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="group flex snap-start snap-always flex-col"
+			className="group flex snap-start snap-always flex-col items-center text-center"
 		>
-			<div className="relative aspect-square w-full overflow-hidden rounded-lg bg-slate-900">
-				{coverUrl ? (
+			<div className="relative aspect-square w-full overflow-hidden rounded-full bg-slate-900 ring-1 ring-white/10 transition group-hover:ring-violet-400/50">
+				{imageUrl ? (
 					<Image
-						src={coverUrl}
-						alt={track.name}
-						width={512}
-						height={512}
+						src={imageUrl}
+						alt={artist.name}
+						width={320}
+						height={320}
 						priority={priority}
-						unoptimized={isRemoteCover}
-						className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+						unoptimized={isRemoteImage}
+						className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
 					/>
-				) : null}
-
-				<div className="absolute inset-0 z-10 flex flex-col justify-end rounded-lg bg-black/0 p-2 transition duration-300 group-hover:bg-black/50 md:hidden">
-					<div className="translate-y-1 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-						<p className="font-bold text-base leading-tight line-clamp-2">
-							{track.name}
-						</p>
-						<p className="mt-0.5 text-xs leading-tight text-gray-300 line-clamp-2">
-							{artistLine}
-						</p>
+				) : (
+					<div className="flex h-full w-full items-center justify-center text-2xl font-bold text-gray-600">
+						{artist.name.charAt(0)}
 					</div>
-				</div>
+				)}
 			</div>
-
-			<div className="mt-2 hidden min-w-0 flex-col md:flex">
-				<p className="font-bold text-sm leading-snug text-white line-clamp-2 transition group-hover:text-violet-300">
-					{track.name}
-				</p>
-				<p className="mt-0.5 text-xs leading-snug text-gray-400 line-clamp-2">
-					{artistLine}
-				</p>
-				{releaseYear ? (
-					<p className="mt-0.5 text-xs text-gray-500">{releaseYear}</p>
-				) : null}
-			</div>
+			<p className="mt-2 w-full text-sm font-bold leading-snug text-white line-clamp-2 transition group-hover:text-violet-300">
+				{artist.name}
+			</p>
 		</a>
 	);
 }

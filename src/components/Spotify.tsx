@@ -3,6 +3,7 @@ import Image from "next/future/image";
 import { useEffect, useState } from "preact/hooks";
 import useSWR from "swr";
 
+import { formatPlayedAt } from "../lib/spotify";
 import type {
 	NowPlayingResponseError,
 	NowPlayingResponseSuccess
@@ -178,7 +179,11 @@ export default function Spotify() {
 							</span>
 						</span>
 						{!data.isPlayingNow ? (
-							<p className="text-sm mt-1">Last played on Spotify</p>
+							<p className="text-sm mt-1 text-gray-400">
+								{data.playedAt
+									? `Last played ${formatPlayedAt(data.playedAt)}`
+									: "Last played on Spotify"}
+							</p>
 						) : null}
 					</div>
 				) : (

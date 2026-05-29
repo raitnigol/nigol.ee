@@ -5,6 +5,7 @@ export type TopMusicResponseSuccess = {
 	short: SpotifyApi.UsersTopTracksResponse;
 	medium: SpotifyApi.UsersTopTracksResponse;
 	long: SpotifyApi.UsersTopTracksResponse;
+	artists: SpotifyApi.UsersTopArtistsResponse;
 };
 export type TopMusicResponseError = { error: unknown };
 export type TopMusicResponse = TopMusicResponseSuccess | TopMusicResponseError;
@@ -48,11 +49,16 @@ export default async function handler(
 				limit: 24,
 				time_range: "long_term"
 			});
+			const artists = await api.getMyTopArtists({
+				limit: 24,
+				time_range: "long_term"
+			});
 
 			cached = {
 				short: short.body,
 				medium: medium.body,
-				long: long.body
+				long: long.body,
+				artists: artists.body
 			};
 
 			cachedTime = Date.now() + 24 * 60 * 60 * 1000;
