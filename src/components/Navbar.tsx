@@ -1,7 +1,6 @@
 import {
 	CollectionIcon,
 	CubeIcon,
-	MusicNoteIcon,
 	HomeIcon
 } from "@heroicons/react/solid";
 
@@ -10,8 +9,8 @@ import ActiveLink from "./ActiveLink";
 interface PageData {
 	href: string;
 	title: string;
-	Icon: (props: { className?: string }) => JSX.Element;
-	color: string;
+	Icon?: (props: { className?: string }) => JSX.Element;
+	color?: string;
 }
 
 const pages: PageData[] = [
@@ -24,7 +23,6 @@ const pages: PageData[] = [
 	{
 		href: "/music",
 		title: "$.pohhu¥",
-		Icon: MusicNoteIcon,
 		color: "text-violet-300"
 	},
 	{
@@ -51,9 +49,13 @@ export default function Navbar() {
 					activeClass="after:inset-x-0"
 					nonActiveClass="after:opacity-0 after:inset-x-1/2 hover:after:opacity-100 hover:after:inset-x-1/4"
 				>
-					<a className="py-2 flex items-center relative after:absolute after:bottom-0 after:h-0.5 after:bg-white after:rounded after:transition-all">
+					<a
+						className={`py-2 flex items-center relative after:absolute after:bottom-0 after:h-0.5 after:bg-white after:rounded after:transition-all ${
+							color ? color : ""
+						}`}
+					>
 						{title}
-						<Icon className={`w-5 h-5 ml-2 ${color}`} />
+						{Icon ? <Icon className="w-5 h-5 ml-2" /> : null}
 					</a>
 				</ActiveLink>
 			))}

@@ -5,6 +5,7 @@ import {
 	certifiedArtists,
 	collectionPhotos,
 	fundedReleases,
+	pohhuFundedReleasesIntro,
 	pohhuFoundingCore,
 	pohhuFoundingCoreIntro,
 	pohhuManifestoAfterCore,
@@ -104,20 +105,38 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 }
 
 function CollectionPhotoCard({ photo }: { photo: CollectionPhoto }) {
+	if (photo.placeholder) {
+		return (
+			<li aria-hidden>
+				<div className="aspect-square w-full rounded-xl border border-dashed border-slate-700/80 bg-slate-950/30" />
+			</li>
+		);
+	}
+
 	return (
 		<li>
 			<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60">
 				<div className="relative aspect-square w-full bg-slate-900 ring-1 ring-inset ring-white/5">
-					<LocalCoverImage
-						src={photo.image}
-						alt={photo.title}
-						className="h-full w-full object-cover"
-					/>
+					{photo.image ? (
+						<LocalCoverImage
+							src={photo.image}
+							alt={photo.title}
+							className="h-full w-full object-cover"
+						/>
+					) : null}
 				</div>
-				<div className="px-4 py-3">
-					<p className="text-sm font-bold text-white">{photo.title}</p>
-					<p className="mt-1 text-xs text-gray-400">{photo.description}</p>
-				</div>
+				{(photo.title || photo.description) && (
+					<div className="px-4 py-3">
+						{photo.title ? (
+							<p className="text-sm font-bold text-white">{photo.title}</p>
+						) : null}
+						{photo.description ? (
+							<p className="mt-1 text-xs text-gray-400">
+								{photo.description}
+							</p>
+						) : null}
+					</div>
+				)}
 			</article>
 		</li>
 	);
@@ -139,7 +158,6 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 	}, [profile.spotifyId]);
 
 	const spotifyImageUrl = getArtistImageUrl(artist);
-	const isRemoteImage = spotifyImageUrl?.startsWith("http") ?? false;
 	const [photoSrc, setPhotoSrc] = useState(profile.profileImage);
 
 	useEffect(() => {
@@ -232,9 +250,9 @@ export default function PohhuSection() {
 		<section className="mb-4" aria-labelledby="pohhu-heading">
 			<h2
 				id="pohhu-heading"
-				className="heading mb-6 text-5xl md:text-6xl tracking-tighter text-violet-400"
+				className="heading mb-6 text-center text-5xl md:text-6xl tracking-tighter text-violet-400"
 			>
-				$.pohhu¥
+				$.pohhu¥ will take over the world
 			</h2>
 
 			<div className="mb-10 max-w-none">
@@ -262,9 +280,14 @@ export default function PohhuSection() {
 				))}
 			</div>
 
-			<h3 className="mb-5 mt-6 font-bold text-xl md:text-2xl uppercase tracking-[0.12em] text-gray-400">
-				Funded releases in Estonia
+			<h3 className="mb-5 mt-10 font-bold text-xl md:text-2xl uppercase tracking-[0.12em] text-white">
+				$.POHHU¥ FUNDED RELEASES IN ESTONIA
 			</h3>
+			<div className="mb-6 max-w-none">
+				{pohhuFundedReleasesIntro.map((paragraph, i) => (
+					<ManifestoParagraph key={`releases-intro-${i}`} text={paragraph} />
+				))}
+			</div>
 			<ul className="mb-10 grid gap-4 md:grid-cols-2">
 				{fundedReleases.map(release => (
 					<FundedReleaseCard key={release.spotifyUrl} release={release} />
@@ -275,8 +298,11 @@ export default function PohhuSection() {
 				Photos
 			</h3>
 			<ul className="mb-10 grid gap-4 md:grid-cols-2">
-				{collectionPhotos.map(photo => (
-					<CollectionPhotoCard key={photo.image} photo={photo} />
+				{collectionPhotos.map((photo, i) => (
+					<CollectionPhotoCard
+						key={photo.placeholder ? `placeholder-${i}` : photo.image}
+						photo={photo}
+					/>
 				))}
 			</ul>
 

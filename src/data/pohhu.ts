@@ -18,13 +18,15 @@ export interface CertifiedArtistProfile {
 export interface CollectionPhoto {
 	title: string;
 	description: string;
-	image: string;
+	image?: string;
+	/** Renders an empty placeholder tile (no upload required). */
+	placeholder?: boolean;
 }
 
 /** Inline markup: **bold** · *italic* · {{violet highlight}} */
 export const pohhuManifestoBeforeCore: string[] = [
 	"{{$.pohhu¥}} is a creative collective from **Tartu, Estonia**, built around artists, makers, friends, and people who kept making things even when there was no clear reason to expect money, attention, or permission.",
-	"Founded in **late 2022**, {{$.pohhu¥}} started as a *one-man army*. In the beginning it was barely a collective at all. It was a name, an instinct, and a stubborn excuse to keep making things. Tracks, covers, visuals, files, discs, ideas, inside jokes, half-serious plans, and small pieces of culture that felt worth saving before anyone else had decided they mattered.",
+	"Founded in **late 2022**, {{$.pohhu¥}} started as a one-man army. In the beginning it was barely a collective at all. It was a name, an instinct, and a stubborn excuse to keep making things. Tracks, covers, visuals, files, discs, ideas, inside jokes, half-serious plans, and small pieces of culture that felt worth saving before anyone else had decided they mattered.",
 	"The point was never to wait for the industry to notice. The point was to **act like the scene was already worth documenting**.",
 	"The first real expansion came when **Kevilnius** entered the picture. What started as one person carrying the name slowly became a wider circle of artists and collaborators. By the end of **2024**, Kevilnius became an official core member during the formation of **Dimensional Records Estonia OÜ**, a more formal label structure created by people already moving inside the {{$.pohhu¥}} world.",
 	"The easiest way to understand the structure is that {{$.pohhu¥}} is the **wider umbrella**. It is the collective, the attitude, the shared history, and the place where the different projects connect. Under that sit names like **Dimensional Records Estonia OÜ** and **’59 Records Mõisavahe**. Some parts are formal. Some parts started as jokes. Some parts became real because people actually put their time, money, work, equipment, files, covers, songs, videos, and sleep into them."
@@ -39,24 +41,30 @@ export const pohhuFoundingCore: string[] = [
 	"**Maxas Salovas** a.k.a. *DJ Jack Sandhill*",
 	"**Kevilnius**",
 	"**Annupannu**",
-	"**Raza** a.k.a. *Razzadinka / Plue Buni$her*"
+	"**Raza** a.k.a. *Razzadinka / Plue Buni$her*",
+	"**Gustav Müürimägi** a.k.a. *Päkapikk Margus*"
 ];
 
+/** Timeline and collective identity — stays in the main manifesto. */
 export const pohhuManifestoAfterCore: string[] = [
-	"Together, they turned {{$.pohhu¥}} from a name into something people could point at. It became a loose system of artists, aliases, releases, arguments, jokes, designs, plans, and physical objects. A **collective**, a **label family**, a **friend group**, and a *cultural accident that became too real to ignore*.",
-	"On **11 July 2025**, **jo$er** a.k.a. *Andri J. Hook* joined {{$.pohhu¥}} and became part of the expanding collective.",
+	"Together, they turned {{$.pohhu¥}} from a name into something people could point at. It became a loose system of artists, aliases, releases, arguments, jokes, designs, plans, and physical objects. A **collective**, a **label family**, and a **friend group**.",
+	"On **11 July 2025**, **jo$er** a.k.a. **Andri J. Hook** joined {{$.pohhu¥}} and became part of the expanding collective.",
 	"As of **2026**, **Benakanister** and **Annupannu** have parted ways with {{$.pohhu¥}}. The rest of the core continues forward.",
+	"Modern digital media has made it normal for art to be measured by stream counts, playlist placement, retention curves, and algorithmic obedience. The machine rewards scale, repetition, and content churn. It does not care whether something meant anything to the people who made it."
+];
+
+/** Physical media, funded releases, and artifacts — shown under the releases block. */
+export const pohhuFundedReleasesIntro: string[] = [
 	"{{$.pohhu¥}} operates across audio, video, design, visual culture, marketing, physical media, digital media, and whatever else needs to exist. It is not built to fit cleanly into one category. Sometimes the work is a track. Sometimes it is a tape, a disc, a cover, a video, a campaign, a website, an archive, or some physical trace that proves a moment happened.",
 	"We do more than release things. We **build artifacts**. Tapes, discs, videos, visuals, campaigns, archives, digital objects, and physical media that would otherwise get buried under the feed and forgotten by next week.",
 	"{{$.pohhu¥}} puts back into the scene **before there is even money to put back**. That is the stupid and beautiful part. Passion cannot be priced correctly, and it should not have to justify itself to platforms, distributors, algorithms, or dead-eyed industry logic.",
-	"Modern digital media has made it normal for art to be measured by stream counts, playlist placement, retention curves, and algorithmic obedience. The machine rewards scale, repetition, and content churn. It does not care whether something meant anything to the people who made it."
+	"We believe **small artists** should still be able to leave a **large impact**. Not everything important needs to be optimized, monetized, or reduced to dashboard numbers. **Physical releases**, independent support, and scene-first thinking are how we help artists leave something behind that feels real, lasts longer, and means more than another number on a streaming platform."
 ];
 
 /** Standalone pull line — avoids ** / * parser clashes. */
 export const pohhuManifestoPullquote = "{{$.pohhu¥ exists against that.}}";
 
 export const pohhuManifestoClosing: string[] = [
-	"We believe **small artists** should still be able to leave a **large impact**. Not everything important needs to be optimized, monetized, or reduced to dashboard numbers. **Physical releases**, independent support, and scene-first thinking are how we help artists leave something behind that feels real, lasts longer, and means more than another number on a streaming platform.",
 	"{{$.pohhu¥}} exists because someone has to **care before the algorithm does**. Someone has to burn the discs, make the covers, upload the files, save the folders, fund the dumb idea, and treat the small artist like they are **already worth documenting**."
 ];
 
@@ -95,5 +103,10 @@ export const collectionPhotos: CollectionPhoto[] = [
 		description:
 			"Small collection: 4 cassettes and 2 CDs, including the two funded releases.",
 		image: "/images/pohhu/photos/collection.jpg"
+	},
+	{
+		title: "",
+		description: "",
+		placeholder: true
 	}
 ];
