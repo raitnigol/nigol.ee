@@ -68,7 +68,7 @@ export default function Music() {
 			</p>
 
 			{trackSections.map((section, index) => (
-				<section key={section.id} className="mb-4">
+				<section key={section.id} className="mb-4 min-w-0 overflow-hidden">
 					<h2
 						className={`font-bold text-3xl mb-4 transition-colors duration-300 ${
 							activeCarousel === index
@@ -89,7 +89,7 @@ export default function Music() {
 
 			<SectionDivider label="Artists" />
 
-			<section className="mb-4">
+			<section className="mb-4 min-w-0 overflow-hidden">
 				<h2
 					className={`font-bold text-3xl mb-4 transition-colors duration-300 ${
 						activeCarousel === ARTISTS_SECTION_INDEX

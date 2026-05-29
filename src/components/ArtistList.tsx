@@ -100,7 +100,7 @@ export function ArtistList({
 	if (!isActive) {
 		return (
 			<section
-				className="mb-12 min-w-0 rounded-xl transition-opacity duration-300 opacity-75 hover:opacity-90"
+				className="mb-12 min-w-0 overflow-hidden rounded-xl transition-opacity duration-300 opacity-75 hover:opacity-90"
 				aria-label="Top artists"
 				onPointerDown={handleActivate}
 			>
@@ -111,12 +111,12 @@ export function ArtistList({
 
 	return (
 		<section
-			className="mb-12 min-w-0"
+			className="mb-12 min-w-0 overflow-hidden"
 			aria-label="Top artists"
 			aria-roledescription="carousel"
 		>
-			<div className="relative left-1/2 flex w-screen max-w-[100vw] -translate-x-1/2 items-center">
-				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-end sm:w-12 md:min-h-[15rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
+			<div className="flex min-w-0 items-stretch">
+				<div className="flex w-9 flex-shrink-0 items-center justify-center sm:w-10">
 					<CarouselArrow
 						direction="left"
 						disabled={!canScrollLeft}
@@ -125,11 +125,9 @@ export function ArtistList({
 					/>
 				</div>
 
-				<div className="min-w-0 w-full flex-shrink-0 md:w-[700px] lg:w-[800px]">
-					{artistGrid}
-				</div>
+				<div className="min-w-0 flex-1 overflow-hidden">{artistGrid}</div>
 
-				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-start sm:w-12 md:min-h-[15rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
+				<div className="flex w-9 flex-shrink-0 items-center justify-center sm:w-10">
 					<CarouselArrow
 						direction="right"
 						disabled={!canScrollRight}
