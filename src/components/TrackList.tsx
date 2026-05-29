@@ -5,13 +5,19 @@ import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 interface TrackListProps {
 	tracks?: SpotifyApi.TrackObjectFull[];
 	priority?: boolean;
+	isActive?: boolean;
+	onActivate?: () => void;
 }
 
-export function TrackList({ tracks, priority = false }: TrackListProps) {
+export function TrackList({
+	tracks,
+	priority = false,
+	isActive = false,
+	onActivate
+}: TrackListProps) {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const [canScrollLeft, setCanScrollLeft] = useState(false);
 	const [canScrollRight, setCanScrollRight] = useState(false);
-	const [hasScrolled, setHasScrolled] = useState(false);
 
 	const updateScrollState = useCallback(() => {
 		const el = scrollRef.current;
@@ -23,14 +29,13 @@ export function TrackList({ tracks, priority = false }: TrackListProps) {
 	}, []);
 
 	useEffect(() => {
-		setHasScrolled(false);
 		updateScrollState();
 
 		const el = scrollRef.current;
 		if (!el) return;
 
 		const onScroll = () => {
-			setHasScrolled(true);
+			onActivate?.();
 			updateScrollState();
 		};
 
@@ -42,13 +47,13 @@ export function TrackList({ tracks, priority = false }: TrackListProps) {
 			el.removeEventListener("scroll", onScroll);
 			resizeObserver.disconnect();
 		};
-	}, [tracks, updateScrollState]);
+	}, [tracks, updateScrollState, onActivate]);
 
 	const scrollBy = (direction: "left" | "right") => {
 		const el = scrollRef.current;
 		if (!el) return;
 
-		setHasScrolled(true);
+		onActivate?.();
 		el.scrollBy({
 			left:
 				direction === "left"
@@ -58,74 +63,118 @@ export function TrackList({ tracks, priority = false }: TrackListProps) {
 		});
 	};
 
-	return (
-		<section className="relative mb-12 min-w-0" aria-label="Top tracks">
-			<div
-				className={`pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-black transition-opacity duration-300 ${
-					canScrollLeft ? "opacity-100" : "opacity-0"
-				}`}
-				aria-hidden
-			/>
-			<div
-				className={`pointer-events-none absolute inset-y-0 right-0 z-10 w-14 bg-gradient-to-l from-black via-black/90 to-transparent transition-opacity duration-300 ${
-					canScrollRight ? "opacity-100" : "opacity-0"
-				}`}
-				aria-hidden
-			/>
+	const handleActivate = () => onActivate?.();
 
-			{canScrollLeft ? (
-				<button
-					type="button"
-					onClick={() => scrollBy("left")}
-					className="absolute left-0 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/85 p-2 text-white shadow-lg ring-1 ring-white/15 transition hover:bg-black hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-					aria-label="Scroll tracks left"
-				>
-					<ChevronLeftIcon className="h-5 w-5" />
-				</button>
-			) : null}
-
-			{canScrollRight ? (
-				<button
-					type="button"
-					onClick={() => scrollBy("right")}
-					className="absolute right-0 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/85 p-2 text-white shadow-lg ring-1 ring-white/15 transition hover:bg-black hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-					aria-label="Scroll tracks right"
-				>
-					<ChevronRightIcon className="h-5 w-5 motion-safe:animate-[nudge-right_1.4s_ease-in-out_infinite]" />
-				</button>
-			) : null}
-
-			<div
-				ref={scrollRef}
-				className="overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth pb-1 cursor-grab active:cursor-grabbing"
-			>
-				<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-4 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[9.75rem]">
-					{tracks
-						? tracks.map(track => (
-								<Track
-									key={track.id}
-									track={track}
-									priority={priority}
-								/>
-						  ))
-						: [...new Array(24)].map((_, i) => (
-								<div
-									key={i}
-									className="snap-start snap-always rounded-lg overflow-hidden animate-pulse"
-								>
-									<div className="w-full h-0 pt-[100%] bg-slate-900" />
+	const trackGrid = (
+		<div
+			ref={scrollRef}
+			className="overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth pb-1"
+			onPointerDown={handleActivate}
+		>
+			<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-5 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[15.5rem] lg:auto-cols-[16.5rem]">
+				{tracks
+					? tracks.map(track => (
+							<Track
+								key={track.id}
+								track={track}
+								priority={priority}
+							/>
+					  ))
+					: [...new Array(24)].map((_, i) => (
+							<div
+								key={i}
+								className="snap-start snap-always flex flex-col md:flex-row md:items-center md:gap-3 animate-pulse"
+							>
+								<div className="aspect-square w-full md:w-[9.25rem] md:flex-shrink-0 rounded-lg bg-slate-900" />
+								<div className="hidden md:flex flex-1 flex-col gap-2 py-1">
+									<div className="h-4 w-full rounded bg-slate-800" />
+									<div className="h-3 w-2/3 rounded bg-slate-800" />
 								</div>
-						  ))}
+							</div>
+					  ))}
+			</div>
+		</div>
+	);
+
+	if (!isActive) {
+		return (
+			<section
+				className="mb-12 min-w-0 rounded-xl transition-opacity duration-300 opacity-75 hover:opacity-90"
+				aria-label="Top tracks"
+				onPointerDown={handleActivate}
+			>
+				{trackGrid}
+			</section>
+		);
+	}
+
+	return (
+		<section
+			className="mb-12 min-w-0"
+			aria-label="Top tracks"
+			aria-roledescription="carousel"
+		>
+			<div className="relative left-1/2 flex w-screen max-w-[100vw] -translate-x-1/2 items-center">
+				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-end sm:w-12 md:min-h-[10.5rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
+					<CarouselArrow
+						direction="left"
+						disabled={!canScrollLeft}
+						onClick={() => scrollBy("left")}
+						label="Scroll tracks left"
+					/>
+				</div>
+
+				<div className="min-w-0 w-full flex-shrink-0 md:w-[700px] lg:w-[800px]">
+					{trackGrid}
+				</div>
+
+				<div className="flex min-h-[11rem] w-10 flex-shrink-0 items-center justify-start sm:w-12 md:min-h-[10.5rem] md:min-w-[2.75rem] md:flex-1 md:max-w-[max(2.75rem,calc((100vw-700px)/2))] lg:max-w-[max(2.75rem,calc((100vw-800px)/2))]">
+					<CarouselArrow
+						direction="right"
+						disabled={!canScrollRight}
+						nudge={canScrollRight}
+						onClick={() => scrollBy("right")}
+						label="Scroll tracks right"
+					/>
 				</div>
 			</div>
-
-			{canScrollRight && !hasScrolled ? (
-				<p className="mt-3 flex items-center gap-1.5 text-sm text-gray-400">
-					<span>Scroll or swipe for more</span>
-					<ChevronRightIcon className="h-4 w-4 motion-safe:animate-[nudge-right_1.4s_ease-in-out_infinite]" />
-				</p>
-			) : null}
 		</section>
+	);
+}
+
+interface CarouselArrowProps {
+	direction: "left" | "right";
+	disabled: boolean;
+	nudge?: boolean;
+	onClick: () => void;
+	label: string;
+}
+
+function CarouselArrow({
+	direction,
+	disabled,
+	nudge = false,
+	onClick,
+	label
+}: CarouselArrowProps) {
+	const Icon = direction === "left" ? ChevronLeftIcon : ChevronRightIcon;
+
+	return (
+		<button
+			type="button"
+			disabled={disabled}
+			onClick={onClick}
+			aria-label={label}
+			className="p-2 text-white transition-[opacity,transform] duration-200 enabled:opacity-90 enabled:hover:opacity-100 disabled:cursor-default disabled:opacity-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-4"
+		>
+			<Icon
+				className={`h-7 w-7 md:h-8 md:w-8 ${
+					nudge
+						? "motion-safe:animate-[nudge-right_1.4s_ease-in-out_infinite]"
+						: ""
+				}`}
+			/>
+		</button>
 	);
 }
 
@@ -137,15 +186,16 @@ interface TrackProps {
 function Track({ track, priority }: TrackProps) {
 	const coverUrl = track.album.images[0]?.url;
 	const isRemoteCover = coverUrl?.startsWith("http") ?? false;
+	const artistLine = track.artists.map(artist => artist.name).join(", ");
 
 	return (
 		<a
 			href={track.external_urls.spotify}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="group relative snap-start snap-always rounded-lg before:absolute before:inset-0 before:z-10 before:rounded-lg before:bg-black before:opacity-0 before:transition before:duration-300 hover:before:opacity-50"
+			className="group relative flex snap-start snap-always flex-col md:flex-row md:items-center md:gap-3"
 		>
-			<div className="aspect-square bg-slate-900 rounded-lg overflow-hidden">
+			<div className="relative aspect-square w-full flex-shrink-0 overflow-hidden rounded-lg bg-slate-900 md:w-[9.25rem]">
 				{coverUrl ? (
 					<Image
 						src={coverUrl}
@@ -154,22 +204,29 @@ function Track({ track, priority }: TrackProps) {
 						height={512}
 						priority={priority}
 						unoptimized={isRemoteCover}
-						className="h-full w-full object-cover rounded-lg transition duration-300 group-hover:scale-[1.02]"
+						className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
 					/>
 				) : null}
+
+				<div className="absolute inset-0 z-10 flex flex-col justify-end rounded-lg bg-black/0 p-2 transition duration-300 group-hover:bg-black/50 md:hidden">
+					<div className="translate-y-1 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+						<p className="font-bold text-base leading-tight line-clamp-2">
+							{track.name}
+						</p>
+						<p className="mt-0.5 text-xs leading-tight text-gray-300 line-clamp-2">
+							{artistLine}
+						</p>
+					</div>
+				</div>
 			</div>
-			<div className="z-20 absolute inset-2 md:inset-3 flex flex-col justify-end transition duration-300 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100">
-				<p className="font-bold text-base md:text-lg leading-tight mb-0.5 line-clamp-2">
+
+			<div className="hidden min-w-0 flex-1 flex-col justify-center md:flex md:py-1">
+				<p className="font-bold text-sm leading-snug text-white line-clamp-2 transition group-hover:text-violet-300">
 					{track.name}
 				</p>
-				{track.artists.map(artist => (
-					<p
-						key={artist.id}
-						className="text-xs md:text-sm leading-tight opacity-80 truncate"
-					>
-						{artist.name}
-					</p>
-				))}
+				<p className="mt-1 text-xs leading-snug text-gray-400 line-clamp-2">
+					{artistLine}
+				</p>
 			</div>
 		</a>
 	);
