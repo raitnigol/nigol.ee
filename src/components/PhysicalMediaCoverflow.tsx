@@ -4,17 +4,22 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { EffectCoverflow, Keyboard } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperInstance } from "swiper";
+import useSWR from "swr";
 
 import {
 	physicalMediaCollection,
 	type PhysicalMediaItem
 } from "../data/physicalMedia";
 import { sampleCoverAccent } from "../lib/coverColor";
+import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
+import type { NowPlayingResponseSuccess } from "../pages/api/nowPlaying";
 import type { PhysicalMediaAlbumMeta } from "../pages/api/physicalMedia";
 
 import "swiper/swiper-bundle.css";
 
 const FALLBACK_ACCENT = "rgb(52 211 153)";
+
+const nowPlayingFetcher = (url: string) => fetch(url).then(res => res.json());
 
 function edgePadding(count: number) {
 	if (count <= 1) return 0;
@@ -77,6 +82,21 @@ export function PhysicalMediaCoverflow() {
 	const pad = edgePadding(total);
 	const slides = useMemo(() => buildSlides(physicalMediaCollection, pad), [pad]);
 	const initialIndex = pad;
+
+	const { data: nowPlaying } = useSWR<NowPlayingResponseSuccess>(
+		mounted ? "/api/nowPlaying" : null,
+		nowPlayingFetcher,
+		{ refreshInterval: 5000 }
+	);
+
+	const nowPlayingOwned =
+		nowPlaying?.isPlayingNow && nowPlaying.track
+			? findOwnedPhysicalMedia(nowPlaying.track.album.id)
+			: undefined;
+
+	const nowPlayingIndex = nowPlayingOwned
+		? physicalMediaCollection.findIndex(item => item.id === nowPlayingOwned.id)
+		: -1;
 
 	useEffect(() => {
 		setMounted(true);
@@ -189,8 +209,56 @@ export function PhysicalMediaCoverflow() {
 				} as Record<string, string>
 			}
 		>
-			<div className="album-coverflow__stage">
+			<div
+				className={[
+					"album-coverflow__stage",
+					nowPlayingOwned && nowPlaying?.isPlayingNow
+						? "album-coverflow__stage--now-playing"
+						: ""
+				]
+					.filter(Boolean)
+					.join(" ")}
+			>
 				<div className="album-coverflow__stage-glow" aria-hidden />
+
+				{nowPlayingOwned &&
+				nowPlaying?.isPlayingNow &&
+				nowPlaying.track ? (
+					<div className="album-coverflow__now-playing" role="status">
+						<span
+							className="album-coverflow__now-playing-dot"
+							aria-hidden
+						/>
+						<span className="album-coverflow__now-playing-label">
+							Now playing
+						</span>
+						<a
+							href={nowPlaying.track.external_urls.spotify}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="album-coverflow__now-playing-track focus-ring"
+						>
+							{nowPlaying.track.name}
+						</a>
+						{activeIndex !== nowPlayingIndex ? (
+							<>
+								<span
+									className="album-coverflow__now-playing-sep"
+									aria-hidden
+								>
+									·
+								</span>
+								<button
+									type="button"
+									className="album-coverflow__now-playing-jump focus-ring"
+									onClick={() => goToSlide(nowPlayingIndex)}
+								>
+									on {nowPlayingOwned.title}
+								</button>
+							</>
+						) : null}
+					</div>
+				) : null}
 
 				<button
 					type="button"
@@ -242,20 +310,32 @@ export function PhysicalMediaCoverflow() {
 						fixLoopPosition(swiper);
 					}}
 				>
-					{slides.map(({ item, slideKey }, index) => (
-						<SwiperSlide key={slideKey} className="album-coverflow__slide">
-							<div className="album-coverflow__cover">
-								<Image
-									src={item.coverImage}
-									alt={`${item.title} cover`}
-									width={600}
-									height={600}
-									className="album-coverflow__image"
-									priority={index >= pad && index < pad + 2}
-								/>
-							</div>
-						</SwiperSlide>
-					))}
+					{slides.map(({ item, slideKey }, index) => {
+						const isNowPlayingCd =
+							nowPlayingOwned?.id === item.id && nowPlaying?.isPlayingNow;
+
+						return (
+							<SwiperSlide
+								key={slideKey}
+								className={
+									isNowPlayingCd
+										? "album-coverflow__slide album-coverflow__slide--now-playing"
+										: "album-coverflow__slide"
+								}
+							>
+								<div className="album-coverflow__cover">
+									<Image
+										src={item.coverImage}
+										alt={`${item.title} cover`}
+										width={600}
+										height={600}
+										className="album-coverflow__image"
+										priority={index >= pad && index < pad + 2}
+									/>
+								</div>
+							</SwiperSlide>
+						);
+					})}
 				</Swiper>
 
 				<button
@@ -269,7 +349,6 @@ export function PhysicalMediaCoverflow() {
 
 				<div className="album-coverflow__shelf" aria-hidden>
 					<div className="album-coverflow__shelf-edge" />
-					<div className="album-coverflow__shelf-surface" />
 				</div>
 			</div>
 
@@ -300,6 +379,10 @@ export function PhysicalMediaCoverflow() {
 												: "",
 											index < activeIndex
 												? "album-coverflow__progress-tick--passed"
+												: "",
+											index === nowPlayingIndex &&
+											nowPlaying?.isPlayingNow
+												? "album-coverflow__progress-tick--now-playing"
 												: ""
 										]
 											.filter(Boolean)

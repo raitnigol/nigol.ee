@@ -1,8 +1,10 @@
+import Link from "next/link";
 import { PauseIcon, PlayIcon } from "@heroicons/react/solid";
 import Image from "next/future/image";
 import { useEffect, useState } from "preact/hooks";
 import useSWR from "swr";
 
+import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
 import { formatPlayedAt } from "../lib/spotify";
 import type {
 	NowPlayingResponseError,
@@ -68,10 +70,14 @@ export default function Spotify() {
 	const isRemoteAlbumArt = albumArtUrl?.startsWith("http") ?? false;
 	const showProgress = Boolean(data?.track);
 	const progressMs = data?.isPlayingNow ? time : 0;
+	const ownedPhysicalMedia =
+		data?.track && data.isPlayingNow
+			? findOwnedPhysicalMedia(data.track.album.id)
+			: undefined;
 
 	return (
-		<div className="flex gap-2 items-center text-base leading-snug">
-			<div className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0">
+		<div className="spotify-widget flex items-center gap-2 text-base leading-snug">
+			<div className="spotify-widget__art relative h-16 w-16 flex-shrink-0 md:h-20 md:w-20">
 				{albumArtUrl ? (
 					<Image
 						src={albumArtUrl}
@@ -84,14 +90,26 @@ export default function Spotify() {
 						height={256}
 						priority={true}
 						unoptimized={isRemoteAlbumArt}
-						className="w-16 h-16 md:w-20 md:h-20 object-cover object-center rounded-lg"
+						className={`h-full w-full rounded-lg object-cover object-center${
+							ownedPhysicalMedia ? " spotify-widget__art-image--owned" : ""
+						}`}
 					/>
 				) : (
 					<div
-						className="w-16 h-16 md:w-20 md:h-20 rounded-lg bg-slate-800"
+						className="h-full w-full rounded-lg bg-slate-800"
 						aria-hidden
 					/>
 				)}
+				{ownedPhysicalMedia ? (
+					<Link
+						href="/physical-media"
+						className="spotify-widget__shelf-link focus-ring"
+						aria-label="This album is on my CD shelf"
+					>
+						<span className="spotify-widget__shelf-disc" aria-hidden />
+						<span>On shelf</span>
+					</Link>
+				) : null}
 			</div>
 			<div className="basis-full">
 				<p>
