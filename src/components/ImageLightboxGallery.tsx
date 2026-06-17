@@ -4,6 +4,7 @@ import {
 	XIcon
 } from "@heroicons/react/solid";
 import Image from "next/future/image";
+import type { ComponentChild } from "preact";
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
 export interface LightboxGalleryItem {
@@ -19,9 +20,28 @@ interface ImageLightboxGalleryProps {
 	items: LightboxGalleryItem[];
 	className?: string;
 	dialogLabel?: string;
+	/** Rendered below the banner thumbnail (item with `banner: true`). */
+	bannerFooter?: ComponentChild;
+	/** Shown before the first non-banner image when a banner precedes photos. */
+	photosStartLabel?: string;
 }
 
 const SWIPE_THRESHOLD_PX = 48;
+
+function GalleryPhotosStartMarker({ label }: { label: string }) {
+	return (
+		<div
+			className="flex items-center gap-3 py-1"
+			aria-hidden="true"
+		>
+			<div className="h-px flex-1 bg-slate-800/80" />
+			<span className="shrink-0 text-[10px] font-medium uppercase tracking-[0.14em] text-gray-600">
+				{label}
+			</span>
+			<div className="h-px flex-1 bg-slate-800/80" />
+		</div>
+	);
+}
 
 function GalleryThumbnail({
 	item,
@@ -55,7 +75,9 @@ function GalleryThumbnail({
 export function ImageLightboxGallery({
 	items,
 	className = "mb-10",
-	dialogLabel = "Image gallery"
+	dialogLabel = "Image gallery",
+	bannerFooter,
+	photosStartLabel
 }: ImageLightboxGalleryProps) {
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
 	const touchStartX = useRef<number | null>(null);
@@ -97,53 +119,78 @@ export function ImageLightboxGallery({
 
 	if (items.length === 0) return null;
 
+	const firstPhotoIndex = items.findIndex(item => !item.banner);
+	const hasBanner = items.some(item => item.banner);
+	const showPhotosStartMarker = Boolean(photosStartLabel) && firstPhotoIndex >= 0;
+	const markerBeforeIndex =
+		hasBanner && firstPhotoIndex > 0 ? firstPhotoIndex : 0;
+
 	return (
 		<>
-			<ul className={`grid gap-4 md:grid-cols-2 ${className}`}>
-				{items.map((item, index) => (
-					<li
-						key={item.image}
-						className={item.banner ? "md:col-span-2" : undefined}
-					>
-						{item.title || item.description ? (
-							<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60">
-								<div className="relative aspect-square w-full bg-slate-900 ring-1 ring-inset ring-white/5">
-									<button
-										type="button"
-										onClick={() => setOpenIndex(index)}
-										className="focus-ring group block h-full w-full cursor-zoom-in text-left"
-										aria-label={`Open image: ${item.alt}`}
-									>
-										<Image
-											src={item.image}
-											alt={item.alt}
-											width={800}
-											height={800}
-											className="h-full w-full object-cover transition group-hover:brightness-110"
-										/>
-									</button>
-								</div>
-								<div className="px-4 py-3">
-									{item.title ? (
-										<p className="text-sm font-bold text-white">
-											{item.title}
-										</p>
+			<ul className={`grid list-none gap-4 md:grid-cols-2 ${className}`}>
+				{items.flatMap((item, index) => {
+					const nodes = [];
+
+					if (showPhotosStartMarker && index === markerBeforeIndex) {
+						nodes.push(
+							<li key="photos-start" className="md:col-span-2">
+								<GalleryPhotosStartMarker label={photosStartLabel!} />
+							</li>
+						);
+					}
+
+					nodes.push(
+						<li
+							key={item.image}
+							className={item.banner ? "md:col-span-2" : undefined}
+						>
+							{item.title || item.description ? (
+								<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60">
+									<div className="relative aspect-square w-full bg-slate-900 ring-1 ring-inset ring-white/5">
+										<button
+											type="button"
+											onClick={() => setOpenIndex(index)}
+											className="focus-ring group block h-full w-full cursor-zoom-in text-left"
+											aria-label={`Open image: ${item.alt}`}
+										>
+											<Image
+												src={item.image}
+												alt={item.alt}
+												width={800}
+												height={800}
+												className="h-full w-full object-cover transition group-hover:brightness-110"
+											/>
+										</button>
+									</div>
+									<div className="px-4 py-3">
+										{item.title ? (
+											<p className="text-sm font-bold text-white">
+												{item.title}
+											</p>
+										) : null}
+										{item.description ? (
+											<p className="mt-1 text-xs text-gray-400">
+												{item.description}
+											</p>
+										) : null}
+									</div>
+								</article>
+							) : (
+								<>
+									<GalleryThumbnail
+										item={item}
+										onOpen={() => setOpenIndex(index)}
+									/>
+									{item.banner && bannerFooter ? (
+										<div className="mt-3">{bannerFooter}</div>
 									) : null}
-									{item.description ? (
-										<p className="mt-1 text-xs text-gray-400">
-											{item.description}
-										</p>
-									) : null}
-								</div>
-							</article>
-						) : (
-							<GalleryThumbnail
-								item={item}
-								onOpen={() => setOpenIndex(index)}
-							/>
-						)}
-					</li>
-				))}
+								</>
+							)}
+						</li>
+					);
+
+					return nodes;
+				})}
 			</ul>
 
 			{openIndex !== null && current ? (

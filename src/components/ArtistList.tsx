@@ -68,75 +68,53 @@ export function ArtistList({
 
 	const handleActivate = () => onActivate?.();
 
-	const artistGrid = (
-		<div
-			ref={scrollRef}
-			className="overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth pb-1"
-			onPointerDown={handleActivate}
-		>
-			<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-6 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[10rem] lg:auto-cols-[10.5rem]">
-				{artists
-					? artists.map((artist, index) => (
-							<ArtistCard
-								key={artist.id}
-								artist={artist}
-								rank={index + 1}
-								priority={priority}
-							/>
-					  ))
-					: [...new Array(24)].map((_, i) => (
-							<div
-								key={i}
-								className="snap-start snap-always flex flex-col items-center animate-pulse"
-							>
-								<div className="aspect-square w-full rounded-lg bg-slate-900" />
-								<div className="mt-2 h-3 w-full rounded bg-slate-800" />
-							</div>
-					  ))}
-			</div>
-		</div>
-	);
-
-	if (!isActive) {
-		return (
-			<section
-				className="mb-12 min-w-0 overflow-hidden rounded-xl transition-opacity duration-300 opacity-75 hover:opacity-90"
-				aria-label="Top artists"
-				onPointerDown={handleActivate}
-			>
-				{artistGrid}
-			</section>
-		);
-	}
-
 	return (
 		<section
-			className="mb-12 min-w-0 overflow-hidden"
+			className={`group/carousel relative mb-12 min-w-0 transition-opacity duration-300 ${
+				isActive ? "opacity-100" : "opacity-75 hover:opacity-90"
+			}`}
 			aria-label="Top artists"
 			aria-roledescription="carousel"
+			onPointerDown={handleActivate}
 		>
-			<div className="flex min-w-0 items-stretch">
-				<div className="flex w-9 flex-shrink-0 items-center justify-center sm:w-10">
-					<CarouselArrow
-						direction="left"
-						disabled={!canScrollLeft}
-						onClick={() => scrollBy("left")}
-						label="Scroll artists left"
-					/>
-				</div>
-
-				<div className="min-w-0 flex-1 overflow-hidden">{artistGrid}</div>
-
-				<div className="flex w-9 flex-shrink-0 items-center justify-center sm:w-10">
-					<CarouselArrow
-						direction="right"
-						disabled={!canScrollRight}
-						nudge={canScrollRight}
-						onClick={() => scrollBy("right")}
-						label="Scroll artists right"
-					/>
+			<div
+				ref={scrollRef}
+				className="overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth pb-1"
+			>
+				<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-6 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[10rem] lg:auto-cols-[10.5rem]">
+					{artists
+						? artists.map((artist, index) => (
+								<ArtistCard
+									key={artist.id}
+									artist={artist}
+									rank={index + 1}
+									priority={priority}
+								/>
+						  ))
+						: [...new Array(24)].map((_, i) => (
+								<div
+									key={i}
+									className="snap-start snap-always flex flex-col items-center animate-pulse"
+								>
+									<div className="aspect-square w-full rounded-lg bg-slate-900" />
+									<div className="mt-2 h-3 w-full rounded bg-slate-800" />
+								</div>
+						  ))}
 				</div>
 			</div>
+
+			<CarouselArrow
+				direction="left"
+				disabled={!canScrollLeft}
+				onClick={() => scrollBy("left")}
+				label="Scroll artists left"
+			/>
+			<CarouselArrow
+				direction="right"
+				disabled={!canScrollRight}
+				onClick={() => scrollBy("right")}
+				label="Scroll artists right"
+			/>
 		</section>
 	);
 }
@@ -144,7 +122,6 @@ export function ArtistList({
 interface CarouselArrowProps {
 	direction: "left" | "right";
 	disabled: boolean;
-	nudge?: boolean;
 	onClick: () => void;
 	label: string;
 }
@@ -152,7 +129,6 @@ interface CarouselArrowProps {
 function CarouselArrow({
 	direction,
 	disabled,
-	nudge = false,
 	onClick,
 	label
 }: CarouselArrowProps) {
@@ -162,17 +138,20 @@ function CarouselArrow({
 		<button
 			type="button"
 			disabled={disabled}
-			onClick={onClick}
+			onClick={event => {
+				event.stopPropagation();
+				onClick();
+			}}
 			aria-label={label}
-			className="focus-ring p-2 text-white transition-[opacity,transform] duration-200 enabled:opacity-90 enabled:hover:opacity-100 disabled:cursor-default disabled:opacity-20"
+			className={`focus-ring absolute top-1/2 z-10 -translate-y-1/2 rounded-lg bg-black/60 p-2 text-white backdrop-blur-sm transition-opacity duration-200 hover:bg-black/75 ${
+				direction === "left" ? "left-1 md:left-2" : "right-1 md:right-2"
+			} ${
+				disabled
+					? "pointer-events-none opacity-0"
+					: "pointer-events-none opacity-0 group-hover/carousel:pointer-events-auto group-hover/carousel:opacity-100 group-focus-within/carousel:pointer-events-auto group-focus-within/carousel:opacity-100"
+			}`}
 		>
-			<Icon
-				className={`h-7 w-7 md:h-8 md:w-8 ${
-					nudge
-						? "motion-safe:animate-[nudge-right_1.4s_ease-in-out_infinite]"
-						: ""
-				}`}
-			/>
+			<Icon className="h-7 w-7 md:h-8 md:w-8" />
 		</button>
 	);
 }

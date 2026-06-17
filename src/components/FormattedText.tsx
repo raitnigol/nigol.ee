@@ -1,8 +1,13 @@
 import type { ComponentChild } from "preact";
 
-/** Parse {{violet}}, *italic* inside a plain segment (no **). */
-function parseEmphasis(text: string, keyPrefix: string): ComponentChild[] {
-	const pattern = /\{\{(.+?)\}\}|\*(.+?)\*/g;
+/** Parse {{accent}}, [[danger]], *italic* inside a plain segment (no **). */
+function parseEmphasis(
+	text: string,
+	keyPrefix: string,
+	accentClass: string,
+	dangerClass: string
+): ComponentChild[] {
+	const pattern = /\{\{(.+?)\}\}|\[\[(.+?)\]\]|\*(.+?)\*/g;
 	const nodes: ComponentChild[] = [];
 	let lastIndex = 0;
 	let match: RegExpExecArray | null;
@@ -17,14 +22,20 @@ function parseEmphasis(text: string, keyPrefix: string): ComponentChild[] {
 
 		if (match[1]) {
 			nodes.push(
-				<span key={key} className="font-semibold text-violet-400">
+				<span key={key} className={accentClass}>
 					{match[1]}
 				</span>
 			);
 		} else if (match[2]) {
 			nodes.push(
-				<em key={key} className="italic text-gray-400">
+				<span key={key} className={dangerClass}>
 					{match[2]}
+				</span>
+			);
+		} else if (match[3]) {
+			nodes.push(
+				<em key={key} className="italic text-gray-400">
+					{match[3]}
 				</em>
 			);
 		}
@@ -39,7 +50,15 @@ function parseEmphasis(text: string, keyPrefix: string): ComponentChild[] {
 	return nodes;
 }
 
-export function FormattedText({ text }: { text: string }) {
+export function FormattedText({
+	text,
+	accentClass = "font-semibold text-violet-400",
+	dangerClass = "font-bold text-red-400"
+}: {
+	text: string;
+	accentClass?: string;
+	dangerClass?: string;
+}) {
 	const nodes: ComponentChild[] = [];
 	const boldPattern = /\*\*(.+?)\*\*/g;
 	let lastIndex = 0;
@@ -48,12 +67,19 @@ export function FormattedText({ text }: { text: string }) {
 
 	while ((match = boldPattern.exec(text)) !== null) {
 		if (match.index > lastIndex) {
-			nodes.push(...parseEmphasis(text.slice(lastIndex, match.index), `p${key}`));
+			nodes.push(
+				...parseEmphasis(
+					text.slice(lastIndex, match.index),
+					`p${key}`,
+					accentClass,
+					dangerClass
+				)
+			);
 		}
 
 		nodes.push(
 			<strong key={`b${key}`} className="font-bold text-white">
-				{parseEmphasis(match[1], `b${key}`)}
+				{parseEmphasis(match[1], `b${key}`, accentClass, dangerClass)}
 			</strong>
 		);
 
@@ -62,7 +88,9 @@ export function FormattedText({ text }: { text: string }) {
 	}
 
 	if (lastIndex < text.length) {
-		nodes.push(...parseEmphasis(text.slice(lastIndex), `e${key}`));
+		nodes.push(
+			...parseEmphasis(text.slice(lastIndex), `e${key}`, accentClass, dangerClass)
+		);
 	}
 
 	return <>{nodes}</>;

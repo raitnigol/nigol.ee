@@ -4,6 +4,11 @@ export interface SocialInfo {
     url: string;
 }
 
+export const socialPlatformIcons = {
+	facebook: "/images/logos/facebook.png",
+	instagram: "/images/logos/instagram.svg"
+} as const;
+
 export const socials: SocialInfo[] = [
     {
         name: "GitHub",

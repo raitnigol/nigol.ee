@@ -1,11 +1,20 @@
 export interface FundedRelease {
 	title: string;
-	artists: string;
-	format: string;
-	releaseYear: number;
-	spotifyUrl: string;
-	/** Path under /public, e.g. /images/pohhu/releases/12-liitrit.jpg */
-	coverImage: string;
+	/** Physical release — omit for banner investment cards. */
+	artists?: string;
+	format?: string;
+	/** English for *tiraaz* — e.g. "100 CDs", "50 cassettes". */
+	pressRun?: string;
+	releaseYear?: number;
+	spotifyUrl?: string;
+	coverImage?: string;
+	/** Full-width row (spans both columns on md+). */
+	banner?: boolean;
+	/** Banner cards: longer body copy. Supports **bold** via plain text or use description as string. */
+	description?: string;
+	subtitle?: string;
+	/** Payment status; removed from the site once repaid in full. */
+	investmentStatus?: "not_repaid" | "partially_paid";
 }
 
 export interface CertifiedArtistPlaylist {
@@ -44,12 +53,12 @@ export const pohhuFoundingCoreIntro =
 
 export const pohhuFoundingCore: string[] = [
 	"**Nigol** a.k.a. *DJ BRO*",
+	"**Kevilnius**",
+	"**Gustav Müürimägi** a.k.a. *Päkapikk Margus / D.J C.J*",
 	"**BENA** a.k.a. *Benakanister*",
 	"**Maxas Salovas** a.k.a. *DJ Jack Sandhill*",
-	"**Kevilnius**",
-	"**Annupannu**",
 	"**Raza** a.k.a. *Razzadinka / Plue Buni$her*",
-	"**Gustav Müürimägi** a.k.a. *Päkapikk Margus*"
+	"**Annupannu** a.k.a. *Valium B4rbie / benz0b4by*"
 ];
 
 /** Timeline and collective identity — stays in the main manifesto. */
@@ -60,11 +69,24 @@ export const pohhuManifestoAfterCore: string[] = [
 	"Modern digital media has made it normal for art to be measured by stream counts, playlist placement, retention curves, and algorithmic obedience. The machine rewards scale, repetition, and content churn. It does not care whether something meant anything to the people who made it."
 ];
 
-export const pohhuPhysicalMediaDivider = "— OUR DEDICATION TO PHYSICAL MEDIA —";
+export const pohhuPhysicalMediaDivider = "OUR DEDICATION TO PHYSICAL MEDIA";
 
-export const pohhuLineupDivider = "— OUR LINEUP —";
+export const pohhuLineupDivider = "OUR LINEUP";
 
 export const pohhuFundedReleasesTitle = "PHYSICAL RELEASES FUNDED BY $.POHHU¥";
+
+export const pohhuFundedReleasesSubsectionTitle = "{{$.pohhu¥}} x 963 Records";
+
+export const pohhuExhibitionsEventsDivider = "EXHIBITIONS & EVENTS";
+
+export const pohhuPhotosSubsectionTitle = "Physical collection of NIGOL";
+
+/** How funding works and when payment badges come down. */
+export const pohhuFundingModel: string[] = [
+	"How we work: {{$.pohhu¥}} pays the **up-front cost** of everything and only expects to be paid that sum back.",
+	"{{$.pohhu¥}} currently funds releases on a **non-profit basis** — all proceeds from sales beyond the initial investment go directly to the artists. It is up to them how they distribute it amongst themselves.",
+	"Payment status notes on each release are removed once the project has been **paid in full**."
+];
 
 /** Physical media, funded releases, and artifacts — shown under the releases block. */
 export const pohhuFundedReleasesIntro: string[] = [
@@ -81,9 +103,24 @@ export const pohhuManifestoClosing: string[] = [
 	"{{$.pohhu¥}} exists because someone has to **care before the algorithm does**. Someone has to burn the discs, make the covers, upload the files, save the folders, fund the dumb idea, and treat the small artist like they are **already worth documenting**."
 ];
 
+export const aleksandriPub = {
+	title: "Aleksandri 15",
+	subtitle: "Alexandri Pubi · kesklinn, Tartu",
+	body:
+		"Almost in the heart of kesklinn — where core {{$.pohhu¥}} members and other significant figures in our orbit meet. Parties hosted by **Gustav Müürimägi** a.k.a. *D.J C.J*.",
+	mapUrl: "https://share.google/Er2h9c2BqqFeoqCIL",
+	mapLinkLabel: "Maps"
+};
+
+export type KiviSocialPlatform = "facebook" | "instagram";
+
 export interface KiviArtShowLink {
-	label: string;
+	platform: KiviSocialPlatform;
 	href: string;
+	/** Accessible name / tooltip */
+	label: string;
+	/** Short label shown under the icon */
+	caption: string;
 }
 
 export interface KiviArtShowGalleryImage {
@@ -104,18 +141,26 @@ export const kiviArtShow = {
 	],
 	links: [
 		{
-			label: "Event on Facebook",
-			href: "https://www.facebook.com/events/1416542453257884"
+			platform: "facebook",
+			href: "https://www.facebook.com/events/1416542453257884",
+			label: "Art show event on Facebook",
+			caption: "Event"
 		},
 		{
+			platform: "facebook",
+			href: "https://www.facebook.com/baarikivi",
 			label: "Kivi Baar on Facebook",
-			href: "https://www.facebook.com/baarikivi"
+			caption: "Facebook"
 		},
 		{
+			platform: "instagram",
+			href: "https://www.instagram.com/baarikivi/",
 			label: "Kivi Baar on Instagram",
-			href: "https://www.instagram.com/baarikivi/"
+			caption: "Instagram"
 		}
 	] as KiviArtShowLink[],
+	/** Subtle label before the photo grid (after banner + socials). */
+	photosSectionLabel: "Event photos",
 	gallery: [
 		{
 			image: "/images/pohhu/kivi-art-show/banner.jpg",
@@ -149,7 +194,9 @@ export const fundedReleases: FundedRelease[] = [
 		releaseYear: 2024,
 		spotifyUrl:
 			"https://open.spotify.com/album/4nAQMGAxq1RzdnYUUbtN3J",
-		coverImage: "/images/pohhu/releases/12-liitrit.jpg"
+		coverImage: "/images/pohhu/releases/12-liitrit.jpg",
+		pressRun: "100 CDs",
+		investmentStatus: "partially_paid"
 	},
 	{
 		artists: "SKIZØ, Benakanister",
@@ -158,7 +205,17 @@ export const fundedReleases: FundedRelease[] = [
 		releaseYear: 2025,
 		spotifyUrl:
 			"https://open.spotify.com/track/77cu8RLW53G43WYXdFLm78",
-		coverImage: "/images/pohhu/releases/parnu-tartu-mixtape.jpg"
+		coverImage: "/images/pohhu/releases/parnu-tartu-mixtape.jpg",
+		pressRun: "50 cassettes",
+		investmentStatus: "not_repaid"
+	},
+	{
+		banner: true,
+		title: "963 Records — PÄRNU–TARTU mixtape release event",
+		subtitle: "Release event · artist payments",
+		description:
+			"{{$.pohhu¥}} funded artist payments for the PÄRNU–TARTU mixtape release event through 963 Records.",
+		investmentStatus: "not_repaid"
 	}
 ];
 
@@ -176,9 +233,9 @@ export const certifiedArtists: CertifiedArtistProfile[] = [
 
 export const collectionPhotos: CollectionPhoto[] = [
 	{
-		title: "Tape and CD collection",
+		title: "Shelf at home",
 		description:
-			"Small collection: 4 cassettes and 2 CDs, including the two funded releases.",
+			"Four cassettes, two CDs — including the 12 LIITRIT disc and the Pärnu–Tartu tape.",
 		image: "/images/pohhu/photos/collection.jpg"
 	}
 ];

@@ -2,12 +2,15 @@ import Image from "next/future/image";
 import { useEffect, useState } from "preact/hooks";
 
 import {
+	aleksandriPub,
 	certifiedArtists,
-	collectionPhotos,
 	fundedReleases,
 	kiviArtShow,
+	pohhuExhibitionsEventsDivider,
 	pohhuFundedReleasesIntro,
+	pohhuFundedReleasesSubsectionTitle,
 	pohhuFundedReleasesTitle,
+	pohhuFundingModel,
 	pohhuLineupDivider,
 	pohhuPhysicalMediaDivider,
 	pohhuFoundingCore,
@@ -17,12 +20,15 @@ import {
 	pohhuManifestoClosing,
 	pohhuManifestoPullquote,
 	type CertifiedArtistProfile,
-	type FundedRelease
+	type FundedRelease,
+	type KiviArtShowLink
 } from "../data/pohhu";
+import { socialPlatformIcons } from "../data/socials";
 import { FormattedText } from "./FormattedText";
 import { ImageLightboxGallery } from "./ImageLightboxGallery";
 import { PohhuLogoReveal } from "./PohhuLogoReveal";
 import { SectionDivider } from "./SectionDivider";
+import { SocialIconLink } from "./SocialIconLink";
 import { getArtistImageUrl } from "../lib/spotify";
 import type { SpotifyArtistResponseSuccess } from "../pages/api/spotifyArtist";
 
@@ -32,6 +38,9 @@ function formatFollowers(count: number) {
 
 const sectionHeadingClass =
 	"scroll-anchor mb-5 font-bold text-2xl text-white md:text-3xl";
+
+const subsectionHeadingClass =
+	"scroll-anchor mb-5 font-bold text-xl text-white md:text-2xl";
 
 function ManifestoParagraph({ text }: { text: string }) {
 	return (
@@ -82,47 +91,136 @@ function LocalCoverImage({
 	);
 }
 
+const debtBorderClass =
+	"border-2 border-red-600/90 hover:border-red-500/90";
+
+function InvestmentStatusFooter({
+	status
+}: {
+	status: NonNullable<FundedRelease["investmentStatus"]>;
+}) {
+	const label =
+		status === "partially_paid"
+			? "Investment partially paid"
+			: "Investment not repaid";
+
+	return (
+		<p className="mt-3 border-t border-red-950/60 pt-3">
+			<span className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-red-400">
+				{label}
+			</span>
+		</p>
+	);
+}
+
+function FundedReleaseBannerCard({ release }: { release: FundedRelease }) {
+	const outstanding = Boolean(release.investmentStatus);
+
+	return (
+		<li className="md:col-span-2">
+			<article
+				className={`overflow-hidden rounded-xl bg-slate-950/60 ${
+					outstanding ? debtBorderClass : "border border-slate-800"
+				}`}
+			>
+				<div className="flex min-h-[10rem] flex-col justify-center px-5 py-5 md:min-h-[11rem] md:px-8 md:py-6">
+					{release.subtitle ? (
+						<p className="text-xs font-bold uppercase tracking-[0.14em] text-gray-500">
+							{release.subtitle}
+						</p>
+					) : null}
+					<h4 className="mt-1 text-lg font-bold leading-tight text-white md:text-xl">
+						{release.title}
+					</h4>
+					{release.description ? (
+						<p className="mt-3 max-w-3xl text-sm leading-relaxed text-gray-400 md:text-base">
+							<FormattedText text={release.description} />
+						</p>
+					) : null}
+					{release.investmentStatus ? (
+						<InvestmentStatusFooter status={release.investmentStatus} />
+					) : null}
+				</div>
+			</article>
+		</li>
+	);
+}
+
 function FundedReleaseCard({ release }: { release: FundedRelease }) {
+	if (release.banner) {
+		return <FundedReleaseBannerCard release={release} />;
+	}
+
+	const unpaid = Boolean(release.investmentStatus);
+	const coverImage = release.coverImage ?? "";
+	const spotifyUrl = release.spotifyUrl ?? "#";
+
 	return (
 		<li>
 			<a
-				href={release.spotifyUrl}
+				href={spotifyUrl}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="focus-ring group block h-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 transition hover:border-violet-500/35 hover:bg-slate-900/80"
+				className={`group block h-full overflow-hidden rounded-xl bg-slate-950/60 transition hover:bg-slate-900/80 ${
+					unpaid
+						? `focus-ring-debt ${debtBorderClass}`
+						: "focus-ring border border-slate-800 hover:border-violet-500/35"
+				}`}
 			>
-				<div className="relative aspect-square w-full bg-slate-900 ring-1 ring-inset ring-white/5">
+				<div className="aspect-square w-full bg-slate-900">
 					<LocalCoverImage
-						src={release.coverImage}
+						src={coverImage}
 						alt={`${release.title} cover art`}
 						className="h-full w-full object-cover"
 					/>
 				</div>
 				<div className="px-4 py-3">
-					<span className="text-xs font-bold uppercase tracking-wider text-violet-400">
-						{release.releaseYear}
-					</span>
+					{release.releaseYear ? (
+						<span className="text-xs font-bold uppercase tracking-wider text-violet-400">
+							{release.releaseYear}
+						</span>
+					) : null}
 					<p className="mt-1 text-sm font-bold text-white transition group-hover:text-violet-300">
 						{release.title}
 					</p>
-					<p className="mt-1 text-xs text-gray-400">{release.artists}</p>
-					<p className="mt-1 text-xs text-gray-500">{release.format}</p>
+					{release.artists ? (
+						<p className="mt-1 text-xs text-gray-400">{release.artists}</p>
+					) : null}
+					{release.format ? (
+						<p className="mt-1 text-xs text-gray-500">{release.format}</p>
+					) : null}
+					{release.pressRun ? (
+						<p className="mt-1 text-xs text-gray-500">
+							Press run · {release.pressRun}
+						</p>
+					) : null}
+					{release.investmentStatus ? (
+						<InvestmentStatusFooter status={release.investmentStatus} />
+					) : null}
 				</div>
 			</a>
 		</li>
 	);
 }
 
-function ExternalLinkButton({ href, label }: { href: string; label: string }) {
+function KiviBaarSocialLinks({ links }: { links: KiviArtShowLink[] }) {
 	return (
-		<a
-			href={href}
-			target="_blank"
-			rel="noopener noreferrer"
-			className="focus-ring inline-flex items-center rounded-lg border border-slate-700 bg-slate-950/60 px-4 py-2 text-sm font-bold text-violet-300 transition hover:border-violet-500/40 hover:bg-slate-900 hover:text-violet-200"
-		>
-			{label} →
-		</a>
+		<div>
+			<p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-gray-500">
+				Kivi Baar socials
+			</p>
+			<div className="flex flex-wrap gap-6">
+				{links.map(link => (
+					<SocialIconLink
+						key={link.href}
+						href={link.href}
+						image={socialPlatformIcons[link.platform]}
+						label={link.label}
+						caption={link.caption}
+					/>
+				))}
+			</div>
+		</div>
 	);
 }
 
@@ -267,18 +365,6 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 	);
 }
 
-const collectionGalleryItems = collectionPhotos
-	.filter(
-		(photo): photo is typeof photo & { image: string } =>
-			Boolean(photo.image) && !photo.placeholder
-	)
-	.map(photo => ({
-		image: photo.image,
-		alt: photo.title || "Collection photo",
-		title: photo.title,
-		description: photo.description
-	}));
-
 export default function PohhuSection() {
 	return (
 		<section className="mb-4" aria-labelledby="pohhu-heading">
@@ -291,6 +377,8 @@ export default function PohhuSection() {
 					will take over the world
 				</p>
 			</h2>
+
+			<SectionDivider label="Manifesto" className="mb-8 mt-0" />
 
 			<div className="prose-readable mb-10">
 				{pohhuManifestoBeforeCore.map((paragraph, i) => (
@@ -317,6 +405,35 @@ export default function PohhuSection() {
 				))}
 			</div>
 
+			<div className="mb-10">
+				<article
+					id="pohhu-aleksandri-pub"
+					className="scroll-anchor overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60"
+				>
+					<div className="border-b border-slate-800/90 px-5 py-4 md:px-6">
+						<p className="font-bold text-2xl text-white md:text-3xl">
+							{aleksandriPub.title}
+						</p>
+						<p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-gray-500">
+							{aleksandriPub.subtitle}
+						</p>
+					</div>
+					<div className="prose-readable px-5 py-4 md:px-6">
+						<ManifestoParagraph text={aleksandriPub.body} />
+						<p className="mb-0">
+							<a
+								href={aleksandriPub.mapUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="focus-ring text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
+							>
+								{aleksandriPub.mapLinkLabel} →
+							</a>
+						</p>
+					</div>
+				</article>
+			</div>
+
 			<SectionDivider
 				label={pohhuPhysicalMediaDivider}
 				className="mt-10 mb-8"
@@ -334,44 +451,47 @@ export default function PohhuSection() {
 					<ManifestoParagraph key={`releases-intro-${i}`} text={paragraph} />
 				))}
 			</div>
-			<ul className="mb-12 grid gap-4 md:grid-cols-2">
-				{fundedReleases.map(release => (
-					<FundedReleaseCard key={release.spotifyUrl} release={release} />
-				))}
-			</ul>
-
-			<h3 id="pohhu-kivi-art-show" className={sectionHeadingClass}>
-				<FormattedText text={kiviArtShow.title} />
-			</h3>
-			<div className="prose-readable mb-5">
-				{kiviArtShow.paragraphs.map((paragraph, i) => (
-					<ManifestoParagraph key={`kivi-${i}`} text={paragraph} />
+			<div className="prose-readable mb-8">
+				{pohhuFundingModel.map((paragraph, i) => (
+					<ManifestoParagraph key={`funding-model-${i}`} text={paragraph} />
 				))}
 			</div>
-			<div className="mb-8 flex flex-wrap gap-3">
-				{kiviArtShow.links.map(link => (
-					<ExternalLinkButton
-						key={link.href}
-						href={link.href}
-						label={link.label}
-					/>
-				))}
-			</div>
-			<ImageLightboxGallery
-				items={kiviArtShow.gallery}
-				dialogLabel="Kivi Baar art show gallery"
-			/>
 
-			<h3
-				id="pohhu-photos"
-				className={`${sectionHeadingClass} mt-4 uppercase tracking-[0.12em]`}
-			>
-				Photos
-			</h3>
-			<ImageLightboxGallery
-				items={collectionGalleryItems}
-				dialogLabel="Physical collection photos"
-			/>
+			<div className="mb-12">
+				<h4 id="pohhu-963-records" className={subsectionHeadingClass}>
+					<FormattedText text={pohhuFundedReleasesSubsectionTitle} />
+				</h4>
+				<ul className="grid gap-4 md:grid-cols-2">
+					{fundedReleases.map(release => (
+						<FundedReleaseCard key={release.title} release={release} />
+					))}
+				</ul>
+			</div>
+
+			<div id="pohhu-exhibitions-events" className="scroll-anchor">
+				<SectionDivider
+					label={pohhuExhibitionsEventsDivider}
+					className="mt-4 mb-8"
+					ariaLabel="Exhibitions and events"
+				/>
+			</div>
+
+			<div className="mb-12">
+				<h4 id="pohhu-kivi-art-show" className={subsectionHeadingClass}>
+					<FormattedText text={kiviArtShow.title} />
+				</h4>
+				<div className="prose-readable mb-5">
+					{kiviArtShow.paragraphs.map((paragraph, i) => (
+						<ManifestoParagraph key={`kivi-${i}`} text={paragraph} />
+					))}
+				</div>
+				<ImageLightboxGallery
+					items={kiviArtShow.gallery}
+					dialogLabel="Kivi Baar art show gallery"
+					bannerFooter={<KiviBaarSocialLinks links={kiviArtShow.links} />}
+					photosStartLabel={kiviArtShow.photosSectionLabel}
+				/>
+			</div>
 
 			<SectionDivider
 				label={pohhuLineupDivider}

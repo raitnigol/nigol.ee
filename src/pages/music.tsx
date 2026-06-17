@@ -52,17 +52,14 @@ export default function Music() {
 				path="/music"
 			/>
 
-			<SectionDivider label="Manifesto" className="mb-8 mt-0" />
-
 			<PohhuSection />
 
 			<SectionDivider label="Listening" />
 
-			<h1 id="spotify-listening" className="heading scroll-anchor mb-2">
-				MUSIC
-			</h1>
-
-			<p className="text-lg mb-8 text-gray-300">
+			<p
+				id="spotify-listening"
+				className="scroll-anchor text-lg mb-8 text-gray-300"
+			>
 				My top tracks and artists on Spotify — past month, past six months, and
 				all time.
 			</p>

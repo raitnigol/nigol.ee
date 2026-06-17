@@ -1,6 +1,5 @@
 import {
 	CollectionIcon,
-	CubeIcon,
 	HomeIcon
 } from "@heroicons/react/solid";
 
@@ -30,12 +29,6 @@ const pages: PageData[] = [
 		title: "Projects",
 		Icon: CollectionIcon,
 		color: "text-blue-400"
-	},
-	{
-		href: "/skills",
-		title: "Skills",
-		Icon: CubeIcon,
-		color: "text-rose-400"
 	}
 ];
 

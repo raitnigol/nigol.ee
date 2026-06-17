@@ -188,6 +188,16 @@
 		border-radius: 2px;
 	}
 
+	.focus-ring-debt:focus {
+		outline: none;
+	}
+
+	.focus-ring-debt:focus-visible {
+		outline: 2px solid #f87171;
+		outline-offset: 3px;
+		border-radius: 2px;
+	}
+
 	.pohhu-logo-reveal__core {
 		display: inline-block;
 		overflow: hidden;
