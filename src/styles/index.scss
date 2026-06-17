@@ -233,6 +233,325 @@
 	}
 }
 
+.album-coverflow {
+	--album-accent: rgb(52 211 153);
+
+	position: relative;
+	min-width: 0;
+
+	&__stage {
+		position: relative;
+		padding-bottom: 2.5rem;
+	}
+
+	&__stage-glow {
+		position: absolute;
+		inset: 35% 10% auto;
+		height: 45%;
+		border-radius: 999px;
+		background: radial-gradient(
+			ellipse at center,
+			color-mix(in srgb, var(--album-accent) 28%, transparent) 0%,
+			transparent 72%
+		);
+		filter: blur(28px);
+		pointer-events: none;
+		transition: background 0.6s ease;
+	}
+
+	&__swiper {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		margin-inline: auto;
+		padding-block: 1.5rem 1rem;
+		overflow: visible;
+	}
+
+	&__slide {
+		height: auto;
+		opacity: 0.5;
+		transition: opacity 0.35s ease;
+
+		&.swiper-slide-active {
+			opacity: 1;
+		}
+	}
+
+	&__cover {
+		aspect-ratio: 1;
+		overflow: hidden;
+		border-radius: 0.3rem;
+		box-shadow: 0 10px 32px rgb(0 0 0 / 50%);
+		transition:
+			transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 0.35s ease;
+	}
+
+	.swiper-slide-active .album-coverflow__cover {
+		transform: scale(1.07) translateY(-4px);
+		box-shadow:
+			0 20px 48px rgb(0 0 0 / 55%),
+			0 0 36px color-mix(in srgb, var(--album-accent) 42%, transparent);
+	}
+
+	&__image {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	&__shelf {
+		position: absolute;
+		inset: auto 8% 0;
+		z-index: 0;
+		height: 3.5rem;
+		pointer-events: none;
+	}
+
+	&__shelf-surface {
+		position: absolute;
+		inset: auto 0 0.65rem;
+		height: 2.25rem;
+		border-radius: 999px;
+		background: radial-gradient(
+			ellipse 100% 100% at 50% 100%,
+			rgb(255 255 255 / 7%) 0%,
+			rgb(255 255 255 / 2%) 45%,
+			transparent 72%
+		);
+	}
+
+	&__shelf-edge {
+		position: absolute;
+		inset: auto 4% 0;
+		height: 1px;
+		background: linear-gradient(
+			90deg,
+			transparent 0%,
+			color-mix(in srgb, var(--album-accent) 35%, rgb(255 255 255 / 22%)) 20%,
+			color-mix(in srgb, var(--album-accent) 45%, rgb(255 255 255 / 28%)) 50%,
+			color-mix(in srgb, var(--album-accent) 35%, rgb(255 255 255 / 22%)) 80%,
+			transparent 100%
+		);
+		box-shadow: 0 0 20px color-mix(in srgb, var(--album-accent) 25%, transparent);
+		transition: background 0.6s ease, box-shadow 0.6s ease;
+	}
+
+	&__nav {
+		position: absolute;
+		top: 42%;
+		z-index: 10;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem;
+		border: 0;
+		border-radius: 0.5rem;
+		background: rgb(0 0 0 / 60%);
+		backdrop-filter: blur(4px);
+		color: #fff;
+		cursor: pointer;
+		transform: translateY(-50%);
+		transition:
+			background-color 0.2s ease,
+			opacity 0.2s ease;
+
+		&:hover {
+			background: rgb(0 0 0 / 75%);
+		}
+
+		&--prev {
+			left: 0.25rem;
+		}
+
+		&--next {
+			right: 0.25rem;
+		}
+	}
+
+	&:not(:hover):not(:focus-within) &__nav {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	&:hover &__nav,
+	&:focus-within &__nav {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	@media (max-width: 767px) {
+		&__nav {
+			opacity: 0.9;
+			pointer-events: auto;
+		}
+	}
+
+	&__footer {
+		max-width: 28rem;
+		margin-inline: auto;
+		padding-inline: 0.5rem;
+	}
+
+	&__progress {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	&__progress-track {
+		position: relative;
+		flex: 1;
+		height: 2px;
+		border-radius: 999px;
+		background: rgb(255 255 255 / 14%);
+		overflow: visible;
+	}
+
+	&__progress-fill {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: linear-gradient(
+			90deg,
+			color-mix(in srgb, var(--album-accent) 80%, #34d399),
+			color-mix(in srgb, var(--album-accent) 55%, #6ee7b7)
+		);
+		transform-origin: left center;
+		transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+		box-shadow: 0 0 14px color-mix(in srgb, var(--album-accent) 50%, transparent);
+	}
+
+	&__progress-ticks {
+		position: absolute;
+		inset: -0.55rem 0 auto;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		pointer-events: none;
+	}
+
+	&__progress-tick {
+		position: relative;
+		width: 0.5rem;
+		height: 0.5rem;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: 999px;
+		background: rgb(255 255 255 / 22%);
+		pointer-events: auto;
+		cursor: pointer;
+		transition:
+			transform 0.25s ease,
+			background-color 0.25s ease,
+			box-shadow 0.25s ease;
+
+		&--passed {
+			background: color-mix(in srgb, var(--album-accent) 50%, transparent);
+		}
+
+		&--active {
+			transform: scale(1.35);
+			background: color-mix(in srgb, var(--album-accent) 75%, white);
+			box-shadow: 0 0 0 3px color-mix(in srgb, var(--album-accent) 28%, transparent);
+		}
+
+		&:hover {
+			background: rgb(255 255 255 / 42%);
+		}
+
+		&--active:hover {
+			background: color-mix(in srgb, var(--album-accent) 85%, white);
+		}
+	}
+
+	&__progress-count {
+		flex-shrink: 0;
+		font-variant-numeric: tabular-nums;
+		font-size: 0.75rem;
+		letter-spacing: 0.12em;
+		color: rgb(255 255 255 / 45%);
+	}
+
+	&__progress-current {
+		color: color-mix(in srgb, var(--album-accent) 70%, #a7f3d0);
+		font-weight: 600;
+	}
+
+	&__progress-sep {
+		margin-inline: 0.2em;
+		opacity: 0.5;
+	}
+
+	&__caption {
+		margin-top: 1.25rem;
+		text-align: center;
+		animation: album-caption-in 0.35s ease;
+	}
+
+	&__title {
+		font-size: 1.125rem;
+		font-weight: 700;
+		color: #fff;
+	}
+
+	&__artist {
+		margin-top: 0.25rem;
+		font-size: 0.875rem;
+		color: rgb(156 163 175);
+	}
+
+	&__meta {
+		margin-top: 0.65rem;
+		font-size: 0.8125rem;
+		letter-spacing: 0.02em;
+		color: rgb(255 255 255 / 52%);
+
+		&--loading {
+			color: rgb(255 255 255 / 30%);
+		}
+	}
+
+	&__copyright {
+		margin-top: 0.35rem;
+		font-size: 0.6875rem;
+		line-height: 1.45;
+		color: rgb(255 255 255 / 32%);
+	}
+
+	&__spotify-link {
+		display: inline-block;
+		margin-top: 0.85rem;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: color-mix(in srgb, var(--album-accent) 72%, #6ee7b7);
+		border-bottom: 1px solid
+			color-mix(in srgb, var(--album-accent) 35%, transparent);
+		transition:
+			color 0.2s ease,
+			border-color 0.2s ease;
+
+		&:hover {
+			color: color-mix(in srgb, var(--album-accent) 85%, white);
+			border-color: color-mix(in srgb, var(--album-accent) 55%, transparent);
+		}
+	}
+}
+
+@keyframes album-caption-in {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 @layer utilities {
 	.no-scrollbar {
 		scrollbar-width: none;

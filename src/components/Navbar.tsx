@@ -1,6 +1,7 @@
 import {
 	CollectionIcon,
-	HomeIcon
+	HomeIcon,
+	PhotographIcon
 } from "@heroicons/react/solid";
 
 import ActiveLink from "./ActiveLink";
@@ -23,6 +24,12 @@ const pages: PageData[] = [
 		href: "/music#pohhu-heading",
 		title: "$.pohhu¥",
 		color: "text-violet-300"
+	},
+	{
+		href: "/physical-media",
+		title: "CD Collection",
+		Icon: PhotographIcon,
+		color: "text-emerald-400"
 	},
 	{
 		href: "/projects",
