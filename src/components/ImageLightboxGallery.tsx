@@ -28,6 +28,8 @@ interface ImageLightboxGalleryProps {
 	bannerFooter?: ComponentChild;
 	/** Shown before the first non-banner image when a banner precedes photos. */
 	photosStartLabel?: string;
+	/** Equal-height cells on lg+ (product gallery beside copy). */
+	equalCellHeight?: boolean;
 }
 
 const SWIPE_THRESHOLD_PX = 48;
@@ -51,22 +53,32 @@ function GalleryThumbnail({
 	item,
 	onOpen,
 	fit = "cover",
-	variant = "card"
+	variant = "card",
+	fillHeight = false
 }: {
 	item: LightboxGalleryItem;
 	onOpen: () => void;
 	fit?: "cover" | "contain";
 	variant?: "card" | "bare";
+	fillHeight?: boolean;
 }) {
 	if (fit === "contain") {
+		const bareButton = "focus-ring block w-full cursor-zoom-in border-0 bg-transparent p-0 text-left";
+		const cardButton =
+			"focus-ring block w-full cursor-zoom-in rounded-lg border border-slate-800 bg-slate-900 p-2 text-left transition hover:border-slate-700";
+
 		return (
 			<button
 				type="button"
 				onClick={onOpen}
 				className={
-					variant === "bare"
-						? "focus-ring block w-full cursor-zoom-in border-0 bg-transparent p-0 text-left"
-						: "focus-ring block w-full cursor-zoom-in rounded-lg border border-slate-800 bg-slate-900 p-2 text-left transition hover:border-slate-700"
+					fillHeight
+						? `gallery-thumbnail--fill ${
+								variant === "bare" ? bareButton : cardButton
+						  }`
+						: variant === "bare"
+						? bareButton
+						: cardButton
 				}
 				aria-label={`Open image: ${item.alt}`}
 			>
@@ -75,9 +87,13 @@ function GalleryThumbnail({
 					alt={item.alt}
 					width={1200}
 					height={1200}
-					className={`block h-auto w-full ${
-						variant === "bare" ? "rounded-md" : "mx-auto"
-					}`}
+					className={
+						fillHeight
+							? "gallery-thumbnail__img gallery-thumbnail__img--fill rounded-md"
+							: `block h-auto w-full ${
+									variant === "bare" ? "rounded-md" : "mx-auto"
+							  }`
+					}
 					loading="lazy"
 					decoding="async"
 					draggable={false}
@@ -115,7 +131,8 @@ export function ImageLightboxGallery({
 	thumbnailFit = "cover",
 	thumbnailVariant = "card",
 	bannerFooter,
-	photosStartLabel
+	photosStartLabel,
+	equalCellHeight = false
 }: ImageLightboxGalleryProps) {
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
 	const touchStartX = useRef<number | null>(null);
@@ -165,7 +182,11 @@ export function ImageLightboxGallery({
 
 	return (
 		<>
-			<ul className={`grid list-none gap-4 md:grid-cols-2 ${className}`}>
+			<ul
+				className={`grid list-none gap-4 md:grid-cols-2 ${
+					equalCellHeight ? "image-lightbox-gallery--equal-height" : ""
+				} ${className}`}
+			>
 				{items.flatMap((item, index) => {
 					const nodes = [];
 
@@ -220,6 +241,7 @@ export function ImageLightboxGallery({
 										onOpen={() => setOpenIndex(index)}
 										fit={thumbnailFit}
 										variant={thumbnailVariant}
+										fillHeight={equalCellHeight}
 									/>
 									{item.banner && bannerFooter ? (
 										<div className="mt-3">{bannerFooter}</div>

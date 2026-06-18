@@ -118,17 +118,20 @@ export const kevilniusMerch = {
 	title: "Artifact_01 // Project_Panther.exe",
 	price: "50",
 	currency: "€",
-	editionBadge: "Limited edition",
 	details: [
 		{ label: "Blank", value: "Stanley/Stella Blaster 2.0" },
-		{ label: "Fabric", value: "200 GSM cotton" },
+		{ label: "Fabric", value: "200 GSM · 100% cotton" },
 		{ label: "Fit", value: "Heavyweight oversized boxy" },
-		{ label: "Run", value: "No restock" }
+		{ label: "Swag", value: "Infinite" }
 	] as MerchProductDetail[],
-	description:
-		"**Kevilnius** shirt drop — order via the **Google Form** or **Instagram DM**.",
+	description: [
+		"**Kevilnius** presents a once-in-a-lifetime opportunity to buy his official merch — his **first drop**. The shirt features a box logo taken from the cover art of his single **\"watermelon lemonberry\"**. **Limited edition** — available until stock runs out.",
+		"The whole {{$.pohhu¥}} collective is very proud of him for this achievement.",
+		"Shoot him a DM on **Instagram** or fill out the order via **Google Forms**.",
+		"*NB! The sexy gentleman in the product photos is not included in the final sale.*"
+	],
 	orderFormUrl: "https://forms.gle/v5saqsBvRHETZmMz9",
-	orderFormLabel: "Order",
+	orderFormLabel: "Order via Google Forms",
 	instagramUrl: "https://www.instagram.com/kevilnius/",
 	instagramLabel: "Kevilnius on Instagram",
 	gallery: [
@@ -139,6 +142,14 @@ export const kevilniusMerch = {
 		{
 			image: "/images/pohhu/merch/oll_h6lmadlahti.jpg",
 			alt: "Kevilnius shirt — H6lmadlahti"
+		},
+		{
+			image: "/images/pohhu/merch/oll_next_to_wall.jpg",
+			alt: "Kevilnius shirt — next to wall"
+		},
+		{
+			image: "/images/pohhu/merch/oll_liputaja.jpg",
+			alt: "Kevilnius shirt — liputaja"
 		}
 	] as MerchGalleryImage[]
 };

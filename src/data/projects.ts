@@ -18,6 +18,13 @@ export interface ProjectInfo {
 	stack: (StackIconItem | StackCustomItem)[];
 }
 
+/** Reserved for a future home-terminal projects view. */
+export const projectsPageMeta = {
+	title: "Projects",
+	description: "Some of my projects.",
+	path: "/projects"
+} as const;
+
 export const projects: ProjectInfo[] = [
 	{
 		name: "HYPERVM-GUI",

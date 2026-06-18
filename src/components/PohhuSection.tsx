@@ -27,6 +27,7 @@ import {
 import { socialPlatformIcons } from "../data/socials";
 import { FormattedText } from "./FormattedText";
 import { ImageLightboxGallery } from "./ImageLightboxGallery";
+import { MerchProductCarousel } from "./MerchProductCarousel";
 import { PohhuLogoReveal } from "./PohhuLogoReveal";
 import { SectionDivider } from "./SectionDivider";
 import { SocialIconLink } from "./SocialIconLink";
@@ -372,7 +373,6 @@ function KevilniusMerchBlock() {
 		title,
 		price,
 		currency,
-		editionBadge,
 		details,
 		description,
 		orderFormUrl,
@@ -384,36 +384,49 @@ function KevilniusMerchBlock() {
 
 	return (
 		<div id="pohhu-kevilnius-merch" className="scroll-anchor mb-10 min-w-0">
-			<div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-14">
+			<div className="merch-product-layout lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-10 xl:gap-14">
 				{gallery.length > 0 ? (
-					<div className="min-w-0">
-						<ImageLightboxGallery
+					<div className="merch-product-layout__media min-w-0">
+						<MerchProductCarousel
 							items={gallery}
-							thumbnailFit="contain"
-							thumbnailVariant="bare"
-							className="mb-0 grid-cols-2 gap-4 md:gap-5"
 							dialogLabel="Kevilnius merch photos"
 						/>
 					</div>
 				) : null}
 
 				<div
-					className={`product-detail min-w-0 ${
+					className={`product-detail min-w-0 lg:self-start ${
 						gallery.length > 0
 							? "mt-8 border-t border-slate-800/90 pt-8 lg:mt-0 lg:border-t-0 lg:pt-0"
 							: ""
 					}`}
 				>
 					<p className="product-detail__vendor">{vendor}</p>
+
 					<h3 className="product-detail__title">{title}</h3>
 
 					<p className="product-detail__price">
-						<span className="product-detail__currency">{currency}</span>
 						{price}
+						<span className="product-detail__currency"> {currency}</span>
 					</p>
 
-					{editionBadge ? (
-						<p className="product-detail__badge">{editionBadge}</p>
+					<div className="product-detail__description">
+						{description.map((paragraph, i) => (
+							<p key={i} className="product-detail__description-p">
+								<FormattedText text={paragraph} />
+							</p>
+						))}
+					</div>
+
+					{details.length > 0 ? (
+						<dl className="product-detail__specs">
+							{details.map(({ label, value }) => (
+								<div key={label} className="product-detail__spec-row">
+									<dt className="product-detail__spec-label">{label}</dt>
+									<dd className="product-detail__spec-value">{value}</dd>
+								</div>
+							))}
+						</dl>
 					) : null}
 
 					<div className="product-detail__actions">
@@ -433,21 +446,6 @@ function KevilniusMerchBlock() {
 							boxed
 						/>
 					</div>
-
-					<div className="product-detail__description">
-						<FormattedText text={description} />
-					</div>
-
-					{details.length > 0 ? (
-						<dl className="product-detail__specs">
-							{details.map(({ label, value }) => (
-								<div key={label} className="product-detail__spec-row">
-									<dt className="product-detail__spec-label">{label}</dt>
-									<dd className="product-detail__spec-value">{value}</dd>
-								</div>
-							))}
-						</dl>
-					) : null}
 				</div>
 			</div>
 		</div>
@@ -462,8 +460,10 @@ export default function PohhuSection() {
 				<span className="block">
 					<PohhuLogoReveal />
 				</span>
-				<p className="pohhu-tagline-reveal mt-4 font-heading text-base font-semibold uppercase tracking-[0.2em] text-primary md:text-lg md:tracking-[0.24em]">
-					will take over the world
+				<p className="pohhu-tagline-reveal mt-4 font-heading text-base font-semibold uppercase tracking-[0.2em] md:text-lg md:tracking-[0.24em]">
+					<span className="pohhu-tagline-reveal__text">
+						will take over the world
+					</span>
 				</p>
 			</h2>
 

@@ -114,7 +114,7 @@ export function HomeIntroTerminal() {
 								middleman since 2016
 							</span>
 							{" — "}
-							1000+ successful transactions, €50k+ in volume.
+							1000+ successful transactions, 50k €+ in volume.
 						</p>
 						<p>
 							Founder of{" "}
