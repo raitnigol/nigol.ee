@@ -31,14 +31,6 @@ export interface CertifiedArtistProfile {
 	playlist?: CertifiedArtistPlaylist;
 }
 
-export interface CollectionPhoto {
-	title: string;
-	description: string;
-	image?: string;
-	/** Renders an empty placeholder tile (no upload required). */
-	placeholder?: boolean;
-}
-
 /** Inline markup: **bold** · *italic* · {{violet highlight}} */
 export const pohhuManifestoBeforeCore: string[] = [
 	"{{$.pohhu¥}} is a creative collective from **Tartu, Estonia**, built around artists, makers, friends, and people who kept making things even when there was no clear reason to expect money, attention, or permission.",
@@ -78,8 +70,6 @@ export const pohhuFundedReleasesTitle = "PHYSICAL RELEASES FUNDED BY $.POHHU¥";
 export const pohhuFundedReleasesSubsectionTitle = "{{$.pohhu¥}} x 963 Records";
 
 export const pohhuExhibitionsEventsDivider = "EXHIBITIONS & EVENTS";
-
-export const pohhuPhotosSubsectionTitle = "Physical collection of NIGOL";
 
 /** How funding works and when payment badges come down. */
 export const pohhuFundingModel: string[] = [
@@ -228,14 +218,5 @@ export const certifiedArtists: CertifiedArtistProfile[] = [
 			id: "1ppZiVsWl1qqWGUkg8HEcd",
 			title: "Kevilnius × $.pohhu¥"
 		}
-	}
-];
-
-export const collectionPhotos: CollectionPhoto[] = [
-	{
-		title: "Shelf at home",
-		description:
-			"Four cassettes, two CDs — including the 12 LIITRIT disc and the Pärnu–Tartu tape.",
-		image: "/images/pohhu/photos/collection.jpg"
 	}
 ];
