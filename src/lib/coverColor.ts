@@ -47,6 +47,9 @@ export function sampleCoverAccent(src: string): Promise<string> {
 		};
 
 		img.onerror = () => resolve(FALLBACK_ACCENT);
+		if (src.startsWith("http")) {
+			img.crossOrigin = "anonymous";
+		}
 		img.src = src;
 	});
 }

@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import { EffectCoverflow, Keyboard } from "swiper/modules";
+import {
+	EffectCoverflow,
+	Keyboard,
+	Mousewheel
+} from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperInstance } from "swiper";
 import useSWR from "swr";
 
-import {
-	physicalMediaCollection
-} from "../data/physicalMedia";
+import { listedPhysicalMediaCollection } from "../data/physicalMedia";
 import { sampleCoverAccent } from "../lib/coverColor";
 import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
 import type { NowPlayingResponseSuccess } from "../pages/api/nowPlaying";
@@ -19,19 +21,23 @@ const FALLBACK_ACCENT = "rgb(52 211 153)";
 
 const nowPlayingFetcher = (url: string) => fetch(url).then(res => res.json());
 
-function wrapRealIndex(index: number, total: number) {
-	if (total <= 0) return 0;
-	return ((index % total) + total) % total;
-}
-
 function formatAlbumMeta(meta: PhysicalMediaAlbumMeta): string {
+	const trackLabel =
+		meta.albumType === "show"
+			? `${meta.totalTracks} episodes`
+			: `${meta.totalTracks} tracks`;
+	const typeLabel =
+		meta.albumType === "album"
+			? null
+			: meta.albumType === "show"
+				? "Audiobook"
+				: meta.albumType.charAt(0).toUpperCase() + meta.albumType.slice(1);
+
 	const parts = [
 		meta.releaseYear,
 		meta.label,
-		`${meta.totalTracks} tracks`,
-		meta.albumType !== "album"
-			? meta.albumType.charAt(0).toUpperCase() + meta.albumType.slice(1)
-			: null
+		trackLabel,
+		typeLabel
 	].filter(Boolean);
 
 	return parts.join(" · ");
@@ -46,11 +52,9 @@ export function PhysicalMediaCoverflow() {
 	>({});
 	const [spotifyLoaded, setSpotifyLoaded] = useState(false);
 	const swiperRef = useRef<SwiperInstance | null>(null);
-	const containerRef = useRef<HTMLDivElement>(null);
-	const realIndexRef = useRef(0);
 
-	const total = physicalMediaCollection.length;
-	const loopEnabled = total > 1;
+	const total = listedPhysicalMediaCollection.length;
+	const canNavigate = total > 1;
 
 	const { data: nowPlaying } = useSWR<NowPlayingResponseSuccess>(
 		mounted ? "/api/nowPlaying" : null,
@@ -64,21 +68,14 @@ export function PhysicalMediaCoverflow() {
 			: undefined;
 
 	const nowPlayingIndex = nowPlayingOwned
-		? physicalMediaCollection.findIndex(item => item.id === nowPlayingOwned.id)
+		? listedPhysicalMediaCollection.findIndex(
+				item => item.id === nowPlayingOwned.id
+			)
 		: -1;
 
 	useEffect(() => {
 		setMounted(true);
 	}, []);
-
-	useEffect(() => {
-		if (!mounted) return;
-
-		for (const item of physicalMediaCollection) {
-			const img = new Image();
-			img.src = item.coverImage;
-		}
-	}, [mounted]);
 
 	useEffect(() => {
 		fetch("/api/physicalMedia")
@@ -92,43 +89,10 @@ export function PhysicalMediaCoverflow() {
 	}, []);
 
 	useEffect(() => {
-		const el = containerRef.current;
-		if (!el || !mounted) return;
-
-		const onWheel = (event: WheelEvent) => {
-			const swiper = swiperRef.current;
-			if (!swiper) return;
-
-			if (Math.abs(event.deltaY) < 4) return;
-			if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-
-			event.preventDefault();
-
-			const direction = event.deltaY > 0 ? 1 : -1;
-			const next = wrapRealIndex(realIndexRef.current + direction, total);
-			const speed = swiper.animating ? 120 : 200;
-
-			realIndexRef.current = next;
-
-			if (loopEnabled) {
-				swiper.slideToLoop(next, speed);
-				return;
-			}
-
-			swiper.slideTo(next, speed);
-		};
-
-		el.addEventListener("wheel", onWheel, { passive: false });
-
-		return () => {
-			el.removeEventListener("wheel", onWheel);
-		};
-	}, [mounted]);
-
-	useEffect(() => {
 		if (!mounted || total === 0) return;
 
-		const cover = physicalMediaCollection[activeIndex]?.coverImage;
+		const item = listedPhysicalMediaCollection[activeIndex];
+		const cover = item ? spotifyMeta[item.id]?.coverImageUrl : undefined;
 		if (!cover) return;
 
 		let cancelled = false;
@@ -139,42 +103,26 @@ export function PhysicalMediaCoverflow() {
 		return () => {
 			cancelled = true;
 		};
-	}, [activeIndex, mounted, total]);
+	}, [activeIndex, mounted, spotifyMeta, total]);
 
 	if (!mounted || total === 0) {
 		return <div className="album-coverflow min-h-[20rem]" aria-hidden />;
 	}
 
-	const activeItem = physicalMediaCollection[activeIndex];
+	const activeItem = listedPhysicalMediaCollection[activeIndex];
 	const activeSpotify = activeItem ? spotifyMeta[activeItem.id] : undefined;
-
 	const progress = total <= 1 ? 1 : activeIndex / (total - 1);
 
-	const goPrev = () => {
-		swiperRef.current?.slidePrev();
-	};
-
-	const goNext = () => {
-		swiperRef.current?.slideNext();
-	};
-
 	const goToSlide = (index: number) => {
-		const swiper = swiperRef.current;
-		if (!swiper) return;
+		swiperRef.current?.slideTo(index);
+	};
 
-		realIndexRef.current = index;
-
-		if (loopEnabled) {
-			swiper.slideToLoop(index);
-			return;
-		}
-
-		swiper.slideTo(index);
+	const syncActiveIndex = (swiper: SwiperInstance) => {
+		setActiveIndex(swiper.activeIndex);
 	};
 
 	return (
 		<div
-			ref={containerRef}
 			className="album-coverflow group/carousel"
 			style={
 				{
@@ -227,38 +175,41 @@ export function PhysicalMediaCoverflow() {
 				<button
 					type="button"
 					className="album-coverflow__nav album-coverflow__nav--prev focus-ring"
-					onClick={goPrev}
 					aria-label="Previous album"
+					onClick={() => swiperRef.current?.slidePrev()}
 				>
 					<ChevronLeftIcon className="h-7 w-7 md:h-8 md:w-8" />
 				</button>
 
 				<Swiper
 					className="album-coverflow__swiper"
-					modules={[EffectCoverflow, Keyboard]}
+					modules={[EffectCoverflow, Keyboard, Mousewheel]}
 					effect="coverflow"
-					grabCursor
+					grabCursor={canNavigate}
 					centeredSlides
-					loop={loopEnabled}
-					loopAdditionalSlides={2}
-					loopPreventsSliding={false}
-					preventInteractionOnTransition={false}
+					rewind={canNavigate}
 					slideToClickedSlide
 					watchSlidesProgress
-					speed={200}
+					speed={300}
+					preventInteractionOnTransition
 					keyboard={{ enabled: true }}
+					mousewheel={{
+						forceToAxis: true,
+						releaseOnEdges: true,
+						thresholdDelta: 20
+					}}
 					spaceBetween={20}
+					slidesPerView={3}
 					breakpoints={{
 						0: {
 							slidesPerView: 1,
-							spaceBetween: 28
+							spaceBetween: 24
 						},
 						768: {
 							slidesPerView: 3,
 							spaceBetween: 20
 						}
 					}}
-					initialSlide={0}
 					coverflowEffect={{
 						rotate: 22,
 						stretch: 6,
@@ -266,19 +217,18 @@ export function PhysicalMediaCoverflow() {
 						modifier: 1,
 						slideShadows: false
 					}}
-					onSwiper={(swiper: SwiperInstance) => {
+					onSwiper={swiper => {
 						swiperRef.current = swiper;
-						realIndexRef.current = 0;
-						setActiveIndex(0);
+						syncActiveIndex(swiper);
 					}}
-					onSlideChange={(swiper: SwiperInstance) => {
-						realIndexRef.current = swiper.realIndex;
-						setActiveIndex(swiper.realIndex);
-					}}
+					onSlideChangeTransitionEnd={syncActiveIndex}
 				>
-					{physicalMediaCollection.map(item => {
+					{listedPhysicalMediaCollection.map(item => {
 						const isNowPlayingCd =
 							nowPlayingOwned?.id === item.id && nowPlaying?.isPlayingNow;
+						const meta = spotifyMeta[item.id];
+						const coverUrl = meta?.coverImageUrl;
+						const coverAlt = meta?.name ?? item.title ?? "Album cover";
 
 						return (
 							<SwiperSlide
@@ -290,16 +240,28 @@ export function PhysicalMediaCoverflow() {
 								}
 							>
 								<div className="album-coverflow__cover">
-									<img
-										src={item.coverImage}
-										alt={`${item.title} cover`}
-										width={600}
-										height={600}
-										className="album-coverflow__cover-image"
-										loading="eager"
-										decoding="async"
-										draggable={false}
-									/>
+									{coverUrl ? (
+										<img
+											src={coverUrl}
+											alt={`${coverAlt} cover`}
+											width={600}
+											height={600}
+											className="album-coverflow__cover-image"
+											loading="eager"
+											decoding="async"
+											draggable={false}
+										/>
+									) : (
+										<div
+											className="album-coverflow__cover-image album-coverflow__cover-image--loading"
+											role="img"
+											aria-label={
+												spotifyLoaded
+													? `${coverAlt} cover unavailable`
+													: `Loading ${coverAlt} cover`
+											}
+										/>
+									)}
 								</div>
 							</SwiperSlide>
 						);
@@ -309,8 +271,8 @@ export function PhysicalMediaCoverflow() {
 				<button
 					type="button"
 					className="album-coverflow__nav album-coverflow__nav--next focus-ring"
-					onClick={goNext}
 					aria-label="Next album"
+					onClick={() => swiperRef.current?.slideNext()}
 				>
 					<ChevronRightIcon className="h-7 w-7 md:h-8 md:w-8" />
 				</button>
@@ -336,7 +298,7 @@ export function PhysicalMediaCoverflow() {
 								style={{ transform: `scaleX(${progress})` }}
 							/>
 							<div className="album-coverflow__progress-ticks">
-								{physicalMediaCollection.map((item, index) => (
+								{listedPhysicalMediaCollection.map((item, index) => (
 									<button
 										key={item.id}
 										type="button"
@@ -355,7 +317,7 @@ export function PhysicalMediaCoverflow() {
 										]
 											.filter(Boolean)
 											.join(" ")}
-										aria-label={`${item.title}${
+										aria-label={`${spotifyMeta[item.id]?.name ?? item.title ?? item.id}${
 											index === activeIndex ? " (current)" : ""
 										}`}
 										aria-current={index === activeIndex ? "true" : undefined}
@@ -375,10 +337,12 @@ export function PhysicalMediaCoverflow() {
 
 					<div className="album-coverflow__caption" key={activeItem.id}>
 						<p className="album-coverflow__title">
-							{activeSpotify?.name ?? activeItem.title}
+							{activeSpotify?.name ?? activeItem.title ?? "\u00a0"}
 						</p>
 						<p className="album-coverflow__artist">
-							{activeSpotify?.artists ?? activeItem.artists ?? "\u00a0"}
+							{activeSpotify?.artists ??
+								activeItem.artists ??
+								"\u00a0"}
 						</p>
 						<p
 							className={

@@ -17,3 +17,22 @@ export function getArtistImageUrl(
 	if (!images?.length) return null;
 	return images[1]?.url ?? images[0]?.url ?? images.at(-1)?.url ?? null;
 }
+
+export function getAlbumCoverUrl(
+	album: SpotifyApi.AlbumObjectSimplified | null | undefined
+): string | null {
+	const images = album?.images;
+	if (!images?.length) return null;
+	return images[0]?.url ?? images.at(-1)?.url ?? null;
+}
+
+export function getShowCoverUrl(
+	show:
+		| { images?: SpotifyApi.ImageObject[] | null }
+		| null
+		| undefined
+): string | null {
+	const images = show?.images;
+	if (!images?.length) return null;
+	return images[0]?.url ?? images.at(-1)?.url ?? null;
+}
