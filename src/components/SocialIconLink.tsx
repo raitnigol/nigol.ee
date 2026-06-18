@@ -5,13 +5,16 @@ interface SocialIconLinkProps {
 	image: string;
 	label: string;
 	caption?: string;
+	/** Bordered tile — pairs with adjacent merch / CTA buttons */
+	boxed?: boolean;
 }
 
 export function SocialIconLink({
 	href,
 	image,
 	label,
-	caption
+	caption,
+	boxed = false
 }: SocialIconLinkProps) {
 	return (
 		<a
@@ -20,7 +23,11 @@ export function SocialIconLink({
 			rel="noopener noreferrer"
 			aria-label={label}
 			title={label}
-			className="focus-ring group flex flex-col items-center gap-1.5"
+			className={
+				boxed
+					? "focus-ring group inline-flex min-h-[3.375rem] min-w-[5.5rem] flex-col items-center justify-center gap-1 border border-white/20 px-5 py-2 transition hover:border-white/40"
+					: "focus-ring group flex flex-col items-center gap-1.5"
+			}
 		>
 			<Image
 				src={image}

@@ -4,7 +4,6 @@ import { HomeIntroTerminal } from "../components/HomeIntroTerminal";
 import { SocialIconLink } from "../components/SocialIconLink";
 import Spotify from "../components/Spotify";
 import { socials } from "../data/socials";
-import { EE_DOMAIN_REGISTER_URL } from "../lib/site";
 
 export default function Home() {
 	return (
@@ -16,20 +15,8 @@ export default function Home() {
 			/>
 
 			<div className="home">
+				<h1 className="sr-only">Rait Nigol</h1>
 				<p className="home__greeting">&ldquo;Hello, friend.&rdquo;</p>
-
-				<h1 className="heading home__title">
-					nigol
-					<a
-						href={EE_DOMAIN_REGISTER_URL}
-						target="_blank"
-						rel="noopener noreferrer"
-						className="home__ee focus-ring"
-						title="Register a .ee domain"
-					>
-						.ee
-					</a>
-				</h1>
 
 				<HomeIntroTerminal />
 

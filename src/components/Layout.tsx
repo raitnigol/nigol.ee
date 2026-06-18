@@ -1,16 +1,18 @@
 import Footer from "./Footer";
-import Navbar from "./Navbar";
+import SiteHeader from "./Navbar";
 import Transition from "./Transition";
 import { Analytics } from "@vercel/analytics/react";
 
 export default function Layout({ children }: React.PropsWithChildren<{}>) {
 	return (
-		<div className="md:container md:px-0 mx-auto my-24 px-8 text-lg text-white">
-			<Navbar />
-			<main className="min-w-0">
+		<div className="site min-h-screen text-white">
+			<SiteHeader />
+			<main className="site-shell site-main min-w-0 text-lg">
 				<Transition>{children}</Transition>
 			</main>
-			<Footer />
+			<div className="site-shell site-footer-wrap">
+				<Footer />
+			</div>
 			<Analytics />
 		</div>
 	);

@@ -190,7 +190,7 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 					{release.format ? (
 						<p className="mt-1 text-xs text-subtle">{release.format}</p>
 					) : null}
-					{release.pressRun ? (
+					{release.pressRun && !release.investmentStatus ? (
 						<p className="mt-1 text-xs text-subtle">
 							Press run · {release.pressRun}
 						</p>
@@ -368,10 +368,13 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 
 function KevilniusMerchBlock() {
 	const {
+		vendor,
 		title,
-		eyebrow,
-		subtitle,
-		body,
+		price,
+		currency,
+		editionBadge,
+		details,
+		description,
 		orderFormUrl,
 		orderFormLabel,
 		instagramUrl,
@@ -381,39 +384,70 @@ function KevilniusMerchBlock() {
 
 	return (
 		<div id="pohhu-kevilnius-merch" className="scroll-anchor mb-10 min-w-0">
-			<p className="text-xs font-bold uppercase tracking-[0.14em] text-subtle">
-				{eyebrow}
-			</p>
-			<h3 className={`${subsectionHeadingClass} mt-1`}>{title}</h3>
-			<p className="mb-6 text-sm text-muted">{subtitle}</p>
+			<div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-14">
+				{gallery.length > 0 ? (
+					<div className="min-w-0">
+						<ImageLightboxGallery
+							items={gallery}
+							thumbnailFit="contain"
+							thumbnailVariant="bare"
+							className="mb-0 grid-cols-2 gap-4 md:gap-5"
+							dialogLabel="Kevilnius merch photos"
+						/>
+					</div>
+				) : null}
 
-			{gallery.length > 0 ? (
-				<ImageLightboxGallery
-					items={gallery}
-					thumbnailFit="contain"
-					thumbnailVariant="bare"
-					className="mb-6 grid-cols-2 gap-4 md:gap-6"
-					dialogLabel="Kevilnius merch photos"
-				/>
-			) : null}
+				<div
+					className={`product-detail min-w-0 ${
+						gallery.length > 0
+							? "mt-8 border-t border-slate-800/90 pt-8 lg:mt-0 lg:border-t-0 lg:pt-0"
+							: ""
+					}`}
+				>
+					<p className="product-detail__vendor">{vendor}</p>
+					<h3 className="product-detail__title">{title}</h3>
 
-			<div className="prose-readable">
-				<ManifestoParagraph text={body} />
-				<div className="mb-0 flex flex-wrap items-center gap-x-6 gap-y-3">
-					<a
-						href={orderFormUrl}
-						target="_blank"
-						rel="noopener noreferrer"
-						className="focus-ring text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
-					>
-						{orderFormLabel} →
-					</a>
-					<SocialIconLink
-						href={instagramUrl}
-						image={socialPlatformIcons.instagram}
-						label={instagramLabel}
-						caption="Instagram"
-					/>
+					<p className="product-detail__price">
+						<span className="product-detail__currency">{currency}</span>
+						{price}
+					</p>
+
+					{editionBadge ? (
+						<p className="product-detail__badge">{editionBadge}</p>
+					) : null}
+
+					<div className="product-detail__actions">
+						<a
+							href={orderFormUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="focus-ring product-detail__order-btn"
+						>
+							{orderFormLabel}
+						</a>
+						<SocialIconLink
+							href={instagramUrl}
+							image={socialPlatformIcons.instagram}
+							label={instagramLabel}
+							caption="Instagram"
+							boxed
+						/>
+					</div>
+
+					<div className="product-detail__description">
+						<FormattedText text={description} />
+					</div>
+
+					{details.length > 0 ? (
+						<dl className="product-detail__specs">
+							{details.map(({ label, value }) => (
+								<div key={label} className="product-detail__spec-row">
+									<dt className="product-detail__spec-label">{label}</dt>
+									<dd className="product-detail__spec-value">{value}</dd>
+								</div>
+							))}
+						</dl>
+					) : null}
 				</div>
 			</div>
 		</div>
@@ -423,7 +457,7 @@ function KevilniusMerchBlock() {
 export default function PohhuSection() {
 	return (
 		<section className="mb-4" aria-labelledby="pohhu-heading">
-			<h2 id="pohhu-heading" className="scroll-anchor mb-8 text-center">
+			<h2 id="pohhu-heading" className="mb-8 text-center">
 				<span className="sr-only">$.pohhu¥</span>
 				<span className="block">
 					<PohhuLogoReveal />

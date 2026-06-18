@@ -3,6 +3,7 @@ import {
 	HomeIcon,
 	PhotographIcon
 } from "@heroicons/react/solid";
+import Link from "next/link";
 
 import ActiveLink from "./ActiveLink";
 
@@ -21,7 +22,7 @@ const pages: PageData[] = [
 		color: "text-orange-400"
 	},
 	{
-		href: "/music#pohhu-heading",
+		href: "/music",
 		title: "$.pohhu¥",
 		color: "text-violet-300"
 	},
@@ -39,26 +40,41 @@ const pages: PageData[] = [
 	}
 ];
 
-export default function Navbar() {
+export default function SiteHeader() {
 	return (
-		<nav className="mb-12 flex flex-wrap items-center gap-x-8 font-bold">
-			{pages.map(({ href, title, Icon, color }) => (
-				<ActiveLink
-					href={href}
-					key={href}
-					activeClass="after:inset-x-0"
-					nonActiveClass="after:opacity-0 after:inset-x-1/2 hover:after:opacity-100 hover:after:inset-x-1/4"
-				>
-					<a
-						className={`focus-ring py-2 flex items-center relative after:absolute after:bottom-0 after:h-0.5 after:bg-white after:rounded after:transition-all ${
-							color ? color : ""
-						}`}
-					>
-						{title}
-						{Icon ? <Icon className="w-5 h-5 ml-2" /> : null}
+		<header className="site-header">
+			<div className="site-shell site-header__inner">
+				<Link href="/">
+					<a className="site-logo focus-ring font-heading text-xl font-extrabold tracking-tighter text-white sm:text-2xl">
+						nigol<span className="text-blue-400">.ee</span>
 					</a>
-				</ActiveLink>
-			))}
-		</nav>
+				</Link>
+
+				<nav
+					className="site-nav"
+					aria-label="Primary"
+				>
+					{pages.map(({ href, title, Icon, color }) => (
+						<ActiveLink
+							href={href}
+							key={href}
+							activeClass="after:inset-x-0"
+							nonActiveClass="after:opacity-0 after:inset-x-1/2 hover:after:opacity-100 hover:after:inset-x-1/4"
+						>
+							<a
+								className={`site-nav__link focus-ring relative flex items-center py-1.5 after:absolute after:bottom-0 after:h-0.5 after:rounded after:bg-white after:transition-all ${
+									color ?? ""
+								}`}
+							>
+								{title}
+								{Icon ? (
+									<Icon className="ml-1.5 h-4 w-4 opacity-90" />
+								) : null}
+							</a>
+						</ActiveLink>
+					))}
+				</nav>
+			</div>
+		</header>
 	);
 }

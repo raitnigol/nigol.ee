@@ -1,4 +1,4 @@
-/** Scroll to `location.hash` target after client navigation (e.g. /music#pohhu-heading). */
+/** Scroll to `location.hash` target after client navigation. */
 export function scrollToHashElement(
 	hash: string,
 	behavior: ScrollBehavior = "smooth"

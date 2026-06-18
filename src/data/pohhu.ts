@@ -107,15 +107,28 @@ export interface MerchGalleryImage {
 	title?: string;
 }
 
+export interface MerchProductDetail {
+	label: string;
+	value: string;
+}
+
 /** Shirts / merch — photos live in `public/images/pohhu/merch/` (see README there). */
 export const kevilniusMerch = {
+	vendor: "Kevilnius",
 	title: "Artifact_01 // Project_Panther.exe",
-	eyebrow: "Kevilnius merch",
-	subtitle: "Stanley/Stella heavyweight · 50€ · limited run",
-	body:
-		"**Kevilnius** has shirts for sale. Order on the **Google Form** or message him on **Instagram**.",
+	price: "50",
+	currency: "€",
+	editionBadge: "Limited edition",
+	details: [
+		{ label: "Blank", value: "Stanley/Stella Blaster 2.0" },
+		{ label: "Fabric", value: "200 GSM cotton" },
+		{ label: "Fit", value: "Heavyweight oversized boxy" },
+		{ label: "Run", value: "No restock" }
+	] as MerchProductDetail[],
+	description:
+		"**Kevilnius** shirt drop — order via the **Google Form** or **Instagram DM**.",
 	orderFormUrl: "https://forms.gle/v5saqsBvRHETZmMz9",
-	orderFormLabel: "Order form",
+	orderFormLabel: "Order",
 	instagramUrl: "https://www.instagram.com/kevilnius/",
 	instagramLabel: "Kevilnius on Instagram",
 	gallery: [

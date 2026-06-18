@@ -119,7 +119,7 @@ export function HomeIntroTerminal() {
 						<p>
 							Founder of{" "}
 							<Link
-								href="/music#pohhu-heading"
+								href="/music"
 								className="home__link home__link--pohhu focus-ring"
 							>
 								$.pohhu¥
