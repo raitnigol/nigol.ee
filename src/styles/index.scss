@@ -138,7 +138,8 @@
 			opacity: 0;
 		}
 		to {
-			max-width: 3.6em;
+			/* Upper bound only — final width follows "pohhu" at text-5xl/6xl. */
+			max-width: 12em;
 			opacity: 1;
 		}
 	}
@@ -188,9 +189,8 @@
 		@apply flex items-center font-heading font-extrabold text-6xl tracking-tighter;
 	}
 
-	/** Long-form copy: comfortable measure and line height. */
+	/** Long-form copy: relaxed line height (uses full container width). */
 	.prose-readable {
-		max-width: 65ch;
 		line-height: 1.75;
 	}
 
@@ -227,14 +227,16 @@
 		overflow: hidden;
 		max-width: 0;
 		opacity: 0;
-		vertical-align: bottom;
+		vertical-align: baseline;
+		white-space: nowrap;
 		animation: pohhu-logo-core-expand 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.4s
 			forwards;
 	}
 
 	.pohhu-logo-reveal__text {
 		display: inline-block;
-		transform-origin: center center;
+		white-space: nowrap;
+		transform-origin: left center;
 		animation: pohhu-logo-text-unfold 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.4s
 			forwards;
 	}
