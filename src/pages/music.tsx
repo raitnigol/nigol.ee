@@ -58,7 +58,7 @@ export default function Music() {
 
 			<p
 				id="spotify-listening"
-				className="scroll-anchor text-lg mb-8 text-gray-300"
+				className="scroll-anchor text-lg mb-8 text-secondary"
 			>
 				My top tracks and artists on Spotify — past month, past six months, and
 				all time.
@@ -70,7 +70,7 @@ export default function Music() {
 						className={`font-bold text-3xl mb-4 transition-colors duration-300 ${
 							activeCarousel === index
 								? "text-white"
-								: "text-gray-500"
+								: "text-subtle"
 						}`}
 					>
 						{section.title}
@@ -91,12 +91,12 @@ export default function Music() {
 					className={`font-bold text-3xl mb-4 transition-colors duration-300 ${
 						activeCarousel === ARTISTS_SECTION_INDEX
 							? "text-white"
-							: "text-gray-500"
+							: "text-subtle"
 					}`}
 				>
 					Top Artists
 				</h2>
-				<p className="mb-4 text-sm text-gray-500">All time</p>
+				<p className="mb-4 text-sm text-subtle">All time</p>
 				<ArtistList
 					artists={topMusic?.artists.items}
 					isActive={activeCarousel === ARTISTS_SECTION_INDEX}

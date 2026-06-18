@@ -72,7 +72,7 @@ function LocalCoverImage({
 	if (failed) {
 		return (
 			<div
-				className={`flex h-full w-full items-center justify-center bg-slate-800 text-xs font-bold uppercase tracking-wider text-gray-600 ${className ?? ""}`}
+				className={`flex h-full w-full items-center justify-center bg-slate-800 text-xs font-bold uppercase tracking-wider text-subtle ${className ?? ""}`}
 			>
 				Cover
 			</div>
@@ -125,7 +125,7 @@ function FundedReleaseBannerCard({ release }: { release: FundedRelease }) {
 			>
 				<div className="flex min-h-[10rem] flex-col justify-center px-5 py-5 md:min-h-[11rem] md:px-8 md:py-6">
 					{release.subtitle ? (
-						<p className="text-xs font-bold uppercase tracking-[0.14em] text-gray-500">
+						<p className="text-xs font-bold uppercase tracking-[0.14em] text-subtle">
 							{release.subtitle}
 						</p>
 					) : null}
@@ -133,7 +133,7 @@ function FundedReleaseBannerCard({ release }: { release: FundedRelease }) {
 						{release.title}
 					</h4>
 					{release.description ? (
-						<p className="mt-3 max-w-3xl text-sm leading-relaxed text-gray-400 md:text-base">
+						<p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted md:text-base">
 							<FormattedText text={release.description} />
 						</p>
 					) : null}
@@ -184,13 +184,13 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 						{release.title}
 					</p>
 					{release.artists ? (
-						<p className="mt-1 text-xs text-gray-400">{release.artists}</p>
+						<p className="mt-1 text-xs text-muted">{release.artists}</p>
 					) : null}
 					{release.format ? (
-						<p className="mt-1 text-xs text-gray-500">{release.format}</p>
+						<p className="mt-1 text-xs text-subtle">{release.format}</p>
 					) : null}
 					{release.pressRun ? (
-						<p className="mt-1 text-xs text-gray-500">
+						<p className="mt-1 text-xs text-subtle">
 							Press run · {release.pressRun}
 						</p>
 					) : null}
@@ -206,7 +206,7 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 function KiviBaarSocialLinks({ links }: { links: KiviArtShowLink[] }) {
 	return (
 		<div>
-			<p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-gray-500">
+			<p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-subtle">
 				Kivi Baar socials
 			</p>
 			<div className="flex flex-wrap gap-6">
@@ -304,7 +304,7 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 							onError={handlePhotoError}
 						/>
 					) : (
-						<div className="flex h-full w-full items-center justify-center animate-pulse bg-slate-900 text-gray-600">
+						<div className="flex h-full w-full items-center justify-center animate-pulse bg-slate-900 text-subtle">
 							·
 						</div>
 					)}
@@ -323,8 +323,8 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 							</a>
 						</h4>
 						{artist ? (
-							<p className="mt-2 text-sm text-gray-400">
-								<span className="text-gray-300">
+							<p className="mt-2 text-sm text-muted">
+								<span className="text-secondary">
 									{formatFollowers(artist.followers.total)}
 								</span>{" "}
 								followers on Spotify
@@ -339,7 +339,7 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 						) : null}
 					</div>
 
-					<p className="text-base leading-relaxed text-gray-300 mb-5">
+					<p className="text-base leading-relaxed text-secondary mb-5">
 						{profile.bio}
 					</p>
 
@@ -373,7 +373,7 @@ export default function PohhuSection() {
 				<span className="block">
 					<PohhuLogoReveal />
 				</span>
-				<p className="pohhu-tagline-reveal mt-4 font-heading text-base font-semibold uppercase tracking-[0.2em] text-gray-200 md:text-lg md:tracking-[0.24em]">
+				<p className="pohhu-tagline-reveal mt-4 font-heading text-base font-semibold uppercase tracking-[0.2em] text-primary md:text-lg md:tracking-[0.24em]">
 					will take over the world
 				</p>
 			</h2>
@@ -386,7 +386,7 @@ export default function PohhuSection() {
 				))}
 
 				<ManifestoParagraph text={pohhuFoundingCoreIntro} />
-				<ul className="mb-4 ml-4 list-disc space-y-1.5 text-base md:text-lg text-gray-300 marker:text-violet-400/70">
+				<ul className="mb-4 ml-4 list-disc space-y-1.5 text-base md:text-lg text-secondary marker:text-violet-400/70">
 					{pohhuFoundingCore.map(member => (
 						<li key={member} className="leading-relaxed pl-1">
 							<FormattedText text={member} />
@@ -414,7 +414,7 @@ export default function PohhuSection() {
 						<p className="font-bold text-2xl text-white md:text-3xl">
 							{aleksandriPub.title}
 						</p>
-						<p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-gray-500">
+						<p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-subtle">
 							{aleksandriPub.subtitle}
 						</p>
 					</div>

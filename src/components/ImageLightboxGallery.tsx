@@ -35,7 +35,7 @@ function GalleryPhotosStartMarker({ label }: { label: string }) {
 			aria-hidden="true"
 		>
 			<div className="h-px flex-1 bg-slate-800/80" />
-			<span className="shrink-0 text-[10px] font-medium uppercase tracking-[0.14em] text-gray-600">
+			<span className="shrink-0 text-[10px] font-medium uppercase tracking-[0.14em] text-subtle">
 				{label}
 			</span>
 			<div className="h-px flex-1 bg-slate-800/80" />
@@ -169,7 +169,7 @@ export function ImageLightboxGallery({
 											</p>
 										) : null}
 										{item.description ? (
-											<p className="mt-1 text-xs text-gray-400">
+											<p className="mt-1 text-xs text-muted">
 												{item.description}
 											</p>
 										) : null}
@@ -266,22 +266,22 @@ export function ImageLightboxGallery({
 							className="max-h-[78vh] w-auto max-w-full select-none object-contain"
 							draggable={false}
 						/>
-						<figcaption className="mt-3 max-w-lg text-center text-sm text-gray-400">
+						<figcaption className="mt-3 max-w-lg text-center text-sm text-muted">
 							{hasMultiple ? (
 								<>
 									{openIndex + 1} / {items.length}
-									<span className="mx-2 text-gray-600">·</span>
+									<span className="mx-2 text-subtle">·</span>
 								</>
 							) : null}
 							{current.title ? (
-								<span className="font-semibold text-gray-300">
+								<span className="font-semibold text-secondary">
 									{current.title}
 								</span>
 							) : (
 								current.alt
 							)}
 							{hasMultiple ? (
-								<span className="mt-2 block text-xs text-gray-600 md:hidden">
+								<span className="mt-2 block text-xs text-subtle md:hidden">
 									Swipe to browse
 								</span>
 							) : null}

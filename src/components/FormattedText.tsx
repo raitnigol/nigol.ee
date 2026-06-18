@@ -34,7 +34,7 @@ function parseEmphasis(
 			);
 		} else if (match[3]) {
 			nodes.push(
-				<em key={key} className="italic text-gray-400">
+				<em key={key} className="italic text-muted">
 					{match[3]}
 				</em>
 			);

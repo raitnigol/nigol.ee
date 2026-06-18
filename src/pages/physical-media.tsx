@@ -16,7 +16,7 @@ export default function PhysicalMedia() {
 						Work in progress
 					</span>
 				</p>
-				<p className="text-lg text-gray-300">
+				<p className="text-lg text-secondary">
 					Physical copies of CDs from my favourite artists — the ones I actually
 					own and keep on the shelf.
 				</p>

@@ -197,7 +197,7 @@ function Track({ track, rank, priority }: TrackProps) {
 						<p className="font-bold text-base leading-tight line-clamp-2">
 							{track.name}
 						</p>
-						<p className="mt-0.5 text-xs leading-tight text-gray-300 line-clamp-2">
+						<p className="mt-0.5 text-xs leading-tight text-secondary line-clamp-2">
 							{artistLine}
 						</p>
 					</div>
@@ -208,11 +208,11 @@ function Track({ track, rank, priority }: TrackProps) {
 				<p className="font-bold text-sm leading-snug text-white line-clamp-2 transition group-hover:text-violet-300">
 					{track.name}
 				</p>
-				<p className="mt-0.5 text-xs leading-snug text-gray-400 line-clamp-2">
+				<p className="mt-0.5 text-xs leading-snug text-muted line-clamp-2">
 					{artistLine}
 				</p>
 				{releaseYear ? (
-					<p className="mt-0.5 text-xs text-gray-500">{releaseYear}</p>
+					<p className="mt-0.5 text-xs text-subtle">{releaseYear}</p>
 				) : null}
 			</div>
 		</a>

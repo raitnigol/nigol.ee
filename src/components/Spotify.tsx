@@ -76,8 +76,8 @@ export default function Spotify() {
 			: undefined;
 
 	return (
-		<div className="spotify-widget flex items-center gap-2 text-base leading-snug">
-			<div className="spotify-widget__art relative h-16 w-16 flex-shrink-0 md:h-20 md:w-20">
+		<div className="spotify-widget">
+			<div className="spotify-widget__art">
 				{albumArtUrl ? (
 					<Image
 						src={albumArtUrl}
@@ -90,15 +90,12 @@ export default function Spotify() {
 						height={256}
 						priority={true}
 						unoptimized={isRemoteAlbumArt}
-						className={`h-full w-full rounded-lg object-cover object-center${
-							ownedPhysicalMedia ? " spotify-widget__art-image--owned" : ""
+						className={`spotify-widget__image${
+							ownedPhysicalMedia ? " spotify-widget__image--owned" : ""
 						}`}
 					/>
 				) : (
-					<div
-						className="h-full w-full rounded-lg bg-slate-800"
-						aria-hidden
-					/>
+					<div className="spotify-widget__image spotify-widget__image--empty" aria-hidden />
 				)}
 				{ownedPhysicalMedia ? (
 					<Link
@@ -111,93 +108,88 @@ export default function Spotify() {
 					</Link>
 				) : null}
 			</div>
-			<div className="basis-full">
-				<p>
+
+			<div className="spotify-widget__body">
+				<p className="spotify-widget__track">
 					{data?.track ? (
 						<>
 							<a
 								href={data.track.external_urls.spotify}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="font-bold border-b border-[#fff4] transition hover:border-white"
+								className="spotify-widget__track-name focus-ring"
 							>
 								{data.track.name}
-							</a>{" "}
-							by{" "}
+							</a>
+							<span className="spotify-widget__by"> by </span>
 							{data.track.artists.map((artist, i) => (
 								<span key={data.track?.id + artist.id}>
 									<a
 										href={artist.external_urls.spotify}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="border-b border-[#fff4] transition hover:border-white"
+										className="spotify-widget__artist focus-ring"
 									>
 										{artist.name}
 									</a>
-									{i < data.track?.artists.length! - 1
-										? ", "
-										: null}
+									{i < data.track?.artists.length! - 1 ? ", " : null}
 								</span>
 							))}
 						</>
 					) : (
-						"Not Listening to Anything"
+						<span className="spotify-widget__idle">Not listening to anything</span>
 					)}
 				</p>
-				<p className="opacity-80">
-					{data?.track ? (
-						<>
-							on{" "}
-							<a
-								href={data.track.album.external_urls.spotify}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="border-b border-[#fff4] transition hover:border-white"
-							>
-								{data.track.album.name}
-							</a>
-						</>
-					) : null}
-				</p>
+
+				{data?.track ? (
+					<p className="spotify-widget__album">
+						on{" "}
+						<a
+							href={data.track.album.external_urls.spotify}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="spotify-widget__album-name focus-ring"
+						>
+							{data.track.album.name}
+						</a>
+					</p>
+				) : null}
+
 				{showProgress && data?.track ? (
-					<div className="opacity-80 mt-2 w-full max-w-sm">
-						<span className="block h-0.5 rounded overflow-hidden bg-[#5e5e5e]">
-							<span
-								className="block h-full bg-white"
+					<div className="spotify-widget__progress">
+						<div className="spotify-widget__progress-bar">
+							<div
+								className="spotify-widget__progress-fill"
 								style={{
 									width: `${
 										(progressMs / data.track.duration_ms) * 100
 									}%`
 								}}
 							/>
-						</span>
-						<span className="flex items-center text-sm mt-2 gap-1">
-							<span className="basis-full">
-								{formatDuration(progressMs)}
-							</span>
-							<span className="flex items-center justify-center">
+						</div>
+						<div className="spotify-widget__progress-meta">
+							<span>{formatDuration(progressMs)}</span>
+							<span className="spotify-widget__progress-icon" aria-hidden>
 								{data.isPlayingNow ? (
 									data.isPaused ? (
-										<PlayIcon className="text-white h-4 w-4" />
+										<PlayIcon className="h-3.5 w-3.5" />
 									) : (
-										<PauseIcon className="text-white h-4 w-4" />
+										<PauseIcon className="h-3.5 w-3.5" />
 									)
 								) : (
 									<Image
 										src={SPOTIFY_LOGO}
 										alt=""
-										width={16}
-										height={16}
-										className="w-4 h-4"
+										width={14}
+										height={14}
+										className="h-3.5 w-3.5"
 									/>
 								)}
 							</span>
-							<span className="basis-full text-right">
-								{formatDuration(data.track.duration_ms)}
-							</span>
-						</span>
+							<span>{formatDuration(data.track.duration_ms)}</span>
+						</div>
 						{!data.isPlayingNow ? (
-							<p className="text-sm mt-1 text-gray-400">
+							<p className="spotify-widget__last-played">
 								{data.playedAt
 									? `Last played ${formatPlayedAt(data.playedAt)}`
 									: "Last played on Spotify"}
@@ -205,16 +197,14 @@ export default function Spotify() {
 						) : null}
 					</div>
 				) : (
-					<p className="opacity-80 flex items-center gap-1">
-						<span className="w-4 h-4 relative block flex-shrink-0">
-							<Image
-								src={SPOTIFY_LOGO}
-								alt=""
-								width={16}
-								height={16}
-								className="w-4 h-4"
-							/>
-						</span>
+					<p className="spotify-widget__brand">
+						<Image
+							src={SPOTIFY_LOGO}
+							alt=""
+							width={14}
+							height={14}
+							className="h-3.5 w-3.5"
+						/>
 						Spotify
 					</p>
 				)}

@@ -27,10 +27,13 @@ module.exports = {
 				".container": {
 					width: "100%",
 					"@screen md": {
-						width: "700px"
+						width: "768px"
 					},
 					"@screen lg": {
-						width: "800px"
+						width: "960px"
+					},
+					"@screen xl": {
+						width: "1080px"
 					}
 				}
 			});

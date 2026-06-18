@@ -30,7 +30,7 @@ export function SocialIconLink({
 				className="h-6 w-6 opacity-90 transition group-hover:opacity-100"
 			/>
 			{caption ? (
-				<span className="text-[10px] font-medium text-gray-500 transition group-hover:text-gray-300">
+				<span className="text-[10px] font-medium text-subtle transition group-hover:text-muted">
 					{caption}
 				</span>
 			) : null}

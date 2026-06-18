@@ -19,7 +19,7 @@ export function SectionDivider({
 		>
 			<div className="h-px flex-1 bg-slate-800/90" />
 			<span
-				className={`shrink-0 text-[10px] font-medium uppercase tracking-[0.12em] text-gray-600 md:text-xs md:tracking-[0.14em] ${labelClassName}`}
+				className={`shrink-0 text-[10px] font-medium uppercase tracking-[0.12em] text-subtle md:text-xs md:tracking-[0.14em] ${labelClassName}`}
 			>
 				{label}
 			</span>
