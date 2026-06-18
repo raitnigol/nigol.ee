@@ -305,6 +305,102 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 	{
 		id: "gigi-dagostino-tecno-fes",
 		spotifyAlbumId: "6gfJJLx4XvS3AkLHFIS457"
+	},
+	{
+		id: "estin-lennata",
+		spotifyAlbumId: null
+	},
+	{
+		id: "kutse-tantsule-14",
+		spotifyAlbumId: null
+	},
+	{
+		id: "mati-nuude-parimad-1",
+		spotifyAlbumId: null
+	},
+	{
+		id: "kutse-tantsule-2",
+		spotifyAlbumId: null
+	},
+	{
+		id: "kutse-tantsule-8",
+		spotifyAlbumId: null
+	},
+	{
+		id: "pets-ja-korsten-parimad-laulud",
+		spotifyAlbumId: null
+	},
+	{
+		id: "42go-miljonari-poeg",
+		spotifyAlbumId: null
+	},
+	{
+		id: "vaido-neigaus-yolo",
+		spotifyAlbumId: "6ToB6w7dsydDwAshBOo5Sq"
+	},
+	{
+		id: "bad-art-kriminoloogia",
+		spotifyAlbumId: "5WJ5yGZHKBUd5u7W82yAC2"
+	},
+	{
+		id: "legendaarne-records-audio-estonian-electronic-music-compilation-album",
+		spotifyAlbumId: null
+	},
+	{
+		id: "carine-jessica-ctrl-alt-del",
+		spotifyAlbumId: "5qFG5RvAPC3PbVHbXWnCf9"
+	},
+	{
+		id: "estin-esimene-lumi",
+		spotifyAlbumId: "0wUrReQhmMUNwQFzCJSZvr"
+	},
+	{
+		id: "catapulta-badminton",
+		spotifyAlbumId: "1fH9kqF0pC5ah8YVNEYstc"
+	},
+	{
+		id: "mati-nuude-75",
+		spotifyAlbumId: "1GhwJCtigN7eqdNEEn2XIr"
+	},
+	{
+		id: "marilyn-jurman-back-to-saturn",
+		spotifyAlbumId: "720ViUzXxJIuvO1G3w5zor"
+	},
+	{
+		id: "fap-vankmen",
+		spotifyAlbumId: null
+	},
+	{
+		id: "milk-maid-yucca",
+		spotifyAlbumId: "1xIEEIKxHeovNz2WDEXzt2"
+	},
+	{
+		id: "ines-kiusatus",
+		spotifyAlbumId: "2UJzLg9QAkDEo2Kf5VWW5O"
+	},
+	{
+		id: "autohitt-2009",
+		spotifyAlbumId: null
+	},
+	{
+		id: "edgar-savisaar-kaunis-maa",
+		spotifyAlbumId: null
+	},
+	{
+		id: "white-buildings-revisited",
+		spotifyAlbumId: null
+	},
+	{
+		id: "benakanister-12-liitrit",
+		spotifyAlbumId: "4nAQMGAxq1RzdnYUUbtN3J"
+	},
+	{
+		id: "pets-ja-korsten-raffa-aal",
+		spotifyAlbumId: null
+	},
+	{
+		id: "paks-matu-ja-roki-15-aastat-liiga-hilja",
+		spotifyAlbumId: "3DxUydeUdVDyAK9Jbac0Y5"
 	}
 ];
 
