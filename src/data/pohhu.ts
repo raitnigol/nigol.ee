@@ -36,6 +36,7 @@ export const pohhuManifestoBeforeCore: string[] = [
 	"{{$.pohhu¥}} is a creative collective from **Tartu, Estonia**, built around artists, makers, friends, and people who kept making things even when there was no clear reason to expect money, attention, or permission.",
 	"Founded in **late 2022**, {{$.pohhu¥}} started as a one-man army. In the beginning it was barely a collective at all. It was a name, an instinct, and a stubborn excuse to keep making things. Tracks, covers, visuals, files, discs, ideas, inside jokes, half-serious plans, and small pieces of culture that felt worth saving before anyone else had decided they mattered.",
 	"The point was never to wait for the industry to notice. The point was to **act like the scene was already worth documenting**.",
+	"In practice, {{$.pohhu¥}} operates on a **fuck around and find out** basis — try the idea, see what happens, and deal with the consequences after.",
 	"The first real expansion came when **Kevilnius** joined in **2023**. What started as one person carrying the name slowly became a wider circle of artists and collaborators. By the end of **2024**, Kevilnius became an official core member during the formation of **Dimensional Records Estonia OÜ**, a more formal label structure created by people already moving inside the {{$.pohhu¥}} world.",
 	"The easiest way to understand the structure is that {{$.pohhu¥}} is the **wider umbrella**. It is the collective, the attitude, the shared history, and the place where the different projects connect. Under that sit names like **Dimensional Records Estonia OÜ** and **’59 Records Mõisavahe**. Some parts are formal. Some parts started as jokes. Some parts became real because people actually put their time, money, work, equipment, files, covers, songs, videos, and sleep into them."
 ];
@@ -58,7 +59,11 @@ export const pohhuManifestoAfterCore: string[] = [
 	"Together, they turned {{$.pohhu¥}} from a name into something people could point at. It became a loose system of artists, aliases, releases, arguments, jokes, designs, plans, and physical objects. A **collective**, a **label family**, and a **friend group**.",
 	"On **11 July 2025**, **jo$er** a.k.a. **Andri J. Hook** joined {{$.pohhu¥}} and became part of the expanding collective.",
 	"As of **2026**, **Benakanister** and **Annupannu** have parted ways with {{$.pohhu¥}}. The rest of the core continues forward.",
-	"Modern digital media has made it normal for art to be measured by stream counts, playlist placement, retention curves, and algorithmic obedience. The machine rewards scale, repetition, and content churn. It does not care whether something meant anything to the people who made it."
+	"Modern digital media has made it normal for art to be measured by stream counts, playlist placement, retention curves, and algorithmic obedience. The machine rewards scale, repetition, and content churn. It does not care whether something meant anything to the people who made it.",
+	"One of the core beliefs behind {{$.pohhu¥}} is that **passion comes before money**.",
+	"Money can follow good work, but it should never be the reason the work exists. If something is made fully, honestly, and with real care behind it, it already has value before anyone pays for it, streams it, books it, or approves it.",
+	"That is also where {{$.pohhu¥}} separates itself from the mainstream machine. A lot of artists can make good money once they become part of that system, but the tradeoff is often **control**. The sound, image, pace, rollout, and even the reason for making things can slowly stop belonging fully to the artist.",
+	"{{$.pohhu¥}} is not against money. We are against **letting money decide what is worth making**."
 ];
 
 export const pohhuPhysicalMediaDivider = "OUR DEDICATION TO PHYSICAL MEDIA";
@@ -82,22 +87,54 @@ export const pohhuFundingModel: string[] = [
 export const pohhuFundedReleasesIntro: string[] = [
 	"{{$.pohhu¥}} operates across audio, video, design, visual culture, marketing, physical media, digital media, and whatever else needs to exist. It is not built to fit cleanly into one category. Sometimes the work is a track. Sometimes it is a tape, a disc, a cover, a video, a campaign, a website, an archive, or some physical trace that proves a moment happened.",
 	"We do more than release things. We **build artifacts**. Tapes, discs, videos, visuals, campaigns, archives, digital objects, and physical media that would otherwise get buried under the feed and forgotten by next week.",
-	"{{$.pohhu¥}} puts back into the scene **before there is even money to put back**. That is the stupid and beautiful part. Passion cannot be priced correctly, and it should not have to justify itself to platforms, distributors, algorithms, or dead-eyed industry logic.",
+	"{{$.pohhu¥}} puts back into the scene **before there is even money to put back**. That is the stupid and beautiful part.",
 	"We believe **small artists** should still be able to leave a **large impact**. Not everything important needs to be optimized, monetized, or reduced to dashboard numbers. **Physical releases**, independent support, and scene-first thinking are how we help artists leave something behind that feels real, lasts longer, and means more than another number on a streaming platform."
 ];
 
 /** Standalone pull line — avoids ** / * parser clashes. */
-export const pohhuManifestoPullquote = "{{$.pohhu¥ exists against that.}}";
+export const pohhuManifestoPullquote =
+	"{{The work has to come from somewhere real first.}}";
 
 export const pohhuManifestoClosing: string[] = [
-	"{{$.pohhu¥}} exists because someone has to **care before the algorithm does**. Someone has to burn the discs, make the covers, upload the files, save the folders, fund the dumb idea, and treat the small artist like they are **already worth documenting**."
+	"Everything else comes after. {{$.pohhu¥}} exists because someone has to **care before the algorithm does**. Someone has to burn the discs, make the covers, upload the files, save the folders, fund the dumb idea, and treat the small artist like they are **already worth documenting**."
 ];
+
+export interface MerchGalleryImage {
+	image: string;
+	alt: string;
+	/** Wide hero — spans full row on md+ */
+	banner?: boolean;
+	title?: string;
+}
+
+/** Shirts / merch — photos live in `public/images/pohhu/merch/` (see README there). */
+export const kevilniusMerch = {
+	title: "Artifact_01 // Project_Panther.exe",
+	eyebrow: "Kevilnius merch",
+	subtitle: "Stanley/Stella heavyweight · 50€ · limited run",
+	body:
+		"**Kevilnius** has shirts for sale. Order on the **Google Form** or message him on **Instagram**.",
+	orderFormUrl: "https://forms.gle/v5saqsBvRHETZmMz9",
+	orderFormLabel: "Order form",
+	instagramUrl: "https://www.instagram.com/kevilnius/",
+	instagramLabel: "Kevilnius on Instagram",
+	gallery: [
+		{
+			image: "/images/pohhu/merch/oll_smoking.jpg",
+			alt: "Friend wearing Kevilnius Artifact_01 shirt"
+		},
+		{
+			image: "/images/pohhu/merch/oll_h6lmadlahti.jpg",
+			alt: "Kevilnius shirt — H6lmadlahti"
+		}
+	] as MerchGalleryImage[]
+};
 
 export const aleksandriPub = {
 	title: "Aleksandri 15",
-	subtitle: "Alexandri Pubi · kesklinn, Tartu",
+	subtitle: "Alexandri Pubi · city centre, Tartu",
 	body:
-		"Almost in the heart of kesklinn — where core {{$.pohhu¥}} members and other significant figures in our orbit meet. Parties hosted by **Gustav Müürimägi** a.k.a. *D.J C.J*.",
+		"**Gustav Müürimägi** threw parties at **Aleksandri 15** in the city centre — his apartment, not a pub, but close enough in spirit. {{$.pohhu¥}} core and the wider orbit kept ending up in the same room.",
 	mapUrl: "https://share.google/Er2h9c2BqqFeoqCIL",
 	mapLinkLabel: "Maps"
 };

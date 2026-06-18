@@ -6,6 +6,7 @@ import {
 	certifiedArtists,
 	fundedReleases,
 	kiviArtShow,
+	kevilniusMerch,
 	pohhuExhibitionsEventsDivider,
 	pohhuFundedReleasesIntro,
 	pohhuFundedReleasesSubsectionTitle,
@@ -365,6 +366,60 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 	);
 }
 
+function KevilniusMerchBlock() {
+	const {
+		title,
+		eyebrow,
+		subtitle,
+		body,
+		orderFormUrl,
+		orderFormLabel,
+		instagramUrl,
+		instagramLabel,
+		gallery
+	} = kevilniusMerch;
+
+	return (
+		<div id="pohhu-kevilnius-merch" className="scroll-anchor mb-10 min-w-0">
+			<p className="text-xs font-bold uppercase tracking-[0.14em] text-subtle">
+				{eyebrow}
+			</p>
+			<h3 className={`${subsectionHeadingClass} mt-1`}>{title}</h3>
+			<p className="mb-6 text-sm text-muted">{subtitle}</p>
+
+			{gallery.length > 0 ? (
+				<ImageLightboxGallery
+					items={gallery}
+					thumbnailFit="contain"
+					thumbnailVariant="bare"
+					className="mb-6 grid-cols-2 gap-4 md:gap-6"
+					dialogLabel="Kevilnius merch photos"
+				/>
+			) : null}
+
+			<div className="prose-readable">
+				<ManifestoParagraph text={body} />
+				<div className="mb-0 flex flex-wrap items-center gap-x-6 gap-y-3">
+					<a
+						href={orderFormUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="focus-ring text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
+					>
+						{orderFormLabel} →
+					</a>
+					<SocialIconLink
+						href={instagramUrl}
+						image={socialPlatformIcons.instagram}
+						label={instagramLabel}
+						caption="Instagram"
+					/>
+				</div>
+			</div>
+		</div>
+	);
+}
+
 export default function PohhuSection() {
 	return (
 		<section className="mb-4" aria-labelledby="pohhu-heading">
@@ -377,6 +432,8 @@ export default function PohhuSection() {
 					will take over the world
 				</p>
 			</h2>
+
+			<KevilniusMerchBlock />
 
 			<SectionDivider label="Manifesto" className="mb-8 mt-0" />
 

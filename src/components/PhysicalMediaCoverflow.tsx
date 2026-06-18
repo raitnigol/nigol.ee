@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
-import Image from "next/future/image";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { EffectCoverflow, Keyboard } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -7,8 +6,7 @@ import type { Swiper as SwiperInstance } from "swiper";
 import useSWR from "swr";
 
 import {
-	physicalMediaCollection,
-	type PhysicalMediaItem
+	physicalMediaCollection
 } from "../data/physicalMedia";
 import { sampleCoverAccent } from "../lib/coverColor";
 import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
@@ -21,37 +19,9 @@ const FALLBACK_ACCENT = "rgb(52 211 153)";
 
 const nowPlayingFetcher = (url: string) => fetch(url).then(res => res.json());
 
-function edgePadding(count: number) {
-	if (count <= 1) return 0;
-	return Math.min(2, Math.floor(count / 2));
-}
-
-function buildSlides(items: PhysicalMediaItem[], pad: number) {
-	if (pad === 0) {
-		return items.map(item => ({ item, slideKey: item.id }));
-	}
-
-	const head = items.slice(-pad);
-	const tail = items.slice(0, pad);
-
-	return [
-		...head.map((item, index) => ({
-			item,
-			slideKey: `head-${item.id}-${index}`
-		})),
-		...items.map(item => ({ item, slideKey: item.id })),
-		...tail.map((item, index) => ({
-			item,
-			slideKey: `tail-${item.id}-${index}`
-		}))
-	];
-}
-
-function toRealIndex(swiperIndex: number, pad: number, total: number) {
-	if (pad === 0) return swiperIndex;
-	if (swiperIndex < pad) return swiperIndex + total - pad;
-	if (swiperIndex >= pad + total) return swiperIndex - pad - total;
-	return swiperIndex - pad;
+function wrapRealIndex(index: number, total: number) {
+	if (total <= 0) return 0;
+	return ((index % total) + total) % total;
 }
 
 function formatAlbumMeta(meta: PhysicalMediaAlbumMeta): string {
@@ -77,11 +47,10 @@ export function PhysicalMediaCoverflow() {
 	const [spotifyLoaded, setSpotifyLoaded] = useState(false);
 	const swiperRef = useRef<SwiperInstance | null>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
+	const realIndexRef = useRef(0);
 
 	const total = physicalMediaCollection.length;
-	const pad = edgePadding(total);
-	const slides = useMemo(() => buildSlides(physicalMediaCollection, pad), [pad]);
-	const initialIndex = pad;
+	const loopEnabled = total > 1;
 
 	const { data: nowPlaying } = useSWR<NowPlayingResponseSuccess>(
 		mounted ? "/api/nowPlaying" : null,
@@ -103,6 +72,15 @@ export function PhysicalMediaCoverflow() {
 	}, []);
 
 	useEffect(() => {
+		if (!mounted) return;
+
+		for (const item of physicalMediaCollection) {
+			const img = new Image();
+			img.src = item.coverImage;
+		}
+	}, [mounted]);
+
+	useEffect(() => {
 		fetch("/api/physicalMedia")
 			.then(res => res.json())
 			.then(data => {
@@ -117,8 +95,6 @@ export function PhysicalMediaCoverflow() {
 		const el = containerRef.current;
 		if (!el || !mounted) return;
 
-		let lastStep = 0;
-
 		const onWheel = (event: WheelEvent) => {
 			const swiper = swiperRef.current;
 			if (!swiper) return;
@@ -128,15 +104,18 @@ export function PhysicalMediaCoverflow() {
 
 			event.preventDefault();
 
-			const now = Date.now();
-			if (now - lastStep < 50) return;
-			lastStep = now;
+			const direction = event.deltaY > 0 ? 1 : -1;
+			const next = wrapRealIndex(realIndexRef.current + direction, total);
+			const speed = swiper.animating ? 120 : 200;
 
-			if (event.deltaY > 0) {
-				swiper.slideNext();
+			realIndexRef.current = next;
+
+			if (loopEnabled) {
+				swiper.slideToLoop(next, speed);
 				return;
 			}
-			swiper.slidePrev();
+
+			swiper.slideTo(next, speed);
 		};
 
 		el.addEventListener("wheel", onWheel, { passive: false });
@@ -180,23 +159,17 @@ export function PhysicalMediaCoverflow() {
 	};
 
 	const goToSlide = (index: number) => {
-		swiperRef.current?.slideTo(index + pad);
-	};
+		const swiper = swiperRef.current;
+		if (!swiper) return;
 
-	const fixLoopPosition = (swiper: SwiperInstance) => {
-		if (pad === 0) return;
+		realIndexRef.current = index;
 
-		let index = swiper.activeIndex;
-
-		if (index < pad) {
-			index += total;
-			swiper.slideTo(index, 0, false);
-		} else if (index >= pad + total) {
-			index -= total;
-			swiper.slideTo(index, 0, false);
+		if (loopEnabled) {
+			swiper.slideToLoop(index);
+			return;
 		}
 
-		setActiveIndex(toRealIndex(index, pad, total));
+		swiper.slideTo(index);
 	};
 
 	return (
@@ -209,16 +182,7 @@ export function PhysicalMediaCoverflow() {
 				} as Record<string, string>
 			}
 		>
-			<div
-				className={[
-					"album-coverflow__stage",
-					nowPlayingOwned && nowPlaying?.isPlayingNow
-						? "album-coverflow__stage--now-playing"
-						: ""
-				]
-					.filter(Boolean)
-					.join(" ")}
-			>
+			<div className="album-coverflow__stage">
 				<div className="album-coverflow__stage-glow" aria-hidden />
 
 				{nowPlayingOwned &&
@@ -275,9 +239,13 @@ export function PhysicalMediaCoverflow() {
 					effect="coverflow"
 					grabCursor
 					centeredSlides
+					loop={loopEnabled}
+					loopAdditionalSlides={2}
+					loopPreventsSliding={false}
+					preventInteractionOnTransition={false}
 					slideToClickedSlide
 					watchSlidesProgress
-					speed={280}
+					speed={200}
 					keyboard={{ enabled: true }}
 					spaceBetween={20}
 					breakpoints={{
@@ -290,33 +258,31 @@ export function PhysicalMediaCoverflow() {
 							spaceBetween: 20
 						}
 					}}
-					initialSlide={initialIndex}
+					initialSlide={0}
 					coverflowEffect={{
 						rotate: 22,
-						stretch: 10,
+						stretch: 6,
 						depth: 40,
 						modifier: 1,
 						slideShadows: false
 					}}
 					onSwiper={(swiper: SwiperInstance) => {
 						swiperRef.current = swiper;
-						swiper.slideTo(initialIndex, 0, false);
+						realIndexRef.current = 0;
 						setActiveIndex(0);
 					}}
 					onSlideChange={(swiper: SwiperInstance) => {
-						setActiveIndex(toRealIndex(swiper.activeIndex, pad, total));
-					}}
-					onSlideChangeTransitionEnd={(swiper: SwiperInstance) => {
-						fixLoopPosition(swiper);
+						realIndexRef.current = swiper.realIndex;
+						setActiveIndex(swiper.realIndex);
 					}}
 				>
-					{slides.map(({ item, slideKey }, index) => {
+					{physicalMediaCollection.map(item => {
 						const isNowPlayingCd =
 							nowPlayingOwned?.id === item.id && nowPlaying?.isPlayingNow;
 
 						return (
 							<SwiperSlide
-								key={slideKey}
+								key={item.id}
 								className={
 									isNowPlayingCd
 										? "album-coverflow__slide album-coverflow__slide--now-playing"
@@ -324,13 +290,15 @@ export function PhysicalMediaCoverflow() {
 								}
 							>
 								<div className="album-coverflow__cover">
-									<Image
+									<img
 										src={item.coverImage}
 										alt={`${item.title} cover`}
 										width={600}
 										height={600}
-										className="album-coverflow__image"
-										priority={index >= pad && index < pad + 2}
+										className="album-coverflow__cover-image"
+										loading="eager"
+										decoding="async"
+										draggable={false}
 									/>
 								</div>
 							</SwiperSlide>

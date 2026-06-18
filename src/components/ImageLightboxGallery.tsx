@@ -20,6 +20,10 @@ interface ImageLightboxGalleryProps {
 	items: LightboxGalleryItem[];
 	className?: string;
 	dialogLabel?: string;
+	/** Thumbnail crop — `contain` shows the full image without zooming in. */
+	thumbnailFit?: "cover" | "contain";
+	/** `bare` — no border, padding, or background on thumbnails. */
+	thumbnailVariant?: "card" | "bare";
 	/** Rendered below the banner thumbnail (item with `banner: true`). */
 	bannerFooter?: ComponentChild;
 	/** Shown before the first non-banner image when a banner precedes photos. */
@@ -45,16 +49,48 @@ function GalleryPhotosStartMarker({ label }: { label: string }) {
 
 function GalleryThumbnail({
 	item,
-	onOpen
+	onOpen,
+	fit = "cover",
+	variant = "card"
 }: {
 	item: LightboxGalleryItem;
 	onOpen: () => void;
+	fit?: "cover" | "contain";
+	variant?: "card" | "bare";
 }) {
+	if (fit === "contain") {
+		return (
+			<button
+				type="button"
+				onClick={onOpen}
+				className={
+					variant === "bare"
+						? "focus-ring block w-full cursor-zoom-in border-0 bg-transparent p-0 text-left"
+						: "focus-ring block w-full cursor-zoom-in rounded-lg border border-slate-800 bg-slate-900 p-2 text-left transition hover:border-slate-700"
+				}
+				aria-label={`Open image: ${item.alt}`}
+			>
+				<img
+					src={item.image}
+					alt={item.alt}
+					width={1200}
+					height={1200}
+					className={`block h-auto w-full ${
+						variant === "bare" ? "rounded-md" : "mx-auto"
+					}`}
+					loading="lazy"
+					decoding="async"
+					draggable={false}
+				/>
+			</button>
+		);
+	}
+
 	return (
 		<button
 			type="button"
 			onClick={onOpen}
-			className={`focus-ring group w-full cursor-zoom-in overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 text-left ring-1 ring-inset ring-white/5 transition hover:border-violet-500/35 ${
+			className={`focus-ring group w-full cursor-zoom-in overflow-hidden rounded-lg border border-slate-800 bg-slate-900 text-left transition hover:border-slate-700 ${
 				item.banner
 					? "relative aspect-[2/1] w-full"
 					: "relative aspect-square w-full"
@@ -66,7 +102,7 @@ function GalleryThumbnail({
 				alt={item.alt}
 				width={800}
 				height={item.banner ? 400 : 800}
-				className="h-full w-full object-cover transition group-hover:brightness-110"
+				className="h-full w-full object-cover"
 			/>
 		</button>
 	);
@@ -76,6 +112,8 @@ export function ImageLightboxGallery({
 	items,
 	className = "mb-10",
 	dialogLabel = "Image gallery",
+	thumbnailFit = "cover",
+	thumbnailVariant = "card",
 	bannerFooter,
 	photosStartLabel
 }: ImageLightboxGalleryProps) {
@@ -180,6 +218,8 @@ export function ImageLightboxGallery({
 									<GalleryThumbnail
 										item={item}
 										onOpen={() => setOpenIndex(index)}
+										fit={thumbnailFit}
+										variant={thumbnailVariant}
 									/>
 									{item.banner && bannerFooter ? (
 										<div className="mt-3">{bannerFooter}</div>
