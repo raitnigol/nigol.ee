@@ -649,12 +649,18 @@
 
 .album-coverflow {
 	--album-accent: rgb(52 211 153);
+	--cover-slot: min(88vw, 22rem);
 
 	position: relative;
 	min-width: 0;
 
+	@media (min-width: 768px) {
+		--cover-slot: clamp(16rem, 24vw, 24rem);
+	}
+
 	&__stage {
 		position: relative;
+		min-height: calc(var(--cover-slot) + 5.6rem);
 		padding-top: 2.35rem;
 		padding-bottom: 2.5rem;
 	}
@@ -678,13 +684,27 @@
 		position: relative;
 		z-index: 1;
 		width: 100%;
+		height: var(--cover-slot);
 		margin-inline: auto;
-		padding-block: 1.5rem 1rem;
+		padding-block: 2rem 1.25rem;
 		overflow: visible;
+
+		.swiper-wrapper {
+			align-items: center;
+			height: 100%;
+		}
+
+		.swiper-slide {
+			display: flex;
+			width: var(--cover-slot);
+			height: var(--cover-slot);
+			align-items: center;
+			justify-content: center;
+			overflow: visible;
+		}
 	}
 
 	&__slide {
-		height: auto;
 		opacity: 0.5;
 		transition: opacity 0.35s ease;
 
@@ -787,15 +807,21 @@
 
 	&__cover {
 		position: relative;
-		width: 100%;
-		aspect-ratio: 1;
+		flex-shrink: 0;
+		width: var(--cover-slot);
+		height: var(--cover-slot);
 		overflow: hidden;
 		border-radius: 0.3rem;
 		box-shadow: 0 10px 32px rgb(0 0 0 / 50%);
-		transition: box-shadow 0.35s ease;
+		transform: scale(0.86);
+		transform-origin: center center;
+		transition:
+			box-shadow 0.35s ease,
+			transform 0.35s ease;
 	}
 
 	.swiper-slide-active .album-coverflow__cover {
+		transform: scale(1);
 		box-shadow:
 			0 20px 48px rgb(0 0 0 / 55%),
 			0 0 36px color-mix(in srgb, var(--album-accent) 42%, transparent);
@@ -898,7 +924,7 @@
 	}
 
 	&__footer {
-		max-width: 28rem;
+		max-width: 36rem;
 		margin-inline: auto;
 		padding-inline: 0.5rem;
 	}
@@ -912,10 +938,10 @@
 	&__progress-track {
 		position: relative;
 		flex: 1;
-		height: 2px;
+		height: 3px;
 		border-radius: 999px;
 		background: rgb(255 255 255 / 14%);
-		overflow: visible;
+		overflow: hidden;
 	}
 
 	&__progress-fill {
@@ -930,60 +956,6 @@
 		transform-origin: left center;
 		transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 		box-shadow: 0 0 14px color-mix(in srgb, var(--album-accent) 50%, transparent);
-	}
-
-	&__progress-ticks {
-		position: absolute;
-		inset: -0.55rem 0 auto;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		pointer-events: none;
-	}
-
-	&__progress-tick {
-		position: relative;
-		width: 0.5rem;
-		height: 0.5rem;
-		margin: 0;
-		padding: 0;
-		border: 0;
-		border-radius: 999px;
-		background: rgb(255 255 255 / 22%);
-		pointer-events: auto;
-		cursor: pointer;
-		transition:
-			transform 0.25s ease,
-			background-color 0.25s ease,
-			box-shadow 0.25s ease;
-
-		&--passed {
-			background: color-mix(in srgb, var(--album-accent) 50%, transparent);
-		}
-
-		&--active {
-			transform: scale(1.35);
-			background: color-mix(in srgb, var(--album-accent) 75%, white);
-			box-shadow: 0 0 0 3px color-mix(in srgb, var(--album-accent) 28%, transparent);
-		}
-
-		&--now-playing {
-			box-shadow: 0 0 0 2px color-mix(in srgb, var(--album-accent) 45%, #6ee7b7);
-		}
-
-		&--now-playing#{&}--active {
-			box-shadow:
-				0 0 0 3px color-mix(in srgb, var(--album-accent) 28%, transparent),
-				0 0 0 5px color-mix(in srgb, var(--album-accent) 22%, #6ee7b7);
-		}
-
-		&:hover {
-			background: rgb(255 255 255 / 42%);
-		}
-
-		&--active:hover {
-			background: color-mix(in srgb, var(--album-accent) 85%, white);
-		}
 	}
 
 	&__progress-count {
@@ -1008,35 +980,49 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		min-height: 11.75rem;
+		min-height: 14.5rem;
 		margin-top: 1.25rem;
 		text-align: center;
-		animation: album-caption-in 0.35s ease;
 	}
 
 	&__title {
-		min-height: 2.75rem;
-		font-size: 1.125rem;
+		display: -webkit-box;
+		min-height: 3.25rem;
+		overflow: hidden;
+		font-size: 1.25rem;
 		font-weight: 700;
-		line-height: 1.25;
+		line-height: 1.3;
 		color: #fff;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
 	}
 
 	&__artist {
-		min-height: 1.375rem;
-		margin-top: 0.25rem;
-		font-size: 0.875rem;
+		display: -webkit-box;
+		min-height: 2.75rem;
+		margin-top: 0.35rem;
+		overflow: hidden;
+		font-size: 0.9375rem;
 		line-height: 1.35;
 		color: var(--text-muted);
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
 	}
 
 	&__meta {
-		min-height: 1.3125rem;
-		margin-top: 0.65rem;
-		font-size: 0.8125rem;
-		line-height: 1.35;
+		display: -webkit-box;
+		min-height: 2.75rem;
+		margin-top: 0.75rem;
+		overflow: hidden;
+		font-size: 0.875rem;
+		line-height: 1.4;
 		letter-spacing: 0.02em;
 		color: var(--text-muted);
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
 
 		&--loading {
 			color: var(--text-subtle);
@@ -1044,11 +1030,16 @@
 	}
 
 	&__copyright {
-		min-height: 3rem;
-		margin-top: 0.35rem;
-		font-size: 0.6875rem;
+		display: -webkit-box;
+		min-height: 4.5rem;
+		margin-top: 0.5rem;
+		overflow: hidden;
+		font-size: 0.75rem;
 		line-height: 1.45;
 		color: var(--text-subtle);
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		line-clamp: 3;
 	}
 
 	&__spotify-link-slot {

@@ -190,30 +190,24 @@ export function PhysicalMediaCoverflow() {
 					rewind={canNavigate}
 					slideToClickedSlide
 					watchSlidesProgress
-					speed={300}
-					preventInteractionOnTransition
+					speed={220}
 					keyboard={{ enabled: true }}
 					mousewheel={{
 						forceToAxis: true,
 						releaseOnEdges: true,
 						thresholdDelta: 20
 					}}
-					spaceBetween={20}
-					slidesPerView={3}
+					spaceBetween={14}
+					slidesPerView="auto"
 					breakpoints={{
-						0: {
-							slidesPerView: 1,
-							spaceBetween: 24
-						},
 						768: {
-							slidesPerView: 3,
-							spaceBetween: 20
+							spaceBetween: 22
 						}
 					}}
 					coverflowEffect={{
-						rotate: 22,
-						stretch: 6,
-						depth: 40,
+						rotate: 24,
+						stretch: 4,
+						depth: 44,
 						modifier: 1,
 						slideShadows: false
 					}}
@@ -221,6 +215,7 @@ export function PhysicalMediaCoverflow() {
 						swiperRef.current = swiper;
 						syncActiveIndex(swiper);
 					}}
+					onSlideChange={syncActiveIndex}
 					onSlideChangeTransitionEnd={syncActiveIndex}
 				>
 					{listedPhysicalMediaCollection.map(item => {
@@ -297,34 +292,6 @@ export function PhysicalMediaCoverflow() {
 								className="album-coverflow__progress-fill"
 								style={{ transform: `scaleX(${progress})` }}
 							/>
-							<div className="album-coverflow__progress-ticks">
-								{listedPhysicalMediaCollection.map((item, index) => (
-									<button
-										key={item.id}
-										type="button"
-										className={[
-											"album-coverflow__progress-tick",
-											index === activeIndex
-												? "album-coverflow__progress-tick--active"
-												: "",
-											index < activeIndex
-												? "album-coverflow__progress-tick--passed"
-												: "",
-											index === nowPlayingIndex &&
-											nowPlaying?.isPlayingNow
-												? "album-coverflow__progress-tick--now-playing"
-												: ""
-										]
-											.filter(Boolean)
-											.join(" ")}
-										aria-label={`${spotifyMeta[item.id]?.name ?? item.title ?? item.id}${
-											index === activeIndex ? " (current)" : ""
-										}`}
-										aria-current={index === activeIndex ? "true" : undefined}
-										onClick={() => goToSlide(index)}
-									/>
-								))}
-							</div>
 						</div>
 						<p className="album-coverflow__progress-count">
 							<span className="album-coverflow__progress-current">
@@ -335,7 +302,7 @@ export function PhysicalMediaCoverflow() {
 						</p>
 					</div>
 
-					<div className="album-coverflow__caption" key={activeItem.id}>
+					<div className="album-coverflow__caption">
 						<p className="album-coverflow__title">
 							{activeSpotify?.name ?? activeItem.title ?? "\u00a0"}
 						</p>
