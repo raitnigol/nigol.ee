@@ -402,6 +402,8 @@
 
 	&__cover {
 		position: relative;
+		width: 94%;
+		margin-inline: auto;
 		aspect-ratio: 1;
 		overflow: hidden;
 		border-radius: 0.3rem;
@@ -607,26 +609,36 @@
 	}
 
 	&__caption {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		min-height: 11.75rem;
 		margin-top: 1.25rem;
 		text-align: center;
 		animation: album-caption-in 0.35s ease;
 	}
 
 	&__title {
+		min-height: 2.75rem;
 		font-size: 1.125rem;
 		font-weight: 700;
+		line-height: 1.25;
 		color: #fff;
 	}
 
 	&__artist {
+		min-height: 1.375rem;
 		margin-top: 0.25rem;
 		font-size: 0.875rem;
+		line-height: 1.35;
 		color: var(--text-muted);
 	}
 
 	&__meta {
+		min-height: 1.3125rem;
 		margin-top: 0.65rem;
 		font-size: 0.8125rem;
+		line-height: 1.35;
 		letter-spacing: 0.02em;
 		color: var(--text-muted);
 
@@ -636,15 +648,20 @@
 	}
 
 	&__copyright {
+		min-height: 3rem;
 		margin-top: 0.35rem;
 		font-size: 0.6875rem;
 		line-height: 1.45;
 		color: var(--text-subtle);
 	}
 
+	&__spotify-link-slot {
+		min-height: 1.25rem;
+		margin: 0.85rem 0 0;
+	}
+
 	&__spotify-link {
 		display: inline-block;
-		margin-top: 0.85rem;
 		font-size: 0.8125rem;
 		font-weight: 600;
 		color: color-mix(in srgb, var(--album-accent) 72%, #6ee7b7);
@@ -657,6 +674,11 @@
 		&:hover {
 			color: color-mix(in srgb, var(--album-accent) 85%, white);
 			border-color: color-mix(in srgb, var(--album-accent) 55%, transparent);
+		}
+
+		&--placeholder {
+			visibility: hidden;
+			pointer-events: none;
 		}
 	}
 }
@@ -988,9 +1010,6 @@
 		top: 0.3rem;
 		left: 50%;
 		z-index: 1;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.3rem;
 		padding: 0.2rem 0.5rem;
 		border: 1px solid rgb(110 231 183 / 35%);
 		border-radius: 999px;
@@ -1014,6 +1033,12 @@
 			border-color: rgb(110 231 183 / 55%);
 			color: #d1fae5;
 		}
+	}
+
+	&__shelf-link-inner {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
 	}
 
 	&__shelf-disc {

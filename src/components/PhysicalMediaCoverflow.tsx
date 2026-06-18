@@ -279,21 +279,21 @@ export function PhysicalMediaCoverflow() {
 					watchSlidesProgress
 					speed={280}
 					keyboard={{ enabled: true }}
-					spaceBetween={16}
+					spaceBetween={20}
 					breakpoints={{
 						0: {
 							slidesPerView: 1,
-							spaceBetween: 24
+							spaceBetween: 28
 						},
 						768: {
 							slidesPerView: 3,
-							spaceBetween: 16
+							spaceBetween: 20
 						}
 					}}
 					initialSlide={initialIndex}
 					coverflowEffect={{
 						rotate: 22,
-						stretch: 4,
+						stretch: 10,
 						depth: 40,
 						modifier: 1,
 						slideShadows: false
@@ -409,22 +409,30 @@ export function PhysicalMediaCoverflow() {
 						<p className="album-coverflow__title">
 							{activeSpotify?.name ?? activeItem.title}
 						</p>
-						{(activeSpotify?.artists ?? activeItem.artists) ? (
-							<p className="album-coverflow__artist">
-								{activeSpotify?.artists ?? activeItem.artists}
-							</p>
-						) : null}
-
-						{activeSpotify ? (
-							<>
-								<p className="album-coverflow__meta">
-									{formatAlbumMeta(activeSpotify)}
-								</p>
-								{activeSpotify.copyright ? (
-									<p className="album-coverflow__copyright">
-										{activeSpotify.copyright}
-									</p>
-								) : null}
+						<p className="album-coverflow__artist">
+							{activeSpotify?.artists ?? activeItem.artists ?? "\u00a0"}
+						</p>
+						<p
+							className={
+								activeSpotify
+									? "album-coverflow__meta"
+									: "album-coverflow__meta album-coverflow__meta--loading"
+							}
+						>
+							{activeSpotify
+								? formatAlbumMeta(activeSpotify)
+								: spotifyLoaded
+									? "\u00a0"
+									: "Loading album details…"}
+						</p>
+						<p
+							className="album-coverflow__copyright"
+							aria-hidden={!activeSpotify?.copyright}
+						>
+							{activeSpotify?.copyright ?? "\u00a0"}
+						</p>
+						<p className="album-coverflow__spotify-link-slot">
+							{activeSpotify ? (
 								<a
 									href={activeSpotify.spotifyUrl}
 									target="_blank"
@@ -433,12 +441,15 @@ export function PhysicalMediaCoverflow() {
 								>
 									Listen on Spotify
 								</a>
-							</>
-						) : spotifyLoaded ? null : (
-							<p className="album-coverflow__meta album-coverflow__meta--loading">
-								Loading album details…
-							</p>
-						)}
+							) : (
+								<span
+									className="album-coverflow__spotify-link album-coverflow__spotify-link--placeholder"
+									aria-hidden
+								>
+									Listen on Spotify
+								</span>
+							)}
+						</p>
 					</div>
 				</div>
 			) : null}

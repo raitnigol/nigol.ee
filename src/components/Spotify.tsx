@@ -103,8 +103,10 @@ export default function Spotify() {
 						className="spotify-widget__shelf-link focus-ring"
 						aria-label="This album is on my CD shelf"
 					>
-						<span className="spotify-widget__shelf-disc" aria-hidden />
-						<span>On shelf</span>
+						<span className="spotify-widget__shelf-link-inner">
+							<span className="spotify-widget__shelf-disc" aria-hidden />
+							<span>On shelf</span>
+						</span>
 					</Link>
 				) : null}
 			</div>
