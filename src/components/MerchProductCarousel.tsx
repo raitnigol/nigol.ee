@@ -11,6 +11,8 @@ import type { Swiper as SwiperInstance } from "swiper";
 
 import "swiper/swiper-bundle.css";
 
+const MERCH_IMAGE_SIZES = "(min-width: 1280px) 40vw, (min-width: 1024px) 50vw, 100vw";
+
 export interface MerchCarouselImage {
 	image: string;
 	alt: string;
@@ -173,14 +175,15 @@ export function MerchProductCarousel({
 									onClick={() => setOpenIndex(index)}
 									aria-label={`Open image: ${item.alt}`}
 								>
-									<img
+									<Image
 										src={item.image}
 										alt={item.alt}
-										width={1200}
-										height={1500}
+										width={800}
+										height={1000}
+										priority={index === 0}
+										loading={index === 0 ? undefined : "lazy"}
+										sizes={MERCH_IMAGE_SIZES}
 										className="merch-product-carousel__img"
-										loading={index === 0 ? "eager" : "lazy"}
-										decoding="async"
 										draggable={false}
 									/>
 								</button>
@@ -194,14 +197,14 @@ export function MerchProductCarousel({
 						onClick={() => setOpenIndex(0)}
 						aria-label={`Open image: ${items[0].alt}`}
 					>
-						<img
+						<Image
 							src={items[0].image}
 							alt={items[0].alt}
-							width={1200}
-							height={1500}
+							width={800}
+							height={1000}
+							priority
+							sizes={MERCH_IMAGE_SIZES}
 							className="merch-product-carousel__img"
-							loading="eager"
-							decoding="async"
 							draggable={false}
 						/>
 					</button>

@@ -1,7 +1,21 @@
+import type { GetStaticProps } from "next";
+import fs from "fs";
+import path from "path";
+
 import GenericMeta from "../components/GenericMeta";
 import PohhuSection from "../components/PohhuSection";
+import type { SpotifyArtistsMetaFile } from "../lib/spotifyArtistMeta";
 
-export default function Music() {
+const ARTISTS_META_FILE = path.join(
+	process.cwd(),
+	"data/generated/spotifyArtistsMeta.json"
+);
+
+type MusicPageProps = {
+	artistMeta: SpotifyArtistsMetaFile;
+};
+
+export default function Music({ artistMeta }: MusicPageProps) {
 	return (
 		<>
 			<GenericMeta
@@ -10,7 +24,25 @@ export default function Music() {
 				path="/music"
 			/>
 
-			<PohhuSection />
+			<PohhuSection artistMeta={artistMeta} />
 		</>
 	);
 }
+
+export const getStaticProps: GetStaticProps<MusicPageProps> = async () => {
+	if (!fs.existsSync(ARTISTS_META_FILE)) {
+		throw new Error(
+			`Missing ${ARTISTS_META_FILE}. Run: npm run spotify:sync`
+		);
+	}
+
+	const artistMeta = JSON.parse(
+		fs.readFileSync(ARTISTS_META_FILE, "utf8")
+	) as SpotifyArtistsMetaFile;
+
+	return {
+		props: {
+			artistMeta
+		}
+	};
+};

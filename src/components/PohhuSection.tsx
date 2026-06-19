@@ -27,12 +27,14 @@ import {
 import { socialPlatformIcons } from "../data/socials";
 import { FormattedText } from "./FormattedText";
 import { ImageLightboxGallery } from "./ImageLightboxGallery";
-import { MerchProductCarousel } from "./MerchProductCarousel";
+import { MerchProductCarouselLazy } from "./MerchProductCarouselLazy";
 import { PohhuLogoReveal } from "./PohhuLogoReveal";
 import { SectionDivider } from "./SectionDivider";
 import { SocialIconLink } from "./SocialIconLink";
-import { getArtistImageUrl } from "../lib/spotify";
-import type { SpotifyArtistResponseSuccess } from "../pages/api/spotifyArtist";
+import type {
+	SpotifyArtistMeta,
+	SpotifyArtistsMetaFile
+} from "../lib/spotifyArtistMeta";
 
 function formatFollowers(count: number) {
 	return new Intl.NumberFormat("en-US").format(count);
@@ -87,6 +89,8 @@ function LocalCoverImage({
 			alt={alt}
 			width={400}
 			height={400}
+			sizes="(min-width: 768px) 50vw, 100vw"
+			loading="lazy"
 			className={className}
 			onError={() => setFailed(true)}
 		/>
@@ -255,31 +259,22 @@ function SpotifyPlaylistEmbed({
 	);
 }
 
-function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
-	const [artist, setArtist] = useState<SpotifyArtistResponseSuccess | null>(
-		null
-	);
-
-	useEffect(() => {
-		fetch(`/api/spotifyArtist?id=${profile.spotifyId}`)
-			.then(res => res.json())
-			.then(data => {
-				if (data.error) return;
-				setArtist(data);
-			})
-			.catch(console.error);
-	}, [profile.spotifyId]);
-
-	const spotifyImageUrl = getArtistImageUrl(artist);
+function CertifiedArtistCard({
+	profile,
+	artist
+}: {
+	profile: CertifiedArtistProfile;
+	artist?: SpotifyArtistMeta;
+}) {
+	const spotifyUrl =
+		artist?.spotifyUrl ??
+		`https://open.spotify.com/artist/${profile.spotifyId}`;
+	const spotifyImageUrl = artist?.imageUrl ?? null;
 	const [photoSrc, setPhotoSrc] = useState(profile.profileImage);
 
 	useEffect(() => {
 		setPhotoSrc(profile.profileImage);
 	}, [profile.profileImage]);
-
-	const spotifyUrl =
-		artist?.external_urls.spotify ??
-		`https://open.spotify.com/artist/${profile.spotifyId}`;
 
 	const handlePhotoError = () => {
 		if (photoSrc === profile.profileImage && spotifyImageUrl) {
@@ -289,6 +284,7 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 
 	const imageSrc = photoSrc || spotifyImageUrl;
 	const useSpotifyCdn = imageSrc?.startsWith("http") ?? false;
+	const artistName = artist?.name;
 
 	return (
 		<div className="space-y-6">
@@ -298,9 +294,11 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 					{imageSrc ? (
 						<Image
 							src={imageSrc}
-							alt={artist?.name ?? "Artist"}
-							width={512}
-							height={512}
+							alt={artistName ?? "Artist"}
+							width={300}
+							height={300}
+							sizes="(min-width: 1024px) 16rem, (min-width: 768px) 14rem, 100vw"
+							loading="lazy"
 							unoptimized={useSpotifyCdn}
 							className="h-full w-full object-cover"
 							onError={handlePhotoError}
@@ -321,13 +319,13 @@ function CertifiedArtistCard({ profile }: { profile: CertifiedArtistProfile }) {
 								rel="noopener noreferrer"
 								className="focus-ring text-white border-b border-transparent hover:border-violet-400 transition-colors"
 							>
-								{artist?.name ?? "…"}
+								{artistName ?? "…"}
 							</a>
 						</h4>
 						{artist ? (
 							<p className="mt-2 text-sm text-muted">
 								<span className="text-secondary">
-									{formatFollowers(artist.followers.total)}
+									{formatFollowers(artist.followers)}
 								</span>{" "}
 								followers on Spotify
 								{artist.genres.length > 0 ? (
@@ -388,7 +386,7 @@ function KevilniusMerchBlock() {
 			<div className="merch-product-layout lg:grid lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-14">
 				{gallery.length > 0 ? (
 					<figure className="photo-credit min-w-0">
-						<MerchProductCarousel
+						<MerchProductCarouselLazy
 							items={gallery}
 							dialogLabel="Kevilnius merch photos"
 						/>
@@ -465,7 +463,11 @@ function KevilniusMerchBlock() {
 	);
 }
 
-export default function PohhuSection() {
+export default function PohhuSection({
+	artistMeta
+}: {
+	artistMeta: SpotifyArtistsMetaFile;
+}) {
 	return (
 		<section className="mb-4" aria-labelledby="pohhu-heading">
 			<h2 id="pohhu-heading" className="mb-8 text-center">
@@ -612,6 +614,7 @@ export default function PohhuSection() {
 					<CertifiedArtistCard
 						key={profile.spotifyId}
 						profile={profile}
+						artist={artistMeta.artists[profile.spotifyId]}
 					/>
 				))}
 			</div>

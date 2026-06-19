@@ -1,19 +1,21 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Spotify from "spotify-web-api-node";
+import fs from "fs";
+import path from "path";
 
-export type SpotifyArtistResponseSuccess = SpotifyApi.ArtistObjectFull;
+import type { SpotifyArtistMeta } from "../../lib/spotifyArtistMeta";
+
+export type SpotifyArtistResponseSuccess = SpotifyArtistMeta;
 export type SpotifyArtistResponseError = { error: unknown };
 export type SpotifyArtistResponse =
 	| SpotifyArtistResponseSuccess
 	| SpotifyArtistResponseError;
 
-const api = new Spotify({
-	clientId: process.env.SPOTIFY_CLIENT_ID,
-	clientSecret: process.env.SPOTIFY_CLIENT_SECRET
-});
-let expirationTime = 0;
+const META_FILE = path.join(
+	process.cwd(),
+	"data/generated/spotifyArtistsMeta.json"
+);
 
-export default async function handler(
+export default function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<SpotifyArtistResponse>
 ) {
@@ -30,20 +32,27 @@ export default async function handler(
 	}
 
 	try {
-		if (Date.now() > expirationTime) {
-			const response = await api.clientCredentialsGrant();
-			api.setAccessToken(response.body.access_token);
-
-			expirationTime = Date.now() + response.body.expires_in * 1000;
+		if (!fs.existsSync(META_FILE)) {
+			throw new Error(
+				`Missing generated metadata at ${META_FILE}. Run: npm run spotify:sync`
+			);
 		}
 
-		const response = await api.getArtist(id);
+		const raw = fs.readFileSync(META_FILE, "utf8");
+		const data = JSON.parse(raw) as { artists?: Record<string, SpotifyArtistMeta> };
+		const meta = data.artists?.[id];
+
+		if (!meta) {
+			res.status(404).json({ error: `Artist metadata not found for "${id}".` });
+			return;
+		}
+
 		res.setHeader(
 			"Cache-Control",
 			"public, s-maxage=3600, stale-while-revalidate=86400"
 		);
-		res.status(200).json(response.body);
+		res.status(200).json(meta);
 	} catch (err) {
-		res.status(500).json({ error: (err as any)?.message });
+		res.status(500).json({ error: (err as Error).message });
 	}
 }

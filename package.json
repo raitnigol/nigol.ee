@@ -13,7 +13,7 @@
 		"lint": "next lint",
 		"build": "next build",
 		"start": "next start",
-		"spotify:sync": "tsx scripts/fetch-physical-media-metadata.ts"
+		"spotify:sync": "tsx scripts/fetch-spotify-artists-metadata.ts && tsx scripts/fetch-physical-media-metadata.ts"
 	},
 	"dependencies": {
 		"@heroicons/react": "^1.0.6",
