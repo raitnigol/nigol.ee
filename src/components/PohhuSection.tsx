@@ -379,19 +379,32 @@ function KevilniusMerchBlock() {
 		orderFormLabel,
 		instagramUrl,
 		instagramLabel,
+		modelCredit,
 		gallery
 	} = kevilniusMerch;
 
 	return (
 		<div id="pohhu-kevilnius-merch" className="scroll-anchor mb-10 min-w-0">
-			<div className="merch-product-layout lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-10 xl:gap-14">
+			<div className="merch-product-layout lg:grid lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-14">
 				{gallery.length > 0 ? (
-					<div className="merch-product-layout__media min-w-0">
+					<figure className="photo-credit min-w-0">
 						<MerchProductCarousel
 							items={gallery}
 							dialogLabel="Kevilnius merch photos"
 						/>
-					</div>
+						{modelCredit ? (
+							<figcaption>
+								<a
+									href={modelCredit.instagramUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="focus-ring"
+								>
+									{modelCredit.name} / @{modelCredit.instagramHandle}
+								</a>
+							</figcaption>
+						) : null}
+					</figure>
 				) : null}
 
 				<div

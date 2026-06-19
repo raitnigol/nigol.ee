@@ -134,6 +134,11 @@ export const kevilniusMerch = {
 	orderFormLabel: "Order via Google Forms",
 	instagramUrl: "https://www.instagram.com/kevilnius/",
 	instagramLabel: "Kevilnius on Instagram",
+	modelCredit: {
+		name: "Oliver Ode",
+		instagramHandle: "odenaator",
+		instagramUrl: "https://www.instagram.com/odenaator/"
+	},
 	gallery: [
 		{
 			image: "/images/pohhu/merch/oll_smoking.jpg",

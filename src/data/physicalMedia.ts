@@ -3,7 +3,7 @@ export interface PhysicalMediaItem {
 	/** Optional fallback when Spotify metadata is unavailable. */
 	title?: string;
 	artists?: string;
-	/** Spotify album or track ID — metadata and cover art via `/api/physicalMedia`. */
+	/** Spotify album or track ID — synced via `npm run spotify:sync`. */
 	spotifyAlbumId?: string | null;
 	/** Spotify podcast/audiobook show ID when the item is not an album. */
 	spotifyShowId?: string | null;

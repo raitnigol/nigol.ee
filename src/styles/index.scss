@@ -454,10 +454,41 @@
 
 	.merch-product-layout {
 		@media (min-width: 1024px) {
-			&__media {
+			.photo-credit {
 				display: flex;
-				min-width: 0;
+				flex-direction: column;
+				flex: 1;
 				min-height: 0;
+			}
+		}
+	}
+
+	.photo-credit {
+		margin: 0;
+
+		.merch-product-carousel__dots {
+			margin-top: 0.65rem;
+		}
+
+		figcaption {
+			margin-top: 0.2rem;
+			font-size: 0.8125rem;
+			line-height: 1.5;
+			color: var(--text-secondary);
+			text-align: center;
+
+			@media (min-width: 1024px) {
+				text-align: left;
+			}
+
+			a {
+				color: inherit;
+				text-decoration: none;
+				transition: color 0.2s ease;
+
+				&:hover {
+					color: var(--text-primary);
+				}
 			}
 		}
 	}

@@ -13,7 +13,7 @@ import { listedPhysicalMediaCollection } from "../data/physicalMedia";
 import { sampleCoverAccent } from "../lib/coverColor";
 import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
 import type { NowPlayingResponseSuccess } from "../pages/api/nowPlaying";
-import type { PhysicalMediaAlbumMeta } from "../pages/api/physicalMedia";
+import type { PhysicalMediaAlbumMeta } from "../lib/physicalMediaSpotifyMeta";
 
 import "swiper/swiper-bundle.css";
 
@@ -78,15 +78,24 @@ export function PhysicalMediaCoverflow() {
 	}, []);
 
 	useEffect(() => {
+		if (!mounted) return;
+
+		let cancelled = false;
+
 		fetch("/api/physicalMedia")
 			.then(res => res.json())
 			.then(data => {
-				if (data.error || !data.albums) return;
+				if (cancelled || data.error || !data.albums) return;
+
 				setSpotifyMeta(data.albums);
+				setSpotifyLoaded(true);
 			})
-			.catch(console.error)
-			.finally(() => setSpotifyLoaded(true));
-	}, []);
+			.catch(console.error);
+
+		return () => {
+			cancelled = true;
+		};
+	}, [mounted]);
 
 	useEffect(() => {
 		if (!mounted || total === 0) return;
@@ -226,7 +235,8 @@ export function PhysicalMediaCoverflow() {
 							nowPlayingOwned?.id === item.id && nowPlaying?.isPlayingNow;
 						const meta = spotifyMeta[item.id];
 						const coverUrl = meta?.coverImageUrl;
-						const coverAlt = meta?.name ?? item.title ?? "Album cover";
+						const coverAlt =
+							meta?.name ?? item.title ?? item.id.replace(/-/g, " ");
 
 						return (
 							<SwiperSlide
@@ -254,9 +264,11 @@ export function PhysicalMediaCoverflow() {
 											className="album-coverflow__cover-image album-coverflow__cover-image--loading"
 											role="img"
 											aria-label={
-												spotifyLoaded
+												meta
 													? `${coverAlt} cover unavailable`
-													: `Loading ${coverAlt} cover`
+													: item.title || item.artists
+														? `${coverAlt} — cover not synced`
+														: `Loading ${coverAlt} cover`
 											}
 										/>
 									)}
@@ -323,9 +335,9 @@ export function PhysicalMediaCoverflow() {
 						>
 							{activeSpotify
 								? formatAlbumMeta(activeSpotify)
-								: spotifyLoaded
-									? "\u00a0"
-									: "Loading album details…"}
+								: spotifyLoaded && !activeItem.title
+									? "Metadata not synced — run npm run spotify:sync"
+									: "\u00a0"}
 						</p>
 						<p
 							className="album-coverflow__copyright"

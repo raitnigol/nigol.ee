@@ -12,7 +12,8 @@
 		"format": "prettier --write .",
 		"lint": "next lint",
 		"build": "next build",
-		"start": "next start"
+		"start": "next start",
+		"spotify:sync": "tsx scripts/fetch-physical-media-metadata.ts"
 	},
 	"dependencies": {
 		"@heroicons/react": "^1.0.6",
@@ -46,6 +47,7 @@
 		"prettier": "^2.6.2",
 		"sass": "^1.50.0",
 		"tailwindcss": "^3.0.23",
+		"tsx": "^4.22.4",
 		"typescript": "^4.6.2"
 	}
 }
