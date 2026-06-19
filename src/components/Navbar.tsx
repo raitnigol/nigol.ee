@@ -4,6 +4,7 @@ import {
 } from "@heroicons/react/solid";
 import TransitionLink from "./TransitionLink";
 import { useRouter } from "next/router";
+import { createPortal } from "preact/compat";
 import { useCallback, useEffect, useState } from "preact/hooks";
 
 import ActiveLink from "./ActiveLink";
@@ -76,8 +77,11 @@ function NavItems({
 export default function SiteHeader() {
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = useState(false);
+	const [portalReady, setPortalReady] = useState(false);
 
 	const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+	useEffect(() => setPortalReady(true), []);
 
 	useEffect(() => {
 		const onRouteChange = () => setMenuOpen(false);
@@ -92,11 +96,9 @@ export default function SiteHeader() {
 			if (event.key === "Escape") closeMenu();
 		};
 
-		document.body.style.overflow = "hidden";
 		window.addEventListener("keydown", onKeyDown);
 
 		return () => {
-			document.body.style.overflow = "";
 			window.removeEventListener("keydown", onKeyDown);
 		};
 	}, [menuOpen, closeMenu]);
@@ -130,17 +132,22 @@ export default function SiteHeader() {
 				</nav>
 			</div>
 
-			{menuOpen ? (
-				<div className="site-shell site-header__mobile-panel lg:hidden">
-					<nav
-						id="site-mobile-nav"
-						className="site-nav site-nav--mobile"
-						aria-label="Primary"
-					>
-						<NavItems variant="mobile" onNavigate={closeMenu} />
-					</nav>
-				</div>
-			) : null}
+			{portalReady && menuOpen
+				? createPortal(
+						<div className="site-header__mobile-panel lg:hidden">
+							<div className="site-shell">
+								<nav
+									id="site-mobile-nav"
+									className="site-nav site-nav--mobile"
+									aria-label="Primary"
+								>
+									<NavItems variant="mobile" onNavigate={closeMenu} />
+								</nav>
+							</div>
+						</div>,
+						document.body
+					)
+				: null}
 		</header>
 	);
 }

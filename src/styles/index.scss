@@ -14,6 +14,7 @@
 		/** Max content column — extra viewport becomes symmetric side space. */
 		--site-max: 85rem;
 		--site-gutter: clamp(1rem, 2.5vw, 2.75rem);
+		--site-header-bar-height: 4.25rem;
 	}
 
 	html,
@@ -318,6 +319,12 @@
 	}
 
 	.site-header__mobile-panel {
+		position: fixed;
+		inset: 0;
+		z-index: 35;
+		padding-top: var(--site-header-bar-height);
+		overflow-y: auto;
+		overscroll-behavior: contain;
 		border-top: 1px solid rgb(255 255 255 / 8%);
 		background: rgb(0 0 0 / 92%);
 		backdrop-filter: blur(10px);

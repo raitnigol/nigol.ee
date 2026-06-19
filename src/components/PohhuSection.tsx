@@ -285,75 +285,98 @@ function CertifiedArtistCard({
 	const imageSrc = photoSrc || spotifyImageUrl;
 	const useSpotifyCdn = imageSrc?.startsWith("http") ?? false;
 	const artistName = artist?.name;
+	const hasPlaylist = Boolean(profile.playlist);
 
 	return (
-		<div className="space-y-6">
+		<div
+			className={
+				hasPlaylist
+					? "grid gap-4 lg:grid-cols-2 lg:items-start"
+					: undefined
+			}
+		>
 			<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/50">
-			<div className="flex flex-col md:flex-row md:items-stretch">
-				<div className="relative aspect-square w-full md:w-56 lg:w-64 flex-shrink-0 overflow-hidden bg-slate-900">
-					{imageSrc ? (
-						<Image
-							src={imageSrc}
-							alt={artistName ?? "Artist"}
-							width={300}
-							height={300}
-							sizes="(min-width: 1024px) 16rem, (min-width: 768px) 14rem, 100vw"
-							loading="lazy"
-							unoptimized={useSpotifyCdn}
-							className="h-full w-full object-cover"
-							onError={handlePhotoError}
-						/>
-					) : (
-						<div className="flex h-full w-full items-center justify-center animate-pulse bg-slate-900 text-subtle">
-							·
-						</div>
-					)}
-				</div>
-
-				<div className="flex min-w-0 flex-1 flex-col p-5 md:p-6 lg:p-8">
-					<div className="mb-4">
-						<h4 className="text-3xl md:text-4xl font-bold tracking-tight">
-							<a
-								href={spotifyUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="focus-ring text-white border-b border-transparent hover:border-violet-400 transition-colors"
-							>
-								{artistName ?? "…"}
-							</a>
-						</h4>
-						{artist ? (
-							<p className="mt-2 text-sm text-muted">
-								<span className="text-secondary">
-									{formatFollowers(artist.followers)}
-								</span>{" "}
-								followers on Spotify
-								{artist.genres.length > 0 ? (
-									<>
-										{" "}
-										·{" "}
-										{artist.genres.slice(0, 3).join(", ")}
-									</>
-								) : null}
-							</p>
-						) : null}
+				<div
+					className={
+						hasPlaylist
+							? "flex flex-col"
+							: "flex flex-col md:flex-row md:items-stretch"
+					}
+				>
+					<div
+						className={
+							hasPlaylist
+								? "relative aspect-square w-full overflow-hidden bg-slate-900"
+								: "relative aspect-square w-full md:w-56 lg:w-64 flex-shrink-0 overflow-hidden bg-slate-900"
+						}
+					>
+						{imageSrc ? (
+							<Image
+								src={imageSrc}
+								alt={artistName ?? "Artist"}
+								width={300}
+								height={300}
+								sizes={
+									hasPlaylist
+										? "(min-width: 1024px) 50vw, 100vw"
+										: "(min-width: 1024px) 16rem, (min-width: 768px) 14rem, 100vw"
+								}
+								loading="lazy"
+								unoptimized={useSpotifyCdn}
+								className="h-full w-full object-cover"
+								onError={handlePhotoError}
+							/>
+						) : (
+							<div className="flex h-full w-full items-center justify-center animate-pulse bg-slate-900 text-subtle">
+								·
+							</div>
+						)}
 					</div>
 
-					<p className="text-base leading-relaxed text-secondary mb-5">
-						{profile.bio}
-					</p>
+					<div className="flex min-w-0 flex-1 flex-col p-5 md:p-6 lg:p-8">
+						<div className="mb-4">
+							<h4 className="text-3xl md:text-4xl font-bold tracking-tight">
+								<a
+									href={spotifyUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="focus-ring text-white border-b border-transparent hover:border-violet-400 transition-colors"
+								>
+									{artistName ?? "…"}
+								</a>
+							</h4>
+							{artist ? (
+								<p className="mt-2 text-sm text-muted">
+									<span className="text-secondary">
+										{formatFollowers(artist.followers)}
+									</span>{" "}
+									followers on Spotify
+									{artist.genres.length > 0 ? (
+										<>
+											{" "}
+											·{" "}
+											{artist.genres.slice(0, 3).join(", ")}
+										</>
+									) : null}
+								</p>
+							) : null}
+						</div>
 
-					<a
-						href={spotifyUrl}
-						target="_blank"
-						rel="noopener noreferrer"
-						className="focus-ring mt-5 inline-flex w-fit items-center text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
-					>
-						Open on Spotify →
-					</a>
+						<p className="text-base leading-relaxed text-secondary mb-5">
+							{profile.bio}
+						</p>
+
+						<a
+							href={spotifyUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="focus-ring mt-auto inline-flex w-fit items-center text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
+						>
+							Open on Spotify →
+						</a>
+					</div>
 				</div>
-			</div>
-		</article>
+			</article>
 
 			{profile.playlist ? (
 				<SpotifyPlaylistEmbed
