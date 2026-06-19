@@ -2,7 +2,6 @@ import { Clock } from "../components/Clock";
 import GenericMeta from "../components/GenericMeta";
 import { HomeIntroTerminal } from "../components/HomeIntroTerminal";
 import { SocialIconLink } from "../components/SocialIconLink";
-import Spotify from "../components/Spotify";
 import { socials } from "../data/socials";
 
 export default function Home() {
@@ -36,13 +35,6 @@ export default function Home() {
 						<Clock />
 					</p>
 				</div>
-
-				<section className="home__listening" aria-label="Now playing on Spotify">
-					<h2 className="home__section-label">Listening</h2>
-					<div className="home__listening-card">
-						<Spotify />
-					</div>
-				</section>
 			</div>
 		</>
 	);

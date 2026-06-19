@@ -4,7 +4,10 @@ import Image from "next/future/image";
 import { useEffect, useState } from "preact/hooks";
 import useSWR from "swr";
 
-import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
+import {
+	findOwnedPhysicalMedia,
+	physicalMediaAlbumHref
+} from "../lib/physicalMediaMatch";
 import { formatPlayedAt } from "../lib/spotify";
 import type {
 	NowPlayingResponseError,
@@ -25,18 +28,24 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 const SPOTIFY_LOGO = "/images/logos/spotify.png";
 const EMPTY_ALBUM_ART = "/images/emptysong.jpg";
 
+type SpotifyProps = {
+	variant?: "default" | "terminal";
+	showArtwork?: boolean;
+};
+
 function getAlbumArtUrl(track: SpotifyApi.TrackObjectFull | null | undefined) {
 	const images = track?.album?.images;
 	if (!images?.length) return EMPTY_ALBUM_ART;
 	return images[1]?.url ?? images[0]?.url ?? images.at(-1)?.url ?? EMPTY_ALBUM_ART;
 }
 
-export default function Spotify() {
-	const { data } = useSWR<NowPlayingResponseSuccess, NowPlayingResponseError>(
-		"/api/nowPlaying",
-		fetcher,
-		{ refreshInterval: 5000 }
-	);
+function useNowPlaying() {
+	const { data, error } = useSWR<
+		NowPlayingResponseSuccess,
+		NowPlayingResponseError
+	>("/api/nowPlaying", fetcher, { refreshInterval: 5000 });
+
+	const isLoading = !data && !error;
 
 	const [time, setTime] = useState(0);
 
@@ -70,10 +79,158 @@ export default function Spotify() {
 	const isRemoteAlbumArt = albumArtUrl?.startsWith("http") ?? false;
 	const showProgress = Boolean(data?.track);
 	const progressMs = data?.isPlayingNow ? time : 0;
-	const ownedPhysicalMedia =
-		data?.track && data.isPlayingNow
-			? findOwnedPhysicalMedia(data.track.album.id)
-			: undefined;
+	const ownedPhysicalMedia = data?.track
+		? findOwnedPhysicalMedia(data.track.album.id)
+		: undefined;
+
+	return {
+		data,
+		error,
+		isLoading,
+		albumArtUrl,
+		isRemoteAlbumArt,
+		showProgress,
+		progressMs,
+		ownedPhysicalMedia
+	};
+}
+
+function TerminalRow({
+	label,
+	children
+}: {
+	label: string;
+	children: React.ReactNode;
+}) {
+	return (
+		<div className="spotify-terminal__row">
+			<span className="spotify-terminal__label">{label}:</span>
+			<span className="spotify-terminal__value">{children}</span>
+		</div>
+	);
+}
+
+function SpotifyTerminal({
+	showArtwork = true
+}: {
+	showArtwork?: boolean;
+}) {
+	const {
+		data,
+		error,
+		isLoading,
+		albumArtUrl,
+		isRemoteAlbumArt,
+		progressMs,
+		ownedPhysicalMedia
+	} = useNowPlaying();
+
+	if (isLoading && !data) {
+		return (
+			<div className="spotify-terminal home-terminal__text">
+				<TerminalRow label="Status">loading…</TerminalRow>
+			</div>
+		);
+	}
+
+	if (error || (data && "error" in data)) {
+		return (
+			<div className="spotify-terminal home-terminal__text">
+				<TerminalRow label="Status">error</TerminalRow>
+				<p className="spotify-terminal__note">
+					Unable to fetch playback status.
+				</p>
+			</div>
+		);
+	}
+
+	if (!data?.track) {
+		return (
+			<div className="spotify-terminal home-terminal__text">
+				<TerminalRow label="Status">offline</TerminalRow>
+				<p className="spotify-terminal__note">No recent activity.</p>
+			</div>
+		);
+	}
+
+	const { track, isPlayingNow, playedAt } = data;
+	const artistNames = track.artists.map(artist => artist.name).join(", ");
+
+	return (
+		<div className="spotify-terminal home-terminal__text">
+			<div className="spotify-terminal__layout">
+				{showArtwork && albumArtUrl ? (
+					<figure className="spotify-terminal__preview">
+						<figcaption className="spotify-terminal__preview-label">
+							album-art.jpg
+						</figcaption>
+						<div className="spotify-terminal__preview-frame">
+							<Image
+								src={albumArtUrl}
+								alt=""
+								width={96}
+								height={96}
+								unoptimized={isRemoteAlbumArt}
+								className="spotify-terminal__preview-image"
+							/>
+						</div>
+					</figure>
+				) : null}
+
+				<div className="spotify-terminal__meta">
+					<TerminalRow label="Status">
+						{isPlayingNow ? "currently playing" : "last played"}
+					</TerminalRow>
+					<TerminalRow label="Track">{track.name}</TerminalRow>
+					<TerminalRow label="Artist">{artistNames}</TerminalRow>
+					<TerminalRow label="Album">{track.album.name}</TerminalRow>
+					{ownedPhysicalMedia ? (
+						<TerminalRow label="Shelf">
+							<TransitionLink
+								href={physicalMediaAlbumHref(ownedPhysicalMedia.id)}
+							>
+								<a className="home__link home__link--pro focus-ring">
+									owned (physical copy)
+								</a>
+							</TransitionLink>
+						</TerminalRow>
+					) : null}
+					{isPlayingNow ? (
+						<TerminalRow label="Time">
+							<span className="spotify-terminal__time">
+								{formatDuration(progressMs)} /{" "}
+								{formatDuration(track.duration_ms)}
+							</span>
+							<span className="spotify-terminal__playback-icon" aria-hidden>
+								{data.isPaused ? (
+									<PlayIcon className="h-3 w-3" />
+								) : (
+									<PauseIcon className="h-3 w-3" />
+								)}
+							</span>
+						</TerminalRow>
+					) : (
+						<TerminalRow label="Played">
+							{playedAt
+								? formatPlayedAt(playedAt)
+								: "recently on Spotify"}
+						</TerminalRow>
+					)}
+				</div>
+			</div>
+		</div>
+	);
+}
+
+function SpotifyWidget() {
+	const {
+		data,
+		albumArtUrl,
+		isRemoteAlbumArt,
+		showProgress,
+		progressMs,
+		ownedPhysicalMedia
+	} = useNowPlaying();
 
 	return (
 		<div className="spotify-widget">
@@ -98,7 +255,9 @@ export default function Spotify() {
 					<div className="spotify-widget__image spotify-widget__image--empty" aria-hidden />
 				)}
 				{ownedPhysicalMedia ? (
-					<TransitionLink href="/physical-media">
+					<TransitionLink
+						href={physicalMediaAlbumHref(ownedPhysicalMedia.id)}
+					>
 						<a
 							className="spotify-widget__shelf-link focus-ring"
 							aria-label="This album is on my CD shelf"
@@ -214,4 +373,15 @@ export default function Spotify() {
 			</div>
 		</div>
 	);
+}
+
+export default function Spotify({
+	variant = "default",
+	showArtwork = true
+}: SpotifyProps) {
+	if (variant === "terminal") {
+		return <SpotifyTerminal showArtwork={showArtwork} />;
+	}
+
+	return <SpotifyWidget />;
 }

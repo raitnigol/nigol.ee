@@ -1,4 +1,4 @@
-const FALLBACK_ACCENT = "rgb(52 211 153)";
+const FALLBACK_ACCENT = "rgb(148 163 184)";
 
 /** Average opaque pixel color from a cover image (same-origin). */
 export function sampleCoverAccent(src: string): Promise<string> {
