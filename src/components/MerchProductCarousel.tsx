@@ -4,6 +4,7 @@ import {
 	XIcon
 } from "@heroicons/react/solid";
 import Image from "next/future/image";
+import { createPortal } from "preact/compat";
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 import { Autoplay, Keyboard } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -33,6 +34,7 @@ export function MerchProductCarousel({
 	const [reduceMotion, setReduceMotion] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
+	const [portalReady, setPortalReady] = useState(false);
 	const swiperRef = useRef<SwiperInstance | null>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +57,7 @@ export function MerchProductCarousel({
 
 	useEffect(() => {
 		setMounted(true);
+		setPortalReady(true);
 		setReduceMotion(
 			window.matchMedia("(prefers-reduced-motion: reduce)").matches
 		);
@@ -237,70 +240,74 @@ export function MerchProductCarousel({
 				) : null}
 			</div>
 
-			{openIndex !== null && current ? (
-				<div
-					className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
-					role="dialog"
-					aria-modal="true"
-					aria-label={dialogLabel}
-					onClick={close}
-				>
-					<button
-						type="button"
-						onClick={close}
-						className="focus-ring absolute right-4 top-4 z-10 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white"
-						aria-label="Close gallery"
-					>
-						<XIcon className="h-7 w-7" />
-					</button>
-
-					{items.length > 1 ? (
-						<>
+			{portalReady && openIndex !== null && current
+				? createPortal(
+						<div
+							className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+							role="dialog"
+							aria-modal="true"
+							aria-label={dialogLabel}
+							onClick={close}
+						>
 							<button
 								type="button"
-								onClick={event => {
-									event.stopPropagation();
-									goPrev();
-								}}
-								className="focus-ring absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white md:left-4"
-								aria-label="Previous image"
+								onClick={close}
+								className="focus-ring absolute right-4 top-4 z-10 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white"
+								aria-label="Close gallery"
 							>
-								<ChevronLeftIcon className="h-9 w-9 md:h-10 md:w-10" />
+								<XIcon className="h-7 w-7" />
 							</button>
-							<button
-								type="button"
-								onClick={event => {
-									event.stopPropagation();
-									goNext();
-								}}
-								className="focus-ring absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white md:right-4"
-								aria-label="Next image"
-							>
-								<ChevronRightIcon className="h-9 w-9 md:h-10 md:w-10" />
-							</button>
-						</>
-					) : null}
 
-					<figure
-						className="relative flex max-h-[85vh] max-w-full flex-col items-center px-10 md:px-14"
-						onClick={event => event.stopPropagation()}
-					>
-						<Image
-							src={current.image}
-							alt={current.alt}
-							width={1600}
-							height={2000}
-							className="max-h-[78vh] w-auto max-w-full select-none object-contain"
-							draggable={false}
-						/>
-						{items.length > 1 ? (
-							<figcaption className="mt-3 text-center text-sm text-muted">
-								{openIndex + 1} / {items.length}
-							</figcaption>
-						) : null}
-					</figure>
-				</div>
-			) : null}
+							{items.length > 1 ? (
+								<>
+									<button
+										type="button"
+										onClick={event => {
+											event.stopPropagation();
+											goPrev();
+										}}
+										className="focus-ring absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white md:left-4"
+										aria-label="Previous image"
+									>
+										<ChevronLeftIcon className="h-9 w-9 md:h-10 md:w-10" />
+									</button>
+									<button
+										type="button"
+										onClick={event => {
+											event.stopPropagation();
+											goNext();
+										}}
+										className="focus-ring absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white md:right-4"
+										aria-label="Next image"
+									>
+										<ChevronRightIcon className="h-9 w-9 md:h-10 md:w-10" />
+									</button>
+								</>
+							) : null}
+
+							<figure
+								className="relative z-[1] flex max-h-[85vh] max-w-full flex-col items-center px-10 md:px-14"
+								onClick={event => event.stopPropagation()}
+							>
+								<img
+									src={current.image}
+									alt={current.alt}
+									width={1600}
+									height={2000}
+									className="max-h-[78vh] w-auto max-w-full select-none object-contain"
+									draggable={false}
+									decoding="async"
+								/>
+								{items.length > 1 ? (
+									<figcaption className="mt-3 text-center text-sm text-muted">
+										{openIndex + 1} / {items.length}
+									</figcaption>
+								) : null}
+							</figure>
+						</div>,
+						document.body
+				  )
+				: null}
 		</>
 	);
 }

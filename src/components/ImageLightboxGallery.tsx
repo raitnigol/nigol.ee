@@ -5,6 +5,7 @@ import {
 } from "@heroicons/react/solid";
 import Image from "next/future/image";
 import type { ComponentChild } from "preact";
+import { createPortal } from "preact/compat";
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
 export interface LightboxGalleryItem {
@@ -135,7 +136,12 @@ export function ImageLightboxGallery({
 	equalCellHeight = false
 }: ImageLightboxGalleryProps) {
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
+	const [portalReady, setPortalReady] = useState(false);
 	const touchStartX = useRef<number | null>(null);
+
+	useEffect(() => {
+		setPortalReady(true);
+	}, []);
 
 	const close = useCallback(() => setOpenIndex(null), []);
 
@@ -255,102 +261,109 @@ export function ImageLightboxGallery({
 				})}
 			</ul>
 
-			{openIndex !== null && current ? (
-				<div
-					className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm touch-pan-y"
-					role="dialog"
-					aria-modal="true"
-					aria-label={dialogLabel}
-					onClick={close}
-					onTouchStart={event => {
-						touchStartX.current = event.touches[0]?.clientX ?? null;
-					}}
-					onTouchEnd={event => {
-						if (touchStartX.current === null || items.length < 2) return;
-
-						const endX = event.changedTouches[0]?.clientX;
-						if (endX === undefined) return;
-
-						const delta = endX - touchStartX.current;
-						touchStartX.current = null;
-
-						if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return;
-						if (delta > 0) goPrev();
-						else goNext();
-					}}
-				>
-					<button
-						type="button"
-						onClick={close}
-						className="focus-ring absolute right-4 top-4 z-10 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white"
-						aria-label="Close gallery"
-					>
-						<XIcon className="h-7 w-7" />
-					</button>
-
-					{hasMultiple ? (
-						<button
-							type="button"
-							onClick={event => {
-								event.stopPropagation();
-								goPrev();
+			{portalReady && openIndex !== null && current
+				? createPortal(
+						<div
+							className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm touch-pan-y"
+							role="dialog"
+							aria-modal="true"
+							aria-label={dialogLabel}
+							onClick={close}
+							onTouchStart={event => {
+								touchStartX.current =
+									event.touches[0]?.clientX ?? null;
 							}}
-							className="focus-ring absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white md:left-4"
-							aria-label="Previous image"
-						>
-							<ChevronLeftIcon className="h-9 w-9 md:h-10 md:w-10" />
-						</button>
-					) : null}
+							onTouchEnd={event => {
+								if (touchStartX.current === null || items.length < 2) {
+									return;
+								}
 
-					{hasMultiple ? (
-						<button
-							type="button"
-							onClick={event => {
-								event.stopPropagation();
-								goNext();
+								const endX = event.changedTouches[0]?.clientX;
+								if (endX === undefined) return;
+
+								const delta = endX - touchStartX.current;
+								touchStartX.current = null;
+
+								if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return;
+								if (delta > 0) goPrev();
+								else goNext();
 							}}
-							className="focus-ring absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white md:right-4"
-							aria-label="Next image"
 						>
-							<ChevronRightIcon className="h-9 w-9 md:h-10 md:w-10" />
-						</button>
-					) : null}
+							<button
+								type="button"
+								onClick={close}
+								className="focus-ring absolute right-4 top-4 z-10 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white"
+								aria-label="Close gallery"
+							>
+								<XIcon className="h-7 w-7" />
+							</button>
 
-					<figure
-						className="relative flex max-h-[85vh] max-w-full flex-col items-center px-10 md:px-14"
-						onClick={event => event.stopPropagation()}
-					>
-						<Image
-							src={current.image}
-							alt={current.alt}
-							width={1600}
-							height={current.banner ? 800 : 1600}
-							className="max-h-[78vh] w-auto max-w-full select-none object-contain"
-							draggable={false}
-						/>
-						<figcaption className="mt-3 max-w-lg text-center text-sm text-muted">
 							{hasMultiple ? (
-								<>
-									{openIndex + 1} / {items.length}
-									<span className="mx-2 text-subtle">·</span>
-								</>
+								<button
+									type="button"
+									onClick={event => {
+										event.stopPropagation();
+										goPrev();
+									}}
+									className="focus-ring absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white md:left-4"
+									aria-label="Previous image"
+								>
+									<ChevronLeftIcon className="h-9 w-9 md:h-10 md:w-10" />
+								</button>
 							) : null}
-							{current.title ? (
-								<span className="font-semibold text-secondary">
-									{current.title}
-								</span>
-							) : (
-								current.alt
-							)}
+
 							{hasMultiple ? (
-								<span className="mt-2 block text-xs text-subtle md:hidden">
-									Swipe to browse
-								</span>
+								<button
+									type="button"
+									onClick={event => {
+										event.stopPropagation();
+										goNext();
+									}}
+									className="focus-ring absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-lg p-2 text-white/80 transition hover:bg-white/10 hover:text-white md:right-4"
+									aria-label="Next image"
+								>
+									<ChevronRightIcon className="h-9 w-9 md:h-10 md:w-10" />
+								</button>
 							) : null}
-						</figcaption>
-					</figure>
-				</div>
-			) : null}
+
+							<figure
+								className="relative z-[1] flex max-h-[85vh] max-w-full flex-col items-center px-10 md:px-14"
+								onClick={event => event.stopPropagation()}
+							>
+								<img
+									src={current.image}
+									alt={current.alt}
+									width={1600}
+									height={current.banner ? 800 : 1600}
+									className="max-h-[78vh] w-auto max-w-full select-none object-contain"
+									draggable={false}
+									decoding="async"
+								/>
+								<figcaption className="mt-3 max-w-lg text-center text-sm text-muted">
+									{hasMultiple ? (
+										<>
+											{openIndex + 1} / {items.length}
+											<span className="mx-2 text-subtle">·</span>
+										</>
+									) : null}
+									{current.title ? (
+										<span className="font-semibold text-secondary">
+											{current.title}
+										</span>
+									) : (
+										current.alt
+									)}
+									{hasMultiple ? (
+										<span className="mt-2 block text-xs text-subtle md:hidden">
+											Swipe to browse
+										</span>
+									) : null}
+								</figcaption>
+							</figure>
+						</div>,
+						document.body
+				  )
+				: null}
 		</>
 	);
 }
