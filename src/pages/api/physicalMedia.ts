@@ -1,131 +1,95 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Spotify from "spotify-web-api-node";
+import fs from "fs";
+import path from "path";
 
-import { physicalMediaCollection } from "../../data/physicalMedia";
 import {
-	getAlbumCoverUrl,
-	getReleaseYear,
-	getShowCoverUrl
-} from "../../lib/spotify";
-import { withSpotifyClient } from "../../lib/spotifyServer";
+	isPhysicalMediaListed,
+	physicalMediaCollection
+} from "../../data/physicalMedia";
+import type {
+	PhysicalMediaAlbumMeta,
+	PhysicalMediaApiResponse
+} from "../../lib/physicalMediaSpotifyMeta";
 
-export type PhysicalMediaAlbumMeta = {
-	collectionId: string;
-	name: string;
-	artists: string;
-	coverImageUrl: string | null;
-	releaseYear: string | null;
-	releaseDate: string;
-	label: string | null;
-	totalTracks: number;
-	albumType: string;
-	spotifyUrl: string;
-	copyright: string | null;
-};
+export type { PhysicalMediaAlbumMeta, PhysicalMediaApiResponse };
 
-export type PhysicalMediaResponseSuccess = {
-	albums: Record<string, PhysicalMediaAlbumMeta>;
-};
+export type PhysicalMediaResponseSuccess = PhysicalMediaApiResponse;
 
 export type PhysicalMediaResponseError = { error: unknown };
 export type PhysicalMediaResponse =
 	| PhysicalMediaResponseSuccess
 	| PhysicalMediaResponseError;
 
-type SpotifyShow = {
-	name: string;
-	publisher: string;
-	images: SpotifyApi.ImageObject[];
-	total_episodes: number;
-	external_urls: { spotify: string };
-};
+const META_FILE = path.join(
+	process.cwd(),
+	"data/generated/physicalMediaSpotifyMeta.json"
+);
 
-let cachedTime = 0;
-let cached: PhysicalMediaResponseSuccess | undefined;
+const listedTotal = physicalMediaCollection.filter(isPhysicalMediaListed).length;
 
-function mapAlbumMeta(
-	collectionId: string,
-	album: SpotifyApi.AlbumObjectFull
-): PhysicalMediaAlbumMeta {
-	return {
-		collectionId,
-		name: album.name,
-		artists: album.artists.map(artist => artist.name).join(", "),
-		coverImageUrl: getAlbumCoverUrl(album),
-		releaseYear: getReleaseYear(album.release_date),
-		releaseDate: album.release_date,
-		label: album.label ?? null,
-		totalTracks: album.total_tracks,
-		albumType: album.album_type,
-		spotifyUrl: album.external_urls.spotify,
-		copyright:
-			album.copyrights
-				?.map(entry => entry.text)
-				.filter(Boolean)
-				.join(" · ") ?? null
-	};
-}
+function isValidAlbumMeta(value: unknown): value is PhysicalMediaAlbumMeta {
+	if (!value || typeof value !== "object") return false;
 
-function mapShowMeta(
-	collectionId: string,
-	show: SpotifyShow
-): PhysicalMediaAlbumMeta {
-	return {
-		collectionId,
-		name: show.name,
-		artists: show.publisher,
-		coverImageUrl: getShowCoverUrl(show),
-		releaseYear: null,
-		releaseDate: "",
-		label: show.publisher ?? null,
-		totalTracks: show.total_episodes,
-		albumType: "show",
-		spotifyUrl: show.external_urls.spotify,
-		copyright: null
-	};
-}
-
-async function fetchShow(
-	client: Spotify,
-	showId: string
-): Promise<SpotifyShow> {
-	const token = client.getAccessToken();
-	const response = await fetch(
-		`https://api.spotify.com/v1/shows/${showId}?market=EE`,
-		{
-			headers: {
-				Authorization: `Bearer ${token}`
-			}
-		}
+	const meta = value as Record<string, unknown>;
+	return (
+		typeof meta.collectionId === "string" &&
+		typeof meta.name === "string" &&
+		typeof meta.artists === "string" &&
+		(meta.coverImageUrl === null || typeof meta.coverImageUrl === "string") &&
+		(meta.releaseYear === null || typeof meta.releaseYear === "string") &&
+		typeof meta.releaseDate === "string" &&
+		(meta.label === null || typeof meta.label === "string") &&
+		typeof meta.totalTracks === "number" &&
+		typeof meta.albumType === "string" &&
+		typeof meta.spotifyUrl === "string" &&
+		(meta.copyright === null || typeof meta.copyright === "string")
 	);
-
-	if (!response.ok) {
-		throw new Error(`Failed to fetch show ${showId}`);
-	}
-
-	return response.json();
 }
 
-async function resolveAlbumMeta(
-	client: Spotify,
-	collectionId: string,
-	spotifyAlbumId: string
-): Promise<PhysicalMediaAlbumMeta> {
-	try {
-		const response = await client.getAlbum(spotifyAlbumId, {
-			market: "EE"
-		});
-		return mapAlbumMeta(collectionId, response.body);
-	} catch {
-		const track = await client.getTrack(spotifyAlbumId);
-		const album = await client.getAlbum(track.body.album.id, {
-			market: "EE"
-		});
-		return mapAlbumMeta(collectionId, album.body);
+function loadGeneratedMeta(): PhysicalMediaApiResponse {
+	if (!fs.existsSync(META_FILE)) {
+		throw new Error(
+			`Missing generated metadata at ${META_FILE}. Run: npm run spotify:sync`
+		);
 	}
+
+	const raw = fs.readFileSync(META_FILE, "utf8");
+	const data = JSON.parse(raw) as Partial<PhysicalMediaApiResponse>;
+
+	if (!data.albums || typeof data.albums !== "object") {
+		throw new Error(`Malformed generated metadata in ${META_FILE}`);
+	}
+
+	for (const [id, meta] of Object.entries(data.albums)) {
+		if (!isValidAlbumMeta(meta)) {
+			throw new Error(`Malformed album metadata for "${id}" in ${META_FILE}`);
+		}
+	}
+
+	const albums = data.albums;
+	const loaded = Object.keys(albums).length;
+	const generatedAt =
+		typeof data.generatedAt === "string"
+			? data.generatedAt
+			: new Date(0).toISOString();
+	const source =
+		typeof data.source === "string" ? data.source : "unknown";
+	const failed = Array.isArray(data.failed)
+		? data.failed.filter((entry): entry is string => typeof entry === "string")
+		: [];
+
+	return {
+		albums,
+		loaded,
+		total: listedTotal,
+		complete: loaded >= listedTotal,
+		generatedAt,
+		source,
+		failed
+	};
 }
 
-export default async function handler(
+export default function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<PhysicalMediaResponse>
 ) {
@@ -135,43 +99,16 @@ export default async function handler(
 	}
 
 	try {
-		if (!cached || Date.now() > cachedTime) {
-			const albums: Record<string, PhysicalMediaAlbumMeta> = {};
-
-			await withSpotifyClient(async client => {
-				await Promise.all(
-					physicalMediaCollection.map(async item => {
-						try {
-							if (item.spotifyShowId) {
-								const show = await fetchShow(client, item.spotifyShowId);
-								albums[item.id] = mapShowMeta(item.id, show);
-								return;
-							}
-
-							if (item.spotifyAlbumId) {
-								albums[item.id] = await resolveAlbumMeta(
-									client,
-									item.id,
-									item.spotifyAlbumId
-								);
-							}
-						} catch {
-							// Skip entries Spotify cannot resolve.
-						}
-					})
-				);
-			});
-
-			cached = { albums };
-			cachedTime = Date.now() + 24 * 60 * 60 * 1000;
-		}
+		const response = loadGeneratedMeta();
 
 		res.setHeader(
 			"Cache-Control",
-			"public, s-maxage=3600, stale-while-revalidate=86400"
+			response.complete
+				? "public, s-maxage=3600, stale-while-revalidate=86400"
+				: "no-store"
 		);
-		res.status(200).json(cached);
+		res.status(200).json(response);
 	} catch (err) {
-		res.status(500).json({ error: (err as Error)?.message });
+		res.status(500).json({ error: (err as Error).message });
 	}
 }
