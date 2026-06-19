@@ -216,6 +216,18 @@ async function fetchWithRateLimitRetry<T>(
 	throw new Error(`Failed to fetch ${label}`);
 }
 
+function loadExistingMeta(): PhysicalMediaSpotifyMetaFile | null {
+	if (!fs.existsSync(OUTPUT_PATH)) return null;
+
+	try {
+		return JSON.parse(
+			fs.readFileSync(OUTPUT_PATH, "utf8")
+		) as PhysicalMediaSpotifyMetaFile;
+	} catch {
+		return null;
+	}
+}
+
 async function main() {
 	loadEnvFile(path.join(process.cwd(), ".env"));
 	loadEnvFile(path.join(process.cwd(), ".env.local"));
@@ -226,15 +238,54 @@ async function main() {
 		);
 	}
 
-	const albums: Record<string, PhysicalMediaAlbumMeta> = {};
-	const failed: string[] = [];
+	const forceRefresh = process.argv.includes("--force");
+	const existing = loadExistingMeta();
+	const albums: Record<string, PhysicalMediaAlbumMeta> = forceRefresh
+		? {}
+		: { ...(existing?.albums ?? {}) };
+
+	const previouslyFailedIds = new Set(
+		(existing?.failed ?? []).map(entry => entry.split(":")[0]?.trim())
+	);
+
+	const itemsToFetch = forceRefresh
+		? listedItems
+		: listedItems.filter(item => {
+				if (albums[item.id]) return false;
+				if (previouslyFailedIds.has(item.id)) return false;
+				return true;
+			});
+
+	const skippedCached = listedItems.filter(item => albums[item.id]).length;
+	const skippedFailed = forceRefresh
+		? 0
+		: listedItems.filter(
+				item => !albums[item.id] && previouslyFailedIds.has(item.id)
+			).length;
+
+	if (skippedCached > 0) {
+		console.log(`Skipping ${skippedCached} item(s) with existing metadata`);
+	}
+
+	if (skippedFailed > 0) {
+		console.log(
+			`Skipping ${skippedFailed} item(s) with previous sync failures (use --force to retry)`
+		);
+	}
+
+	if (itemsToFetch.length === 0) {
+		console.log("Nothing to fetch — metadata is up to date");
+		return;
+	}
+
+	const fetchFailed: string[] = [];
 
 	console.log(
-		`Fetching metadata for ${listedItems.length} listed items via Spotify Search…`
+		`Fetching metadata for ${itemsToFetch.length} listed item(s) via Spotify Search…`
 	);
 
 	await withSpotifyClient(async client => {
-		await runPool(listedItems, FETCH_CONCURRENCY, async item => {
+		await runPool(itemsToFetch, FETCH_CONCURRENCY, async item => {
 			try {
 				const meta = await fetchWithRateLimitRetry(
 					() => resolveItemMeta(client, item),
@@ -246,13 +297,22 @@ async function main() {
 			} catch (err) {
 				const message =
 					err instanceof Error ? err.message : "Unknown error";
-				failed.push(`${item.id}: ${message}`);
+				fetchFailed.push(`${item.id}: ${message}`);
 				console.error(`✗ ${item.id}: ${message}`);
 			}
 		});
 	});
 
 	const loaded = Object.keys(albums).length;
+	const failed = listedItems
+		.filter(item => !albums[item.id])
+		.map(item => {
+			const entry =
+				fetchFailed.find(f => f.startsWith(`${item.id}:`)) ??
+				existing?.failed.find(f => f.startsWith(`${item.id}:`));
+			return entry ?? `${item.id}: metadata not synced`;
+		});
+
 	const payload: PhysicalMediaSpotifyMetaFile = {
 		generatedAt: new Date().toISOString(),
 		source: "spotify-search",
@@ -269,9 +329,8 @@ async function main() {
 	console.log(`\nWrote ${loaded}/${listedItems.length} albums to ${OUTPUT_PATH}`);
 
 	if (failed.length > 0) {
-		console.warn(`\n${failed.length} item(s) failed:`);
+		console.warn(`\n${failed.length} item(s) still missing metadata:`);
 		for (const entry of failed) console.warn(`  - ${entry}`);
-		process.exitCode = 1;
 	}
 }
 

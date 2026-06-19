@@ -37,6 +37,18 @@ function loadEnvFile(filePath: string) {
 	}
 }
 
+function loadExistingMeta(): SpotifyArtistsMetaFile | null {
+	if (!fs.existsSync(OUTPUT_PATH)) return null;
+
+	try {
+		return JSON.parse(
+			fs.readFileSync(OUTPUT_PATH, "utf8")
+		) as SpotifyArtistsMetaFile;
+	} catch {
+		return null;
+	}
+}
+
 async function main() {
 	loadEnvFile(path.join(process.cwd(), ".env"));
 	loadEnvFile(path.join(process.cwd(), ".env.local"));
@@ -47,15 +59,35 @@ async function main() {
 		);
 	}
 
-	const artists: Record<string, SpotifyArtistMeta> = {};
-	const failed: string[] = [];
+	const forceRefresh = process.argv.includes("--force");
+	const existing = loadExistingMeta();
+	const artists: Record<string, SpotifyArtistMeta> = forceRefresh
+		? {}
+		: { ...(existing?.artists ?? {}) };
+
+	const profilesToFetch = forceRefresh
+		? certifiedArtists
+		: certifiedArtists.filter(profile => !artists[profile.spotifyId]);
+
+	const skipped = certifiedArtists.length - profilesToFetch.length;
+
+	if (skipped > 0) {
+		console.log(`Skipping ${skipped} artist(s) with existing metadata`);
+	}
+
+	if (profilesToFetch.length === 0) {
+		console.log("Nothing to fetch — metadata is up to date");
+		return;
+	}
+
+	const fetchFailed: string[] = [];
 
 	console.log(
-		`Fetching metadata for ${certifiedArtists.length} certified artist(s)…`
+		`Fetching metadata for ${profilesToFetch.length} certified artist(s)…`
 	);
 
 	await withSpotifyClient(async client => {
-		for (const profile of certifiedArtists) {
+		for (const profile of profilesToFetch) {
 			try {
 				const response = await client.getArtist(profile.spotifyId);
 				const artist = response.body;
@@ -73,13 +105,22 @@ async function main() {
 			} catch (err) {
 				const message =
 					err instanceof Error ? err.message : "Unknown error";
-				failed.push(`${profile.spotifyId}: ${message}`);
+				fetchFailed.push(`${profile.spotifyId}: ${message}`);
 				console.error(`✗ ${profile.spotifyId}: ${message}`);
 			}
 		}
 	});
 
 	const loaded = Object.keys(artists).length;
+	const failed = certifiedArtists
+		.filter(profile => !artists[profile.spotifyId])
+		.map(profile => {
+			const entry = fetchFailed.find(f =>
+				f.startsWith(`${profile.spotifyId}:`)
+			);
+			return entry ?? `${profile.spotifyId}: metadata not synced`;
+		});
+
 	const payload: SpotifyArtistsMetaFile = {
 		generatedAt: new Date().toISOString(),
 		source: "spotify-artist",
@@ -96,7 +137,8 @@ async function main() {
 	console.log(`\nWrote ${loaded}/${certifiedArtists.length} artists to ${OUTPUT_PATH}`);
 
 	if (failed.length > 0) {
-		process.exitCode = 1;
+		console.warn(`\n${failed.length} artist(s) still missing metadata:`);
+		for (const entry of failed) console.warn(`  - ${entry}`);
 	}
 }
 

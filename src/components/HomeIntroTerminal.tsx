@@ -1,10 +1,12 @@
-import Link from "next/link";
-import { useEffect, useRef, useState } from "preact/hooks";
+import TransitionLink from "./TransitionLink";
+import { useLayoutEffect, useRef, useState } from "preact/hooks";
 
 import { copypastas } from "../data/copypastas";
 import { COPYPASTA_LAST_ID_KEY, pickCopypasta } from "../lib/copypasta";
 import { cowsay, getCowsayMaxWidth } from "../lib/cowsay";
 import { EE_DOMAIN_REGISTER_URL, EIF_URL } from "../lib/site";
+
+const SSR_COPYPASTA = copypastas[0];
 
 function TerminalCommand({
 	command,
@@ -30,36 +32,31 @@ function TerminalCommand({
 
 export function HomeIntroTerminal() {
 	const bodyRef = useRef<HTMLDivElement>(null);
-	const [copypastaParagraphs, setCopypastaParagraphs] = useState<
-		string[] | null
-	>(null);
+	const [copypastaParagraphs, setCopypastaParagraphs] = useState(
+		() => SSR_COPYPASTA.paragraphs
+	);
 	const [cowsayWidth, setCowsayWidth] = useState(40);
 
-	useEffect(() => {
-		const lastId = sessionStorage.getItem(COPYPASTA_LAST_ID_KEY);
-		const picked = pickCopypasta(copypastas, lastId);
-		sessionStorage.setItem(COPYPASTA_LAST_ID_KEY, picked.id);
-		setCopypastaParagraphs(picked.paragraphs);
-	}, []);
-
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const body = bodyRef.current;
 		if (!body) return;
 
-		const updateWidth = () => {
-			setCowsayWidth(getCowsayMaxWidth(body));
-		};
+		const lastId = sessionStorage.getItem(COPYPASTA_LAST_ID_KEY);
+		const picked = pickCopypasta(copypastas, lastId);
+		sessionStorage.setItem(COPYPASTA_LAST_ID_KEY, picked.id);
 
-		updateWidth();
-		const observer = new ResizeObserver(updateWidth);
+		setCopypastaParagraphs(picked.paragraphs);
+		setCowsayWidth(getCowsayMaxWidth(body));
+
+		const observer = new ResizeObserver(() => {
+			setCowsayWidth(getCowsayMaxWidth(body));
+		});
 		observer.observe(body);
 
 		return () => observer.disconnect();
-	}, [copypastaParagraphs]);
+	}, []);
 
-	const cowsayArt = copypastaParagraphs
-		? cowsay(copypastaParagraphs.join("\n\n"), cowsayWidth)
-		: null;
+	const cowsayArt = cowsay(copypastaParagraphs.join("\n\n"), cowsayWidth);
 
 	return (
 		<section className="home-terminal" aria-label="Introduction">
@@ -118,12 +115,11 @@ export function HomeIntroTerminal() {
 						</p>
 						<p>
 							Founder of{" "}
-							<Link
-								href="/music"
-								className="home__link home__link--pohhu focus-ring"
-							>
-								$.pohhu¥
-							</Link>
+							<TransitionLink href="/music">
+								<a className="home__link home__link--pohhu focus-ring">
+									$.pohhu¥
+								</a>
+							</TransitionLink>
 							, a creative collective from Tartu.
 						</p>
 					</div>
@@ -144,16 +140,16 @@ export function HomeIntroTerminal() {
 					</p>
 				</TerminalCommand>
 
-				{copypastaParagraphs ? (
-					<TerminalCommand command="cowsay < copypasta.txt">
-						<blockquote className="home-terminal__cowsay" cite="">
-							<pre aria-hidden>{cowsayArt}</pre>
-							<span className="sr-only">
-								{copypastaParagraphs.join("\n\n")}
-							</span>
-						</blockquote>
-					</TerminalCommand>
-				) : null}
+				<TerminalCommand command="cowsay < copypasta.txt">
+					<blockquote className="home-terminal__cowsay" cite="">
+						<pre aria-hidden suppressHydrationWarning>
+							{cowsayArt}
+						</pre>
+						<span className="sr-only">
+							{copypastaParagraphs.join("\n\n")}
+						</span>
+					</blockquote>
+				</TerminalCommand>
 
 				<p className="home-terminal__line home-terminal__line--idle">
 					<span className="home-terminal__prompt" aria-hidden>

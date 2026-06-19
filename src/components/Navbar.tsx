@@ -2,7 +2,7 @@ import {
 	MenuIcon,
 	XIcon
 } from "@heroicons/react/solid";
-import Link from "next/link";
+import TransitionLink from "./TransitionLink";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "preact/hooks";
 
@@ -104,11 +104,11 @@ export default function SiteHeader() {
 	return (
 		<header className="site-header">
 			<div className="site-shell site-header__inner">
-				<Link href="/">
+				<TransitionLink href="/">
 					<a className="site-logo focus-ring font-heading text-xl font-extrabold tracking-tighter text-white sm:text-2xl">
 						nigol<span className="text-blue-400">.ee</span>
 					</a>
-				</Link>
+				</TransitionLink>
 
 				<button
 					type="button"

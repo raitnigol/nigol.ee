@@ -49,7 +49,7 @@ function isValidAlbumMeta(value: unknown): value is PhysicalMediaAlbumMeta {
 function loadGeneratedMeta(): PhysicalMediaApiResponse {
 	if (!fs.existsSync(META_FILE)) {
 		throw new Error(
-			`Missing generated metadata at ${META_FILE}. Run: npm run spotify:sync`
+			`Missing generated metadata at ${META_FILE}. Run: yarn spotify:sync`
 		);
 	}
 

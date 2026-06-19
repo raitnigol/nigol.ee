@@ -539,7 +539,7 @@
 
 "@vercel/speed-insights@0.0.8":
   version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@vercel/speed-insights/-/speed-insights-0.0.8.tgz#50fd1b9e5e4a9a9a671536c466ebc2cbe6b679f0"
+  resolved "https://registry.npmjs.org/@vercel/speed-insights/-/speed-insights-0.0.8.tgz"
   integrity sha512-jKSN20gN8ZVmWKmxEU+jZnBTpk2nIZ5klQRzqrxEaBtWEovFRZzZXDhTZCzMIdlRXZRMjQJYyWKYpkccC5VddQ==
 
 "@webassemblyjs/ast@1.14.1", "@webassemblyjs/ast@^1.14.1":

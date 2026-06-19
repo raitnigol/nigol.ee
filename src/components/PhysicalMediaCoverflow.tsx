@@ -336,7 +336,7 @@ export function PhysicalMediaCoverflow() {
 							{activeSpotify
 								? formatAlbumMeta(activeSpotify)
 								: spotifyLoaded && !activeItem.title
-									? "Metadata not synced — run npm run spotify:sync"
+									? "Metadata not synced — run yarn spotify:sync"
 									: "\u00a0"}
 						</p>
 						<p

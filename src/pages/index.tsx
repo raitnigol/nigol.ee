@@ -28,6 +28,7 @@ export default function Home() {
 								href={url}
 								image={image}
 								label={name}
+								size="lg"
 							/>
 						))}
 					</div>

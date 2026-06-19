@@ -1,4 +1,4 @@
-import Link from "next/link";
+import TransitionLink from "./TransitionLink";
 import { PauseIcon, PlayIcon } from "@heroicons/react/solid";
 import Image from "next/future/image";
 import { useEffect, useState } from "preact/hooks";
@@ -98,16 +98,17 @@ export default function Spotify() {
 					<div className="spotify-widget__image spotify-widget__image--empty" aria-hidden />
 				)}
 				{ownedPhysicalMedia ? (
-					<Link
-						href="/physical-media"
-						className="spotify-widget__shelf-link focus-ring"
-						aria-label="This album is on my CD shelf"
-					>
-						<span className="spotify-widget__shelf-link-inner">
-							<span className="spotify-widget__shelf-disc" aria-hidden />
-							<span>On shelf</span>
-						</span>
-					</Link>
+					<TransitionLink href="/physical-media">
+						<a
+							className="spotify-widget__shelf-link focus-ring"
+							aria-label="This album is on my CD shelf"
+						>
+							<span className="spotify-widget__shelf-link-inner">
+								<span className="spotify-widget__shelf-disc" aria-hidden />
+								<span>On shelf</span>
+							</span>
+						</a>
+					</TransitionLink>
 				) : null}
 			</div>
 

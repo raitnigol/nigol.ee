@@ -32,7 +32,7 @@ export default function Music({ artistMeta }: MusicPageProps) {
 export const getStaticProps: GetStaticProps<MusicPageProps> = async () => {
 	if (!fs.existsSync(ARTISTS_META_FILE)) {
 		throw new Error(
-			`Missing ${ARTISTS_META_FILE}. Run: npm run spotify:sync`
+			`Missing ${ARTISTS_META_FILE}. Run: yarn spotify:sync`
 		);
 	}
 

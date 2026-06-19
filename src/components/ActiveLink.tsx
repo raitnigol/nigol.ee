@@ -1,8 +1,9 @@
-import Link, { LinkProps } from "next/link";
+import type { LinkProps } from "next/link";
+import TransitionLink from "./TransitionLink";
 import { useRouter } from "next/router";
 import { cloneElement } from "preact";
 
-export interface ActiveLinkProps extends LinkProps {
+export interface ActiveLinkProps extends Omit<LinkProps, "children"> {
 	children: React.ReactElement;
 	activeClass: string;
 	nonActiveClass?: string;
@@ -29,7 +30,7 @@ export default function ActiveLink({
 	const isActive = router.pathname === linkPathname(href);
 
 	return (
-		<Link href={href} {...props}>
+		<TransitionLink href={href} {...props}>
 			{cloneElement(children, {
 				className:
 					isActive
@@ -40,6 +41,6 @@ export default function ActiveLink({
 						? `${children.props.className} ${nonActiveClass}`
 						: nonActiveClass
 			})}
-		</Link>
+		</TransitionLink>
 	);
 }

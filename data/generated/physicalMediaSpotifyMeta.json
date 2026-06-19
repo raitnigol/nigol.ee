@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-19T11:13:57.077Z",
+  "generatedAt": "2026-06-19T11:35:03.023Z",
   "source": "spotify-search",
   "total": 73,
   "loaded": 57,
@@ -9,8 +9,8 @@
     "ms-dynamite-a-little-deeper: No search result with exact album ID 4hF66CtQgAPU6LzedAQi4V",
     "meghan-trainor-title: No search result with exact album ID 64xzmGX1FWXy4Co4wZp7A7",
     "mckinneys-cotton-pickers: No search result with exact album ID 5MyDu5gUaJ2R3tMLbh3ODC",
-    "the-ink-spots-the-ultimate-collection: No search result with exact album ID 0XygOuz63t6eiK2gPrXGhN",
     "warren-g-regulate-g-funk-era: No search result with exact album ID 00tCy4SMjRgPKj9zay9DIk",
+    "the-ink-spots-the-ultimate-collection: No search result with exact album ID 0XygOuz63t6eiK2gPrXGhN",
     "le-fabuleux-destin-damelie-poulain: No search result with exact album ID 14EeFDaGuWiLwr5yD3PiWz",
     "imogen-heap-ellipse: No search result with exact album ID 1H8velOQ9zUFqpuQPd2bkO",
     "john-legend-love-in-the-future: No search result with exact album ID 1aX41cQgMNeRscbLtPVt6F",
@@ -75,19 +75,6 @@
       "spotifyUrl": "https://open.spotify.com/album/1BZoqf8Zje5nGdwZhOjAtD",
       "copyright": null
     },
-    "the-most-known-unknown": {
-      "collectionId": "the-most-known-unknown",
-      "name": "Most Known Unknown (Explicit)",
-      "artists": "Three 6 Mafia",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273f52c28f42318cdfe7718e32a",
-      "releaseYear": "2005",
-      "releaseDate": "2005-09-27",
-      "label": null,
-      "totalTracks": 21,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/0kTLdP4XPeJGsbr2L8ikyF",
-      "copyright": null
-    },
     "long-live-asap": {
       "collectionId": "long-live-asap",
       "name": "LONG.LIVE.A$AP (Deluxe Version)",
@@ -101,17 +88,17 @@
       "spotifyUrl": "https://open.spotify.com/album/6rzMufuu8sLkIizM4q9c7J",
       "copyright": null
     },
-    "ds2": {
-      "collectionId": "ds2",
-      "name": "DS2 (Deluxe)",
-      "artists": "Future",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273b2592bea12d840fd096ef965",
-      "releaseYear": "2015",
-      "releaseDate": "2015-07-17",
+    "the-most-known-unknown": {
+      "collectionId": "the-most-known-unknown",
+      "name": "Most Known Unknown (Explicit)",
+      "artists": "Three 6 Mafia",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273f52c28f42318cdfe7718e32a",
+      "releaseYear": "2005",
+      "releaseDate": "2005-09-27",
       "label": null,
-      "totalTracks": 19,
+      "totalTracks": 21,
       "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/0fUy6IdLHDpGNwavIlhEsl",
+      "spotifyUrl": "https://open.spotify.com/album/0kTLdP4XPeJGsbr2L8ikyF",
       "copyright": null
     },
     "at-long-last-asap": {
@@ -127,17 +114,17 @@
       "spotifyUrl": "https://open.spotify.com/album/3arNdjotCvtiiLFfjKngMc",
       "copyright": null
     },
-    "mouse-and-the-mask": {
-      "collectionId": "mouse-and-the-mask",
-      "name": "THE MOUSE & THE MASK",
-      "artists": "DANGERDOOM, MF DOOM, Danger Mouse",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27333846ba3d6d51056f04fe4f7",
-      "releaseYear": "2005",
-      "releaseDate": "2005-10-17",
+    "ds2": {
+      "collectionId": "ds2",
+      "name": "DS2 (Deluxe)",
+      "artists": "Future",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273b2592bea12d840fd096ef965",
+      "releaseYear": "2015",
+      "releaseDate": "2015-07-17",
       "label": null,
-      "totalTracks": 16,
+      "totalTracks": 19,
       "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/1p6SQm3DKSpjkUCHcQUdz8",
+      "spotifyUrl": "https://open.spotify.com/album/0fUy6IdLHDpGNwavIlhEsl",
       "copyright": null
     },
     "miss-e-so-addictive": {
@@ -151,6 +138,19 @@
       "totalTracks": 18,
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/20t54K6C80QQH7vbcpfJcP",
+      "copyright": null
+    },
+    "mouse-and-the-mask": {
+      "collectionId": "mouse-and-the-mask",
+      "name": "THE MOUSE & THE MASK",
+      "artists": "DANGERDOOM, MF DOOM, Danger Mouse",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27333846ba3d6d51056f04fe4f7",
+      "releaseYear": "2005",
+      "releaseDate": "2005-10-17",
+      "label": null,
+      "totalTracks": 16,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/1p6SQm3DKSpjkUCHcQUdz8",
       "copyright": null
     },
     "revival": {
@@ -660,19 +660,6 @@
       "spotifyUrl": "https://open.spotify.com/album/5WJ5yGZHKBUd5u7W82yAC2",
       "copyright": null
     },
-    "estin-esimene-lumi": {
-      "collectionId": "estin-esimene-lumi",
-      "name": "Esimene lumi",
-      "artists": "Estin",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273ceb95681a84f596b9f005514",
-      "releaseYear": "1995",
-      "releaseDate": "1995",
-      "label": null,
-      "totalTracks": 1,
-      "albumType": "single",
-      "spotifyUrl": "https://open.spotify.com/album/0wUrReQhmMUNwQFzCJSZvr",
-      "copyright": null
-    },
     "carine-jessica-ctrl-alt-del": {
       "collectionId": "carine-jessica-ctrl-alt-del",
       "name": "Ctrl-Alt-Del",
@@ -684,6 +671,19 @@
       "totalTracks": 8,
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/5qFG5RvAPC3PbVHbXWnCf9",
+      "copyright": null
+    },
+    "estin-esimene-lumi": {
+      "collectionId": "estin-esimene-lumi",
+      "name": "Esimene lumi",
+      "artists": "Estin",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273ceb95681a84f596b9f005514",
+      "releaseYear": "1995",
+      "releaseDate": "1995",
+      "label": null,
+      "totalTracks": 1,
+      "albumType": "single",
+      "spotifyUrl": "https://open.spotify.com/album/0wUrReQhmMUNwQFzCJSZvr",
       "copyright": null
     },
     "catapulta-badminton": {

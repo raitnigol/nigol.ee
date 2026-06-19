@@ -1,4 +1,4 @@
-import Link from "next/link";
+import TransitionLink from "../components/TransitionLink";
 
 export default function Custom404() {
 	return (
@@ -8,11 +8,11 @@ export default function Custom404() {
 			</h1>
 			<p>
 				Seems like this page doesn&apos;t exist. Let&apos;s{" "}
-				<Link href="/">
+				<TransitionLink href="/">
 					<a className="border-b border-[#fff4] hover:border-white transition">
 						go back
 					</a>
-				</Link>
+				</TransitionLink>
 				!
 			</p>
 		</>

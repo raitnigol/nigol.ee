@@ -1,5 +1,3 @@
-import Image from "next/future/image";
-
 interface SocialIconLinkProps {
 	href: string;
 	image: string;
@@ -7,6 +5,7 @@ interface SocialIconLinkProps {
 	caption?: string;
 	/** Bordered tile — pairs with adjacent merch / CTA buttons */
 	boxed?: boolean;
+	size?: "default" | "lg";
 }
 
 export function SocialIconLink({
@@ -14,8 +13,14 @@ export function SocialIconLink({
 	image,
 	label,
 	caption,
-	boxed = false
+	boxed = false,
+	size = "default"
 }: SocialIconLinkProps) {
+	const imageClassName =
+		size === "lg"
+			? "social-icon-link__image social-icon-link__image--lg"
+			: "social-icon-link__image";
+
 	return (
 		<a
 			href={href}
@@ -25,16 +30,17 @@ export function SocialIconLink({
 			title={label}
 			className={
 				boxed
-					? "focus-ring group inline-flex min-h-[3.375rem] min-w-[5.5rem] flex-col items-center justify-center gap-1 border border-white/20 px-5 py-2 transition hover:border-white/40"
-					: "focus-ring group flex flex-col items-center gap-1.5"
+					? "social-icon-link focus-ring group inline-flex min-h-[3.375rem] min-w-[5.5rem] flex-col items-center justify-center gap-1 border border-white/20 px-5 py-2 transition hover:border-white/40"
+					: "social-icon-link focus-ring group flex flex-col items-center gap-1.5"
 			}
 		>
-			<Image
-				src={image}
-				alt=""
-				width={64}
-				height={64}
-				className="h-6 w-6 opacity-90 transition group-hover:opacity-100"
+			<span
+				className={imageClassName}
+				style={{
+					WebkitMaskImage: `url(${image})`,
+					maskImage: `url(${image})`
+				}}
+				aria-hidden
 			/>
 			{caption ? (
 				<span className="text-[10px] font-medium text-subtle transition group-hover:text-muted">
