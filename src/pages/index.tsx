@@ -15,7 +15,17 @@ export default function Home() {
 
 			<div className="home">
 				<h1 className="sr-only">Rait Nigol</h1>
-				<p className="home__greeting">&ldquo;Hello, friend.&rdquo;</p>
+				<blockquote className="home__greeting">
+					<p>
+						&ldquo;Control can sometimes be an illusion, but sometimes you need
+						illusion to gain control. Fantasy is an easy way to give meaning to
+						the world, to cloak our harsh reality in escapist comfort. After
+						all, isn&rsquo;t that why we surround ourselves with so many screens?
+						So we can avoid seeing? So we can avoid each other? So we can avoid
+						truth.&rdquo;
+					</p>
+					<footer>&mdash; Elliot Alderson</footer>
+				</blockquote>
 
 				<HomeIntroTerminal />
 
