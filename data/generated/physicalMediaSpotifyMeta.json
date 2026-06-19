@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-19T10:31:50.537Z",
+  "generatedAt": "2026-06-19T11:13:57.077Z",
   "source": "spotify-search",
   "total": 73,
   "loaded": 57,
@@ -23,19 +23,6 @@
     "milk-maid-yucca: No search result with exact album ID 1xIEEIKxHeovNz2WDEXzt2"
   ],
   "albums": {
-    "slim-shady-lp": {
-      "collectionId": "slim-shady-lp",
-      "name": "The Slim Shady LP",
-      "artists": "Eminem",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2739bef45ee387f274ea3198c55",
-      "releaseYear": "1999",
-      "releaseDate": "1999-02-23",
-      "label": null,
-      "totalTracks": 20,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/0vE6mttRTBXRe9rKghyr1l",
-      "copyright": null
-    },
     "born-to-die-paradise-edition": {
       "collectionId": "born-to-die-paradise-edition",
       "name": "Born To Die - The Paradise Edition",
@@ -47,6 +34,19 @@
       "totalTracks": 23,
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/5VoeRuTrGhTbKelUfwymwu",
+      "copyright": null
+    },
+    "slim-shady-lp": {
+      "collectionId": "slim-shady-lp",
+      "name": "The Slim Shady LP",
+      "artists": "Eminem",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2739bef45ee387f274ea3198c55",
+      "releaseYear": "1999",
+      "releaseDate": "1999-02-23",
+      "label": null,
+      "totalTracks": 20,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/0vE6mttRTBXRe9rKghyr1l",
       "copyright": null
     },
     "illmatic": {
@@ -101,19 +101,6 @@
       "spotifyUrl": "https://open.spotify.com/album/6rzMufuu8sLkIizM4q9c7J",
       "copyright": null
     },
-    "at-long-last-asap": {
-      "collectionId": "at-long-last-asap",
-      "name": "AT.LONG.LAST.A$AP",
-      "artists": "A$AP Rocky",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27349efdc44d0733042f8b99d57",
-      "releaseYear": "2015",
-      "releaseDate": "2015-05-26",
-      "label": null,
-      "totalTracks": 18,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/3arNdjotCvtiiLFfjKngMc",
-      "copyright": null
-    },
     "ds2": {
       "collectionId": "ds2",
       "name": "DS2 (Deluxe)",
@@ -125,6 +112,19 @@
       "totalTracks": 19,
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/0fUy6IdLHDpGNwavIlhEsl",
+      "copyright": null
+    },
+    "at-long-last-asap": {
+      "collectionId": "at-long-last-asap",
+      "name": "AT.LONG.LAST.A$AP",
+      "artists": "A$AP Rocky",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27349efdc44d0733042f8b99d57",
+      "releaseYear": "2015",
+      "releaseDate": "2015-05-26",
+      "label": null,
+      "totalTracks": 18,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/3arNdjotCvtiiLFfjKngMc",
       "copyright": null
     },
     "mouse-and-the-mask": {
@@ -647,19 +647,6 @@
       "spotifyUrl": "https://open.spotify.com/album/6ToB6w7dsydDwAshBOo5Sq",
       "copyright": null
     },
-    "carine-jessica-ctrl-alt-del": {
-      "collectionId": "carine-jessica-ctrl-alt-del",
-      "name": "Ctrl-Alt-Del",
-      "artists": "Carine Jessica",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273a33644c7274c6d5e90e67802",
-      "releaseYear": "2020",
-      "releaseDate": "2020-03-05",
-      "label": null,
-      "totalTracks": 8,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/5qFG5RvAPC3PbVHbXWnCf9",
-      "copyright": null
-    },
     "bad-art-kriminoloogia": {
       "collectionId": "bad-art-kriminoloogia",
       "name": "Kriminoloogia",
@@ -686,6 +673,19 @@
       "spotifyUrl": "https://open.spotify.com/album/0wUrReQhmMUNwQFzCJSZvr",
       "copyright": null
     },
+    "carine-jessica-ctrl-alt-del": {
+      "collectionId": "carine-jessica-ctrl-alt-del",
+      "name": "Ctrl-Alt-Del",
+      "artists": "Carine Jessica",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273a33644c7274c6d5e90e67802",
+      "releaseYear": "2020",
+      "releaseDate": "2020-03-05",
+      "label": null,
+      "totalTracks": 8,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/5qFG5RvAPC3PbVHbXWnCf9",
+      "copyright": null
+    },
     "catapulta-badminton": {
       "collectionId": "catapulta-badminton",
       "name": "Badminton",
@@ -699,19 +699,6 @@
       "spotifyUrl": "https://open.spotify.com/album/1fH9kqF0pC5ah8YVNEYstc",
       "copyright": null
     },
-    "marilyn-jurman-back-to-saturn": {
-      "collectionId": "marilyn-jurman-back-to-saturn",
-      "name": "Back to Saturn",
-      "artists": "Marilyn Jurman",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2738add179eaba73fd2b6d9f52a",
-      "releaseYear": "2012",
-      "releaseDate": "2012-12-18",
-      "label": null,
-      "totalTracks": 10,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/720ViUzXxJIuvO1G3w5zor",
-      "copyright": null
-    },
     "mati-nuude-75": {
       "collectionId": "mati-nuude-75",
       "name": "75",
@@ -723,6 +710,19 @@
       "totalTracks": 10,
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/1GhwJCtigN7eqdNEEn2XIr",
+      "copyright": null
+    },
+    "marilyn-jurman-back-to-saturn": {
+      "collectionId": "marilyn-jurman-back-to-saturn",
+      "name": "Back to Saturn",
+      "artists": "Marilyn Jurman",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2738add179eaba73fd2b6d9f52a",
+      "releaseYear": "2012",
+      "releaseDate": "2012-12-18",
+      "label": null,
+      "totalTracks": 10,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/720ViUzXxJIuvO1G3w5zor",
       "copyright": null
     },
     "ines-kiusatus": {
