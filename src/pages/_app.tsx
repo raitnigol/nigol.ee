@@ -2,6 +2,7 @@ import "../styles/index.scss";
 
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 import Layout from "../components/Layout";
 
@@ -21,6 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 			<Layout>
 				<Component {...pageProps} />
 			</Layout>
+			<SpeedInsights />
 		</>
 	);
 }
