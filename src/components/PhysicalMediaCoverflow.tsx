@@ -190,12 +190,15 @@ export function PhysicalMediaCoverflow() {
 					rewind={canNavigate}
 					slideToClickedSlide
 					watchSlidesProgress
-					speed={220}
+					speed={180}
 					keyboard={{ enabled: true }}
 					mousewheel={{
-						forceToAxis: true,
+						enabled: true,
+						forceToAxis: false,
 						releaseOnEdges: true,
-						thresholdDelta: 20
+						thresholdDelta: 15,
+						thresholdTime: 100,
+						eventsTarget: ".album-coverflow__stage"
 					}}
 					spaceBetween={14}
 					slidesPerView="auto"
