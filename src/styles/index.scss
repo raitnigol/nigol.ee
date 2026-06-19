@@ -1207,9 +1207,17 @@
 	&__meta {
 		display: flex;
 		flex-wrap: wrap;
-		align-items: center;
+		align-items: flex-end;
 		justify-content: space-between;
 		gap: 1rem 1.5rem;
+	}
+
+	&__meta-primary {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		min-width: 0;
+		flex: 1 1 20rem;
 	}
 
 	&__socials {
@@ -1217,6 +1225,27 @@
 		flex-wrap: wrap;
 		align-items: center;
 		gap: 0.85rem 1.1rem;
+	}
+
+	&__verse {
+		margin: 0;
+		max-width: 36rem;
+		border: 0;
+		padding: 0;
+		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+		font-size: 0.8125rem;
+		font-style: italic;
+		line-height: 1.7;
+		letter-spacing: 0.02em;
+		color: var(--text-subtle);
+
+		p {
+			margin: 0;
+
+			& + p {
+				margin-top: 1.35rem;
+			}
+		}
 	}
 
 	&__clock {
