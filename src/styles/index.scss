@@ -359,6 +359,38 @@
 		padding-bottom: clamp(2rem, 4vw, 3rem);
 	}
 
+	.site-footer {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem 1.5rem;
+		border-top: 1px solid rgb(255 255 255 / 10%);
+		padding-top: 2rem;
+	}
+
+	.site-footer__copy {
+		margin: 0;
+		font-size: 0.875rem;
+		letter-spacing: 0.025em;
+		color: var(--text-subtle);
+	}
+
+	.site-footer__badges {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.site-footer__badge {
+		display: block;
+		width: 88px;
+		height: 31px;
+		image-rendering: pixelated;
+		image-rendering: crisp-edges;
+	}
+
 	.product-detail {
 		&__vendor {
 			margin: 0;
