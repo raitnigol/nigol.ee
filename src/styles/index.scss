@@ -1077,79 +1077,55 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		min-height: 14.5rem;
-		margin-top: 1.25rem;
+		margin-top: 1rem;
 		text-align: center;
 	}
 
 	&__title {
-		display: -webkit-box;
-		min-height: 3.25rem;
-		overflow: hidden;
+		margin: 0;
+		max-width: 34rem;
 		font-size: 1.25rem;
 		font-weight: 700;
 		line-height: 1.3;
 		color: #fff;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
 	}
 
-	&__artist {
-		display: -webkit-box;
-		min-height: 2.75rem;
-		margin-top: 0.35rem;
-		overflow: hidden;
+	&__blurb {
+		margin: 0.55rem 0 0;
+		max-width: 34rem;
 		font-size: 0.9375rem;
-		line-height: 1.35;
+		line-height: 1.55;
 		color: var(--text-muted);
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
-	}
-
-	&__meta {
-		display: -webkit-box;
-		min-height: 2.75rem;
-		margin-top: 0.75rem;
-		overflow: hidden;
-		font-size: 0.875rem;
-		line-height: 1.4;
-		letter-spacing: 0.02em;
-		color: var(--text-muted);
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
 
 		&--loading {
+			min-height: 1.45rem;
 			color: var(--text-subtle);
 		}
 	}
 
-	&__copyright {
-		display: -webkit-box;
-		min-height: 4.5rem;
-		margin-top: 0.5rem;
-		overflow: hidden;
+	&__credit {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 0.3rem 0.45rem;
+		margin: 0.7rem 0 0;
+		max-width: 34rem;
 		font-size: 0.75rem;
 		line-height: 1.45;
 		color: var(--text-subtle);
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 3;
-		line-clamp: 3;
 	}
 
-	&__spotify-link-slot {
-		min-height: 1.25rem;
-		margin: 0.85rem 0 0;
+	&__details-sep {
+		opacity: 0.45;
 	}
 
 	&__spotify-link {
-		display: inline-block;
-		font-size: 0.8125rem;
+		font-size: inherit;
 		font-weight: 600;
 		color: var(--text-secondary);
-		border-bottom: 1px solid rgb(255 255 255 / 18%);
+		text-decoration: none;
+		border-bottom: 1px solid rgb(255 255 255 / 16%);
 		transition:
 			color 0.2s ease,
 			border-color 0.2s ease;
@@ -1158,14 +1134,9 @@
 			color: #fff;
 			border-color: rgb(255 255 255 / 42%);
 		}
-
-		&--placeholder {
-			visibility: hidden;
-			pointer-events: none;
-		}
 	}
 
-	&--accent-ready &__spotify-link:not(&__spotify-link--placeholder) {
+	&--accent-ready &__spotify-link {
 		color: color-mix(in srgb, var(--album-accent) 72%, #6ee7b7);
 		border-bottom-color: color-mix(in srgb, var(--album-accent) 35%, transparent);
 
@@ -1174,6 +1145,7 @@
 			border-bottom-color: color-mix(in srgb, var(--album-accent) 55%, transparent);
 		}
 	}
+
 }
 
 @keyframes album-caption-in {

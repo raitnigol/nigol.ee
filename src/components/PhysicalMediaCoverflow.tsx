@@ -21,26 +21,55 @@ const FALLBACK_ACCENT = "rgb(52 211 153)";
 
 const nowPlayingFetcher = (url: string) => fetch(url).then(res => res.json());
 
-function formatAlbumMeta(meta: PhysicalMediaAlbumMeta): string {
-	const trackLabel =
-		meta.albumType === "show"
-			? `${meta.totalTracks} episodes`
-			: `${meta.totalTracks} tracks`;
-	const typeLabel =
+function formatAlbumSentence(
+	meta: PhysicalMediaAlbumMeta,
+	fallbackArtists?: string
+): string {
+	const artists = meta.artists || fallbackArtists || "an unknown artist";
+	const year = meta.releaseYear;
+	const count = meta.totalTracks;
+	const isShow = meta.albumType === "show";
+	const kind =
 		meta.albumType === "album"
-			? null
-			: meta.albumType === "show"
-				? "Audiobook"
-				: meta.albumType.charAt(0).toUpperCase() + meta.albumType.slice(1);
+			? "Album"
+			: meta.albumType === "single"
+				? "Single"
+				: meta.albumType === "compilation"
+					? "Compilation"
+					: meta.albumType === "show"
+						? "Audiobook"
+						: meta.albumType
+							? meta.albumType.charAt(0).toUpperCase() +
+								meta.albumType.slice(1)
+							: "Release";
 
-	const parts = [
-		meta.releaseYear,
-		meta.label,
-		trackLabel,
-		typeLabel
-	].filter(Boolean);
+	const fromWord = isShow ? "by" : "from";
+	let sentence = `${kind} ${fromWord} ${artists}`;
 
-	return parts.join(" · ");
+	if (year) {
+		sentence += ` released in ${year}`;
+	}
+
+	if (count > 0) {
+		const unit = isShow
+			? count === 1
+				? "episode"
+				: "episodes"
+			: count === 1
+				? "track"
+				: "tracks";
+		sentence += `, with a total of ${count} ${unit}`;
+	}
+
+	return `${sentence}.`;
+}
+
+function formatAlbumCredit(meta: PhysicalMediaAlbumMeta): string | null {
+	const parts = [meta.label, meta.copyright].filter(Boolean);
+	if (parts.length === 0) return null;
+	// Prefer a single credit line; copyright often already includes the label.
+	if (meta.copyright) return meta.copyright;
+	return meta.label;
 }
 
 export function PhysicalMediaCoverflow() {
@@ -55,6 +84,7 @@ export function PhysicalMediaCoverflow() {
 
 	const total = listedPhysicalMediaCollection.length;
 	const canNavigate = total > 1;
+	const loop = total > 2;
 
 	const { data: nowPlaying } = useSWR<NowPlayingResponseSuccess>(
 		mounted ? "/api/nowPlaying" : null,
@@ -111,14 +141,20 @@ export function PhysicalMediaCoverflow() {
 
 	const activeItem = listedPhysicalMediaCollection[activeIndex];
 	const activeSpotify = activeItem ? spotifyMeta[activeItem.id] : undefined;
+	const activeCredit = activeSpotify
+		? formatAlbumCredit(activeSpotify)
+		: null;
 	const progress = total <= 1 ? 1 : activeIndex / (total - 1);
 
 	const goToSlide = (index: number) => {
-		swiperRef.current?.slideTo(index);
+		const swiper = swiperRef.current;
+		if (!swiper) return;
+		if (loop) swiper.slideToLoop(index);
+		else swiper.slideTo(index);
 	};
 
 	const syncActiveIndex = (swiper: SwiperInstance) => {
-		setActiveIndex(swiper.activeIndex);
+		setActiveIndex(loop ? swiper.realIndex : swiper.activeIndex);
 	};
 
 	return (
@@ -187,7 +223,10 @@ export function PhysicalMediaCoverflow() {
 					effect="coverflow"
 					grabCursor={canNavigate}
 					centeredSlides
-					rewind={canNavigate}
+					initialSlide={0}
+					loop={loop}
+					loopAdditionalSlides={loop ? 3 : 0}
+					rewind={!loop && canNavigate}
 					slideToClickedSlide
 					watchSlidesProgress
 					speed={220}
@@ -306,49 +345,47 @@ export function PhysicalMediaCoverflow() {
 						<p className="album-coverflow__title">
 							{activeSpotify?.name ?? activeItem.title ?? "\u00a0"}
 						</p>
-						<p className="album-coverflow__artist">
-							{activeSpotify?.artists ??
-								activeItem.artists ??
-								"\u00a0"}
-						</p>
-						<p
-							className={
-								activeSpotify
-									? "album-coverflow__meta"
-									: "album-coverflow__meta album-coverflow__meta--loading"
-							}
-						>
-							{activeSpotify
-								? formatAlbumMeta(activeSpotify)
-								: spotifyLoaded
-									? "\u00a0"
-									: "Loading album details…"}
-						</p>
-						<p
-							className="album-coverflow__copyright"
-							aria-hidden={!activeSpotify?.copyright}
-						>
-							{activeSpotify?.copyright ?? "\u00a0"}
-						</p>
-						<p className="album-coverflow__spotify-link-slot">
-							{activeSpotify ? (
-								<a
-									href={activeSpotify.spotifyUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="album-coverflow__spotify-link focus-ring"
-								>
-									Listen on Spotify
-								</a>
-							) : (
-								<span
-									className="album-coverflow__spotify-link album-coverflow__spotify-link--placeholder"
-									aria-hidden
-								>
-									Listen on Spotify
-								</span>
-							)}
-						</p>
+						{activeSpotify ? (
+							<>
+								<p className="album-coverflow__blurb">
+									{formatAlbumSentence(
+										activeSpotify,
+										activeItem.artists
+									)}
+								</p>
+								<p className="album-coverflow__credit">
+									{activeCredit ? (
+										<>
+											<span>{activeCredit}</span>
+											<span
+												className="album-coverflow__details-sep"
+												aria-hidden
+											>
+												·
+											</span>
+										</>
+									) : null}
+									<a
+										href={activeSpotify.spotifyUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="album-coverflow__spotify-link focus-ring"
+									>
+										Listen on Spotify
+									</a>
+								</p>
+							</>
+						) : (
+							<p
+								className={
+									spotifyLoaded
+										? "album-coverflow__blurb"
+										: "album-coverflow__blurb album-coverflow__blurb--loading"
+								}
+							>
+								{spotifyLoaded ? "\u00a0" : "Loading album details…"}
+							</p>
+						)}
 					</div>
 				</div>
 			) : null}
