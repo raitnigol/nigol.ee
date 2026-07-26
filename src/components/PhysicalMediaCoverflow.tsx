@@ -11,11 +11,13 @@ import useSWR from "swr";
 
 import { listedPhysicalMediaCollection } from "../data/physicalMedia";
 import { sampleCoverAccent } from "../lib/coverColor";
-import { findOwnedPhysicalMedia, getPhysicalMediaIdFromHash, getListedPhysicalMediaIndex } from "../lib/physicalMediaMatch";
+import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
 import type { NowPlayingResponseSuccess } from "../pages/api/nowPlaying";
-import type { PhysicalMediaAlbumMeta } from "../lib/physicalMediaSpotifyMeta";
+import type { PhysicalMediaAlbumMeta } from "../pages/api/physicalMedia";
 
 import "swiper/swiper-bundle.css";
+
+const FALLBACK_ACCENT = "rgb(52 211 153)";
 
 const nowPlayingFetcher = (url: string) => fetch(url).then(res => res.json());
 
@@ -44,13 +46,12 @@ function formatAlbumMeta(meta: PhysicalMediaAlbumMeta): string {
 export function PhysicalMediaCoverflow() {
 	const [mounted, setMounted] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [accentColor, setAccentColor] = useState<string | null>(null);
+	const [accentColor, setAccentColor] = useState(FALLBACK_ACCENT);
 	const [spotifyMeta, setSpotifyMeta] = useState<
 		Record<string, PhysicalMediaAlbumMeta>
 	>({});
 	const [spotifyLoaded, setSpotifyLoaded] = useState(false);
 	const swiperRef = useRef<SwiperInstance | null>(null);
-	const pendingHashIndex = useRef<number | null>(null);
 
 	const total = listedPhysicalMediaCollection.length;
 	const canNavigate = total > 1;
@@ -76,51 +77,16 @@ export function PhysicalMediaCoverflow() {
 		setMounted(true);
 	}, []);
 
-	const jumpToHashAlbum = () => {
-		const id = getPhysicalMediaIdFromHash(window.location.hash);
-		if (!id) return;
-
-		const index = getListedPhysicalMediaIndex(id);
-		if (index < 0) return;
-
-		if (swiperRef.current) {
-			swiperRef.current.slideTo(index);
-			pendingHashIndex.current = null;
-		} else {
-			pendingHashIndex.current = index;
-		}
-	};
-
 	useEffect(() => {
-		if (!mounted) return;
-
-		jumpToHashAlbum();
-		window.addEventListener("hashchange", jumpToHashAlbum);
-
-		return () => {
-			window.removeEventListener("hashchange", jumpToHashAlbum);
-		};
-	}, [mounted]);
-
-	useEffect(() => {
-		if (!mounted) return;
-
-		let cancelled = false;
-
 		fetch("/api/physicalMedia")
 			.then(res => res.json())
 			.then(data => {
-				if (cancelled || data.error || !data.albums) return;
-
+				if (data.error || !data.albums) return;
 				setSpotifyMeta(data.albums);
-				setSpotifyLoaded(true);
 			})
-			.catch(console.error);
-
-		return () => {
-			cancelled = true;
-		};
-	}, [mounted]);
+			.catch(console.error)
+			.finally(() => setSpotifyLoaded(true));
+	}, []);
 
 	useEffect(() => {
 		if (!mounted || total === 0) return;
@@ -157,15 +123,11 @@ export function PhysicalMediaCoverflow() {
 
 	return (
 		<div
-			className={`album-coverflow group/carousel${
-				accentColor ? " album-coverflow--accent-ready" : ""
-			}`}
+			className="album-coverflow group/carousel"
 			style={
-				accentColor
-					? ({
-							"--album-accent": accentColor
-						} as Record<string, string>)
-					: undefined
+				{
+					"--album-accent": accentColor
+				} as Record<string, string>
 			}
 		>
 			<div className="album-coverflow__stage">
@@ -175,8 +137,12 @@ export function PhysicalMediaCoverflow() {
 				nowPlaying?.isPlayingNow &&
 				nowPlaying.track ? (
 					<div className="album-coverflow__now-playing" role="status">
+						<span
+							className="album-coverflow__now-playing-dot"
+							aria-hidden
+						/>
 						<span className="album-coverflow__now-playing-label">
-							Now playing:
+							Now playing
 						</span>
 						<a
 							href={nowPlaying.track.external_urls.spotify}
@@ -199,7 +165,7 @@ export function PhysicalMediaCoverflow() {
 									className="album-coverflow__now-playing-jump focus-ring"
 									onClick={() => goToSlide(nowPlayingIndex)}
 								>
-									Jump to {nowPlayingOwned.title}
+									on {nowPlayingOwned.title}
 								</button>
 							</>
 						) : null}
@@ -224,15 +190,12 @@ export function PhysicalMediaCoverflow() {
 					rewind={canNavigate}
 					slideToClickedSlide
 					watchSlidesProgress
-					speed={180}
+					speed={220}
 					keyboard={{ enabled: true }}
 					mousewheel={{
-						enabled: true,
-						forceToAxis: false,
+						forceToAxis: true,
 						releaseOnEdges: true,
-						thresholdDelta: 15,
-						thresholdTime: 100,
-						eventsTarget: ".album-coverflow__stage"
+						thresholdDelta: 20
 					}}
 					spaceBetween={14}
 					slidesPerView="auto"
@@ -248,36 +211,30 @@ export function PhysicalMediaCoverflow() {
 						modifier: 1,
 						slideShadows: false
 					}}
-					onSwiper={(swiper: SwiperInstance) => {
+					onSwiper={swiper => {
 						swiperRef.current = swiper;
 						syncActiveIndex(swiper);
-
-						if (pendingHashIndex.current !== null) {
-							swiper.slideTo(pendingHashIndex.current);
-							pendingHashIndex.current = null;
-							return;
-						}
-
-						jumpToHashAlbum();
 					}}
 					onSlideChange={syncActiveIndex}
 					onSlideChangeTransitionEnd={syncActiveIndex}
 				>
 					{listedPhysicalMediaCollection.map(item => {
+						const isNowPlayingCd =
+							nowPlayingOwned?.id === item.id && nowPlaying?.isPlayingNow;
 						const meta = spotifyMeta[item.id];
 						const coverUrl = meta?.coverImageUrl;
-						const coverAlt =
-							meta?.name ?? item.title ?? item.id.replace(/-/g, " ");
+						const coverAlt = meta?.name ?? item.title ?? "Album cover";
 
 						return (
 							<SwiperSlide
 								key={item.id}
-								className="album-coverflow__slide"
+								className={
+									isNowPlayingCd
+										? "album-coverflow__slide album-coverflow__slide--now-playing"
+										: "album-coverflow__slide"
+								}
 							>
-								<div
-									id={item.id}
-									className="album-coverflow__cover scroll-anchor"
-								>
+								<div className="album-coverflow__cover">
 									{coverUrl ? (
 										<img
 											src={coverUrl}
@@ -294,11 +251,9 @@ export function PhysicalMediaCoverflow() {
 											className="album-coverflow__cover-image album-coverflow__cover-image--loading"
 											role="img"
 											aria-label={
-												meta
+												spotifyLoaded
 													? `${coverAlt} cover unavailable`
-													: item.title || item.artists
-														? `${coverAlt} — cover not synced`
-														: `Loading ${coverAlt} cover`
+													: `Loading ${coverAlt} cover`
 											}
 										/>
 									)}
@@ -365,9 +320,9 @@ export function PhysicalMediaCoverflow() {
 						>
 							{activeSpotify
 								? formatAlbumMeta(activeSpotify)
-								: spotifyLoaded && !activeItem.title
-									? "Metadata not synced — run yarn spotify:sync"
-									: "\u00a0"}
+								: spotifyLoaded
+									? "\u00a0"
+									: "Loading album details…"}
 						</p>
 						<p
 							className="album-coverflow__copyright"
