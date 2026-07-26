@@ -33,7 +33,8 @@ function loadEnvFile(filePath: string) {
 			value = value.slice(1, -1);
 		}
 
-		if (!process.env[key]) process.env[key] = value;
+		// Later files win (.env then .env.local), matching Next.js.
+		process.env[key] = value;
 	}
 }
 

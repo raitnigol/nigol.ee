@@ -43,6 +43,17 @@ export function mapSearchAlbumMeta(
 	};
 }
 
+export function mapAlbumMeta(
+	collectionId: string,
+	album: SpotifyApi.AlbumObjectFull
+): PhysicalMediaAlbumMeta {
+	return {
+		...mapSearchAlbumMeta(collectionId, album),
+		label: album.label ?? null,
+		copyright: album.copyrights?.[0]?.text ?? null
+	};
+}
+
 type SpotifySearchShow = {
 	id: string;
 	name: string;

@@ -7,6 +7,7 @@ import {
 	physicalMediaCollection
 } from "../src/data/physicalMedia";
 import {
+	mapAlbumMeta,
 	mapSearchAlbumMeta,
 	mapSearchShowMeta,
 	type PhysicalMediaAlbumMeta,
@@ -61,7 +62,8 @@ function loadEnvFile(filePath: string) {
 			value = value.slice(1, -1);
 		}
 
-		if (!process.env[key]) process.env[key] = value;
+		// Later files win (.env then .env.local), matching Next.js.
+		process.env[key] = value;
 	}
 }
 
@@ -164,11 +166,36 @@ async function resolveItemMeta(
 	client: Spotify,
 	item: ListedItem
 ): Promise<PhysicalMediaAlbumMeta> {
-	const queries = buildSearchQueries(item);
 	const spotifyId = expectedSpotifyId(item);
 
-	if (!spotifyId || queries.length === 0) {
-		throw new Error("Missing search query or Spotify ID");
+	if (!spotifyId) {
+		throw new Error("Missing Spotify ID");
+	}
+
+	// Prefer direct ID lookup — Search often omits exact matches by market/ranking.
+	if (item.spotifyShowId) {
+		try {
+			const response = await client.getShow(item.spotifyShowId, {
+				market: MARKET
+			});
+			return mapSearchShowMeta(item.id, response.body as SpotifySearchShow);
+		} catch {
+			// Fall through to search.
+		}
+	} else if (item.spotifyAlbumId) {
+		try {
+			const response = await client.getAlbum(item.spotifyAlbumId, {
+				market: MARKET
+			});
+			return mapAlbumMeta(item.id, response.body);
+		} catch {
+			// Fall through to search.
+		}
+	}
+
+	const queries = buildSearchQueries(item);
+	if (queries.length === 0) {
+		throw new Error(`Could not resolve Spotify ID ${spotifyId}`);
 	}
 
 	if (item.spotifyShowId) {
@@ -303,9 +330,14 @@ async function main() {
 		});
 	});
 
-	const loaded = Object.keys(albums).length;
+	const loadedAlbums: Record<string, PhysicalMediaAlbumMeta> = {};
+	for (const item of listedItems) {
+		if (albums[item.id]) loadedAlbums[item.id] = albums[item.id];
+	}
+
+	const loaded = Object.keys(loadedAlbums).length;
 	const failed = listedItems
-		.filter(item => !albums[item.id])
+		.filter(item => !loadedAlbums[item.id])
 		.map(item => {
 			const entry =
 				fetchFailed.find(f => f.startsWith(`${item.id}:`)) ??
@@ -315,12 +347,12 @@ async function main() {
 
 	const payload: PhysicalMediaSpotifyMetaFile = {
 		generatedAt: new Date().toISOString(),
-		source: "spotify-search",
+		source: "spotify-album-id",
 		total: listedItems.length,
 		loaded,
 		complete: loaded === listedItems.length,
 		failed,
-		albums
+		albums: loadedAlbums
 	};
 
 	fs.mkdirSync(path.dirname(OUTPUT_PATH), { recursive: true });

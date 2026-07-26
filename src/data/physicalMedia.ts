@@ -279,10 +279,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 		spotifyAlbumId: null
 	},
 	{
-		id: "shit-robot-from-the-cradle-to-the-rave",
-		spotifyAlbumId: "1hSZSyYLFuJmNGWRf2ajZn"
-	},
-	{
 		id: "lenny-kravitz-greatest-hits",
 		spotifyAlbumId: "1cW0de5T5fdedlS4YqvyCv"
 	},
@@ -293,10 +289,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 	{
 		id: "shaggy-hot-shot",
 		spotifyAlbumId: "3MT88SSyxQGbqYXj4LVk3b"
-	},
-	{
-		id: "r-kelly-public-announcement-born-into-the-90s",
-		spotifyAlbumId: "0WkL3JulvpTfRsSJ7crh5S"
 	},
 	{
 		id: "the-game-the-documentary-2",
@@ -372,7 +364,7 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 	},
 	{
 		id: "milk-maid-yucca",
-		spotifyAlbumId: "1xIEEIKxHeovNz2WDEXzt2"
+		spotifyAlbumId: "5gWn3pZ5MqGYSOjATkqNoK"
 	},
 	{
 		id: "ines-kiusatus",
