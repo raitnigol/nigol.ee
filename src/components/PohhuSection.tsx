@@ -447,7 +447,7 @@ function KevilniusMerchBlock() {
 
 	return (
 		<div id="pohhu-kevilnius-merch" className="scroll-anchor mb-10 min-w-0">
-			<div className="merch-product-layout lg:grid lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-14">
+			<div className="merch-product-layout lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start lg:gap-10 xl:gap-12">
 				{gallery.length > 0 ? (
 					<figure className="photo-credit min-w-0">
 						<MerchProductCarouselLazy
@@ -470,39 +470,20 @@ function KevilniusMerchBlock() {
 				) : null}
 
 				<div
-					className={`product-detail min-w-0 lg:self-start ${
+					className={`product-detail min-w-0 ${
 						gallery.length > 0
-							? "mt-8 border-t border-slate-800/90 pt-8 lg:mt-0 lg:border-t-0 lg:pt-0"
+							? "mt-8 border-t border-slate-800/90 pt-8 lg:mt-0 lg:border-t-0 lg:pt-1"
 							: ""
 					}`}
 				>
-					<p className="product-detail__vendor">{vendor}</p>
-
-					<h3 className="product-detail__title">{title}</h3>
-
-					<p className="product-detail__price">
-						{price}
-						<span className="product-detail__currency"> {currency}</span>
-					</p>
-
-					<div className="product-detail__description">
-						{description.map((paragraph, i) => (
-							<p key={i} className="product-detail__description-p">
-								<FormattedText text={paragraph} />
-							</p>
-						))}
-					</div>
-
-					{details.length > 0 ? (
-						<dl className="product-detail__specs">
-							{details.map(({ label, value }) => (
-								<div key={label} className="product-detail__spec-row">
-									<dt className="product-detail__spec-label">{label}</dt>
-									<dd className="product-detail__spec-value">{value}</dd>
-								</div>
-							))}
-						</dl>
-					) : null}
+					<header className="product-detail__header">
+						<p className="product-detail__vendor">{vendor}</p>
+						<h3 className="product-detail__title">{title}</h3>
+						<p className="product-detail__price">
+							{price}
+							<span className="product-detail__currency"> {currency}</span>
+						</p>
+					</header>
 
 					<div className="product-detail__actions">
 						<a
@@ -520,6 +501,25 @@ function KevilniusMerchBlock() {
 							caption="Instagram"
 							boxed
 						/>
+					</div>
+
+					{details.length > 0 ? (
+						<dl className="product-detail__specs">
+							{details.map(({ label, value }) => (
+								<div key={label} className="product-detail__spec">
+									<dt className="product-detail__spec-label">{label}</dt>
+									<dd className="product-detail__spec-value">{value}</dd>
+								</div>
+							))}
+						</dl>
+					) : null}
+
+					<div className="product-detail__description">
+						{description.map((paragraph, i) => (
+							<p key={i} className="product-detail__description-p">
+								<FormattedText text={paragraph} />
+							</p>
+						))}
 					</div>
 				</div>
 			</div>
