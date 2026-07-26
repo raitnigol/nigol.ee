@@ -232,29 +232,50 @@ function KiviBaarSocialLinks({ links }: { links: KiviArtShowLink[] }) {
 
 function SpotifyPlaylistEmbed({
 	playlistId,
-	title
+	title,
+	fillHeight = false
 }: {
 	playlistId: string;
 	title: string;
+	/** Match sibling square media on large screens. */
+	fillHeight?: boolean;
 }) {
 	const embedSrc = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`;
 
 	return (
-		<div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 ring-1 ring-inset ring-white/5">
-			<div className="border-b border-slate-800/90 px-4 py-3">
+		<div
+			className={
+				fillHeight
+					? "flex min-h-[22rem] flex-col overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 ring-1 ring-inset ring-white/5 lg:aspect-square lg:min-h-0"
+					: "overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 ring-1 ring-inset ring-white/5"
+			}
+		>
+			<div className="shrink-0 border-b border-slate-800/90 px-4 py-3">
 				<p className="text-xs font-bold uppercase tracking-[0.12em] text-violet-400">
 					{title}
 				</p>
 			</div>
-			<iframe
-				title={`Spotify playlist: ${title}`}
-				src={embedSrc}
-				width="100%"
-				height={352}
-				className="block w-full border-0 bg-slate-900"
-				allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-				loading="lazy"
-			/>
+			{fillHeight ? (
+				<div className="relative min-h-[18rem] flex-1">
+					<iframe
+						title={`Spotify playlist: ${title}`}
+						src={embedSrc}
+						className="absolute inset-0 h-full w-full border-0 bg-slate-900"
+						allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+						loading="lazy"
+					/>
+				</div>
+			) : (
+				<iframe
+					title={`Spotify playlist: ${title}`}
+					src={embedSrc}
+					width="100%"
+					height={352}
+					className="block w-full border-0 bg-slate-900"
+					allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+					loading="lazy"
+				/>
+			)}
 		</div>
 	);
 }
@@ -287,104 +308,105 @@ function CertifiedArtistCard({
 	const artistName = artist?.name;
 	const hasPlaylist = Boolean(profile.playlist);
 
-	return (
+	const photo = (
 		<div
 			className={
 				hasPlaylist
-					? "grid gap-4 lg:grid-cols-2 lg:items-start"
-					: undefined
+					? "relative aspect-square w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-900"
+					: "relative aspect-square w-full md:w-56 lg:w-64 flex-shrink-0 overflow-hidden bg-slate-900"
 			}
 		>
-			<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/50">
-				<div
-					className={
+			{imageSrc ? (
+				<Image
+					src={imageSrc}
+					alt={artistName ?? "Artist"}
+					width={300}
+					height={300}
+					sizes={
 						hasPlaylist
-							? "flex flex-col"
-							: "flex flex-col md:flex-row md:items-stretch"
+							? "(min-width: 1024px) 40vw, 100vw"
+							: "(min-width: 1024px) 16rem, (min-width: 768px) 14rem, 100vw"
 					}
-				>
-					<div
-						className={
-							hasPlaylist
-								? "relative aspect-square w-full overflow-hidden bg-slate-900"
-								: "relative aspect-square w-full md:w-56 lg:w-64 flex-shrink-0 overflow-hidden bg-slate-900"
-						}
-					>
-						{imageSrc ? (
-							<Image
-								src={imageSrc}
-								alt={artistName ?? "Artist"}
-								width={300}
-								height={300}
-								sizes={
-									hasPlaylist
-										? "(min-width: 1024px) 50vw, 100vw"
-										: "(min-width: 1024px) 16rem, (min-width: 768px) 14rem, 100vw"
-								}
-								loading="lazy"
-								unoptimized={useSpotifyCdn}
-								className="h-full w-full object-cover"
-								onError={handlePhotoError}
-							/>
-						) : (
-							<div className="flex h-full w-full items-center justify-center animate-pulse bg-slate-900 text-subtle">
-								·
-							</div>
-						)}
-					</div>
-
-					<div className="flex min-w-0 flex-1 flex-col p-5 md:p-6 lg:p-8">
-						<div className="mb-4">
-							<h4 className="text-3xl md:text-4xl font-bold tracking-tight">
-								<a
-									href={spotifyUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="focus-ring text-white border-b border-transparent hover:border-violet-400 transition-colors"
-								>
-									{artistName ?? "…"}
-								</a>
-							</h4>
-							{artist ? (
-								<p className="mt-2 text-sm text-muted">
-									<span className="text-secondary">
-										{formatFollowers(artist.followers)}
-									</span>{" "}
-									followers on Spotify
-									{artist.genres.length > 0 ? (
-										<>
-											{" "}
-											·{" "}
-											{artist.genres.slice(0, 3).join(", ")}
-										</>
-									) : null}
-								</p>
-							) : null}
-						</div>
-
-						<p className="text-base leading-relaxed text-secondary mb-5">
-							{profile.bio}
-						</p>
-
-						<a
-							href={spotifyUrl}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="focus-ring mt-auto inline-flex w-fit items-center text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
-						>
-							Open on Spotify →
-						</a>
-					</div>
+					loading="lazy"
+					unoptimized={useSpotifyCdn}
+					className="h-full w-full object-cover"
+					onError={handlePhotoError}
+				/>
+			) : (
+				<div className="flex h-full w-full items-center justify-center animate-pulse bg-slate-900 text-subtle">
+					·
 				</div>
-			</article>
+			)}
+		</div>
+	);
 
-			{profile.playlist ? (
+	const copy = (
+		<div className={hasPlaylist ? "p-5 md:p-6 lg:p-8" : "flex min-w-0 flex-1 flex-col p-5 md:p-6 lg:p-8"}>
+			<div className="mb-4">
+				<h4 className="text-3xl md:text-4xl font-bold tracking-tight">
+					<a
+						href={spotifyUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="focus-ring text-white border-b border-transparent hover:border-violet-400 transition-colors"
+					>
+						{artistName ?? "…"}
+					</a>
+				</h4>
+				{artist ? (
+					<p className="mt-2 text-sm text-muted">
+						<span className="text-secondary">
+							{formatFollowers(artist.followers)}
+						</span>{" "}
+						followers on Spotify
+						{artist.genres.length > 0 ? (
+							<>
+								{" "}
+								· {artist.genres.slice(0, 3).join(", ")}
+							</>
+						) : null}
+					</p>
+				) : null}
+			</div>
+
+			<p className="text-base leading-relaxed text-secondary mb-5">
+				{profile.bio}
+			</p>
+
+			<a
+				href={spotifyUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				className="focus-ring mt-auto inline-flex w-fit items-center text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
+			>
+				Open on Spotify →
+			</a>
+		</div>
+	);
+
+	if (hasPlaylist && profile.playlist) {
+		return (
+			<div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
+				{photo}
 				<SpotifyPlaylistEmbed
 					playlistId={profile.playlist.id}
 					title={profile.playlist.title}
+					fillHeight
 				/>
-			) : null}
-		</div>
+				<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/50 lg:col-span-2">
+					{copy}
+				</article>
+			</div>
+		);
+	}
+
+	return (
+		<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/50">
+			<div className="flex flex-col md:flex-row md:items-stretch">
+				{photo}
+				{copy}
+			</div>
+		</article>
 	);
 }
 
@@ -540,10 +562,13 @@ export default function PohhuSection({
 					className="scroll-anchor overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60"
 				>
 					<div className="border-b border-slate-800/90 px-5 py-4 md:px-6">
-						<p className="font-bold text-2xl text-white md:text-3xl">
-							{aleksandriPub.title}
+						<p className="flex items-baseline gap-2 font-bold text-2xl text-white md:text-3xl">
+							<span className="select-none text-violet-400/80" aria-hidden>
+								⌖
+							</span>
+							<span>{aleksandriPub.title}</span>
 						</p>
-						<p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-subtle">
+						<p className="mt-1 pl-6 text-xs font-bold uppercase tracking-[0.14em] text-subtle md:pl-7">
 							{aleksandriPub.subtitle}
 						</p>
 					</div>
