@@ -1,17 +1,34 @@
 import { useEffect, useState } from "preact/hooks";
 
 import { ArtistList } from "./ArtistList";
-import { SectionDivider } from "./SectionDivider";
 import { TrackList } from "./TrackList";
 import type { TopMusicResponseSuccess } from "../pages/api/topMusic";
 
 const trackSections = [
-	{ id: "short", title: "Past Month", tracksKey: "short" as const },
-	{ id: "medium", title: "Past 6 Months", tracksKey: "medium" as const },
-	{ id: "long", title: "All Time", tracksKey: "long" as const }
+	{
+		id: "short",
+		title: "Top tracks · Past month",
+		tracksKey: "short" as const
+	},
+	{
+		id: "medium",
+		title: "Top tracks · Past 6 months",
+		tracksKey: "medium" as const
+	},
+	{
+		id: "long",
+		title: "Top tracks · All time",
+		tracksKey: "long" as const
+	}
 ];
 
 const ARTISTS_SECTION_INDEX = trackSections.length;
+
+const chapterHeadingClass =
+	"scroll-anchor mb-8 font-heading text-3xl font-extrabold uppercase tracking-[0.06em] text-white md:mb-10 md:text-4xl md:tracking-[0.08em] lg:text-5xl";
+
+const statHeadingClass =
+	"mb-4 font-heading text-xl font-bold tracking-tight transition-colors duration-300 md:text-2xl";
 
 export function SpotifyListeningSection() {
 	const [topMusic, setTopMusic] = useState<TopMusicResponseSuccess | null>(
@@ -30,28 +47,24 @@ export function SpotifyListeningSection() {
 	}, []);
 
 	return (
-		<>
-			<SectionDivider label="Listening" className="mt-12 mb-8" />
-
-			<p
-				id="spotify-listening"
-				className="scroll-anchor text-lg mb-8 text-secondary"
-			>
-				My top tracks and artists on Spotify — past month, past six months, and
-				all time.
-			</p>
+		<div className="mt-16 md:mt-20">
+			<h2 id="spotify-listening" className={chapterHeadingClass}>
+				On Spotify
+				<span
+					className="mt-3 block h-px w-14 bg-violet-400/75 md:mt-4 md:w-16"
+					aria-hidden
+				/>
+			</h2>
 
 			{trackSections.map((section, index) => (
 				<section key={section.id} className="mb-4 min-w-0 overflow-hidden">
-					<h2
-						className={`font-bold text-3xl mb-4 transition-colors duration-300 ${
-							activeCarousel === index
-								? "text-white"
-								: "text-subtle"
+					<h3
+						className={`${statHeadingClass} ${
+							activeCarousel === index ? "text-white" : "text-subtle"
 						}`}
 					>
 						{section.title}
-					</h2>
+					</h3>
 					<TrackList
 						tracks={topMusic?.[section.tracksKey].items}
 						priority={index === 0}
@@ -61,25 +74,22 @@ export function SpotifyListeningSection() {
 				</section>
 			))}
 
-			<SectionDivider label="Artists" />
-
 			<section className="mb-4 min-w-0 overflow-hidden">
-				<h2
-					className={`font-bold text-3xl mb-4 transition-colors duration-300 ${
+				<h3
+					className={`${statHeadingClass} ${
 						activeCarousel === ARTISTS_SECTION_INDEX
 							? "text-white"
 							: "text-subtle"
 					}`}
 				>
-					Top Artists
-				</h2>
-				<p className="mb-4 text-sm text-subtle">All time</p>
+					Top artists · All time
+				</h3>
 				<ArtistList
 					artists={topMusic?.artists.items}
 					isActive={activeCarousel === ARTISTS_SECTION_INDEX}
 					onActivate={() => setActiveCarousel(ARTISTS_SECTION_INDEX)}
 				/>
 			</section>
-		</>
+		</div>
 	);
 }
