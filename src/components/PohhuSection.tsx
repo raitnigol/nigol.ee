@@ -7,13 +7,10 @@ import {
 	fundedReleases,
 	kiviArtShow,
 	kevilniusMerch,
-	pohhuExhibitionsEventsDivider,
 	pohhuFundedReleasesIntro,
 	pohhuFundedReleasesSubsectionTitle,
 	pohhuFundedReleasesTitle,
 	pohhuFundingModel,
-	pohhuLineupDivider,
-	pohhuPhysicalMediaDivider,
 	pohhuFoundingCore,
 	pohhuFoundingCoreIntro,
 	pohhuManifestoAfterCore,
@@ -29,7 +26,6 @@ import { FormattedText } from "./FormattedText";
 import { ImageLightboxGallery } from "./ImageLightboxGallery";
 import { MerchProductCarouselLazy } from "./MerchProductCarouselLazy";
 import { PohhuLogoReveal } from "./PohhuLogoReveal";
-import { SectionDivider } from "./SectionDivider";
 import { SocialIconLink } from "./SocialIconLink";
 import type {
 	SpotifyArtistMeta,
@@ -40,11 +36,34 @@ function formatFollowers(count: number) {
 	return new Intl.NumberFormat("en-US").format(count);
 }
 
+const chapterHeadingClass =
+	"scroll-anchor mb-8 font-heading text-3xl font-extrabold uppercase tracking-[0.06em] text-white md:mb-10 md:text-4xl md:tracking-[0.08em] lg:text-5xl";
+
 const sectionHeadingClass =
-	"scroll-anchor mb-5 font-bold text-2xl text-white md:text-3xl";
+	"scroll-anchor mb-5 font-heading text-xl font-bold tracking-tight text-white md:mb-6 md:text-2xl";
 
 const subsectionHeadingClass =
-	"scroll-anchor mb-5 font-bold text-xl text-white md:text-2xl";
+	"scroll-anchor mb-4 font-heading text-lg font-semibold tracking-tight text-zinc-100 md:text-xl";
+
+function PohhuChapter({
+	id,
+	title,
+	className = ""
+}: {
+	id: string;
+	title: string;
+	className?: string;
+}) {
+	return (
+		<h3 id={id} className={`${chapterHeadingClass} ${className}`.trim()}>
+			{title}
+			<span
+				className="mt-3 block h-px w-14 bg-violet-400/75 md:mt-4 md:w-16"
+				aria-hidden
+			/>
+		</h3>
+	);
+}
 
 function ManifestoParagraph({ text }: { text: string }) {
 	return (
@@ -529,7 +548,7 @@ export default function PohhuSection({
 
 			<KevilniusMerchBlock />
 
-			<SectionDivider label="Manifesto" className="mb-8 mt-0" />
+			<PohhuChapter id="pohhu-manifesto" title="Manifesto" className="mt-2" />
 
 			<div className="prose-readable mb-10">
 				{pohhuManifestoBeforeCore.map((paragraph, i) => (
@@ -562,13 +581,13 @@ export default function PohhuSection({
 					className="scroll-anchor overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60"
 				>
 					<div className="border-b border-slate-800/90 px-5 py-4 md:px-6">
-						<p className="flex items-baseline gap-2 font-bold text-2xl text-white md:text-3xl">
+						<p className="flex items-baseline gap-2 font-heading text-xl font-bold tracking-tight text-white md:text-2xl">
 							<span className="select-none text-violet-400/80" aria-hidden>
 								⌖
 							</span>
 							<span>{aleksandriPub.title}</span>
 						</p>
-						<p className="mt-1 pl-6 text-xs font-bold uppercase tracking-[0.14em] text-subtle md:pl-7">
+						<p className="mt-1 pl-6 text-xs font-medium uppercase tracking-[0.16em] text-subtle md:pl-7">
 							{aleksandriPub.subtitle}
 						</p>
 					</div>
@@ -588,18 +607,15 @@ export default function PohhuSection({
 				</article>
 			</div>
 
-			<SectionDivider
-				label={pohhuPhysicalMediaDivider}
-				className="mt-10 mb-8"
-				ariaLabel="Our dedication to physical media"
+			<PohhuChapter
+				id="pohhu-physical-media"
+				title="Physical media"
+				className="mt-14 md:mt-16"
 			/>
 
-			<h3
-				id="pohhu-funded-releases"
-				className={`${sectionHeadingClass} uppercase tracking-[0.12em]`}
-			>
-				{pohhuFundedReleasesTitle}
-			</h3>
+			<h4 id="pohhu-funded-releases" className={sectionHeadingClass}>
+				<FormattedText text={pohhuFundedReleasesTitle} />
+			</h4>
 			<div className="prose-readable mb-6">
 				{pohhuFundedReleasesIntro.map((paragraph, i) => (
 					<ManifestoParagraph key={`releases-intro-${i}`} text={paragraph} />
@@ -612,9 +628,9 @@ export default function PohhuSection({
 			</div>
 
 			<div className="mb-12">
-				<h4 id="pohhu-963-records" className={subsectionHeadingClass}>
+				<h5 id="pohhu-963-records" className={subsectionHeadingClass}>
 					<FormattedText text={pohhuFundedReleasesSubsectionTitle} />
-				</h4>
+				</h5>
 				<ul className="grid gap-4 md:grid-cols-2">
 					{fundedReleases.map(release => (
 						<FundedReleaseCard key={release.title} release={release} />
@@ -622,13 +638,11 @@ export default function PohhuSection({
 				</ul>
 			</div>
 
-			<div id="pohhu-exhibitions-events" className="scroll-anchor">
-				<SectionDivider
-					label={pohhuExhibitionsEventsDivider}
-					className="mt-4 mb-8"
-					ariaLabel="Exhibitions and events"
-				/>
-			</div>
+			<PohhuChapter
+				id="pohhu-exhibitions-events"
+				title="Exhibitions & events"
+				className="mt-14 md:mt-16"
+			/>
 
 			<div className="mb-12">
 				<h4 id="pohhu-kivi-art-show" className={subsectionHeadingClass}>
@@ -647,15 +661,15 @@ export default function PohhuSection({
 				/>
 			</div>
 
-			<SectionDivider
-				label={pohhuLineupDivider}
-				className="mt-4 mb-8"
-				ariaLabel="Our lineup"
+			<PohhuChapter
+				id="pohhu-lineup"
+				title="Lineup"
+				className="mt-14 md:mt-16"
 			/>
 
-			<h3 id="pohhu-certified-artists" className={sectionHeadingClass}>
+			<h4 id="pohhu-certified-artists" className={sectionHeadingClass}>
 				<span className="text-violet-400">$.pohhu¥</span> Certified Artists
-			</h3>
+			</h4>
 
 			<div className="space-y-6">
 				{certifiedArtists.map(profile => (

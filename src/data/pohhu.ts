@@ -51,7 +51,7 @@ export const pohhuFoundingCore: string[] = [
 	"**BENA** a.k.a. *Benakanister*",
 	"**Maxas Salovas** a.k.a. *DJ Jack Sandhill*",
 	"**Raza** a.k.a. *Razzadinka / Plue Buni$her*",
-	"**Annupannu** a.k.a. *Valium B4rbie / benz0b4by*"
+	"**Annupannu** a.k.a. Valium B4rbie"
 ];
 
 /** Timeline and collective identity — stays in the main manifesto. */
@@ -66,15 +66,15 @@ export const pohhuManifestoAfterCore: string[] = [
 	"{{$.pohhu¥}} is not against money. We are against **letting money decide what is worth making**."
 ];
 
-export const pohhuPhysicalMediaDivider = "OUR DEDICATION TO PHYSICAL MEDIA";
+export const pohhuPhysicalMediaDivider = "Physical media";
 
-export const pohhuLineupDivider = "OUR LINEUP";
+export const pohhuLineupDivider = "Lineup";
 
-export const pohhuFundedReleasesTitle = "PHYSICAL RELEASES FUNDED BY $.POHHU¥";
+export const pohhuFundedReleasesTitle = "Releases funded by {{$.pohhu¥}}";
 
-export const pohhuFundedReleasesSubsectionTitle = "{{$.pohhu¥}} x 963 Records";
+export const pohhuFundedReleasesSubsectionTitle = "{{$.pohhu¥}} × 963 Records";
 
-export const pohhuExhibitionsEventsDivider = "EXHIBITIONS & EVENTS";
+export const pohhuExhibitionsEventsDivider = "Exhibitions & events";
 
 /** How funding works and when payment badges come down. */
 export const pohhuFundingModel: string[] = [
