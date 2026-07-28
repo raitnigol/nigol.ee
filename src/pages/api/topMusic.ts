@@ -5,7 +5,14 @@ export type TopMusicResponseSuccess = {
 	short: SpotifyApi.UsersTopTracksResponse;
 	medium: SpotifyApi.UsersTopTracksResponse;
 	long: SpotifyApi.UsersTopTracksResponse;
+	/** All-time top artists (used by the artists carousel). */
 	artists: SpotifyApi.UsersTopArtistsResponse;
+	/** Top artists by time range — used for genre summaries. */
+	artistsByRange: {
+		short: SpotifyApi.UsersTopArtistsResponse;
+		medium: SpotifyApi.UsersTopArtistsResponse;
+		long: SpotifyApi.UsersTopArtistsResponse;
+	};
 };
 export type TopMusicResponseError = { error: unknown };
 export type TopMusicResponse = TopMusicResponseSuccess | TopMusicResponseError;
@@ -37,28 +44,32 @@ export default async function handler(
 				expirationTime = Date.now() + response.body.expires_in * 1000;
 			}
 
-			const short = await api.getMyTopTracks({
-				limit: 24,
-				time_range: "short_term"
-			});
-			const medium = await api.getMyTopTracks({
-				limit: 24,
-				time_range: "medium_term"
-			});
-			const long = await api.getMyTopTracks({
-				limit: 24,
-				time_range: "long_term"
-			});
-			const artists = await api.getMyTopArtists({
-				limit: 24,
-				time_range: "long_term"
-			});
+			const [
+				short,
+				medium,
+				long,
+				artistsShort,
+				artistsMedium,
+				artistsLong
+			] = await Promise.all([
+				api.getMyTopTracks({ limit: 24, time_range: "short_term" }),
+				api.getMyTopTracks({ limit: 24, time_range: "medium_term" }),
+				api.getMyTopTracks({ limit: 24, time_range: "long_term" }),
+				api.getMyTopArtists({ limit: 24, time_range: "short_term" }),
+				api.getMyTopArtists({ limit: 24, time_range: "medium_term" }),
+				api.getMyTopArtists({ limit: 24, time_range: "long_term" })
+			]);
 
 			cached = {
 				short: short.body,
 				medium: medium.body,
 				long: long.body,
-				artists: artists.body
+				artists: artistsLong.body,
+				artistsByRange: {
+					short: artistsShort.body,
+					medium: artistsMedium.body,
+					long: artistsLong.body
+				}
 			};
 
 			cachedTime = Date.now() + 24 * 60 * 60 * 1000;

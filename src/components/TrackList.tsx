@@ -81,7 +81,7 @@ export function TrackList({
 				ref={scrollRef}
 				className="overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth pb-1"
 			>
-				<div className="grid w-max grid-flow-col grid-rows-2 gap-3 md:gap-x-4 md:gap-y-6 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[10rem] lg:auto-cols-[10.5rem]">
+				<div className="grid w-max grid-flow-col grid-rows-2 items-start gap-3 md:gap-x-4 md:gap-y-6 auto-cols-[8.25rem] xs:auto-cols-[9rem] md:auto-cols-[10rem] lg:auto-cols-[10.5rem]">
 					{tracks
 						? tracks.map((track, index) => (
 								<Track
@@ -97,7 +97,7 @@ export function TrackList({
 									className="snap-start snap-always flex flex-col animate-pulse"
 								>
 									<div className="aspect-square w-full rounded-lg bg-slate-900" />
-									<div className="mt-2 hidden flex-col gap-1.5 md:flex">
+									<div className="mt-2 hidden h-[4.75rem] flex-col gap-1.5 md:flex">
 										<div className="h-3.5 w-full rounded bg-slate-800" />
 										<div className="h-3 w-4/5 rounded bg-slate-800" />
 									</div>
@@ -204,11 +204,11 @@ function Track({ track, rank, priority }: TrackProps) {
 				</div>
 			</div>
 
-			<div className="mt-2 hidden min-w-0 flex-col md:flex">
+			<div className="mt-2 hidden h-[4.75rem] min-w-0 flex-col md:flex">
 				<p className="font-bold text-sm leading-snug text-white line-clamp-2 transition group-hover:text-violet-300">
 					{track.name}
 				</p>
-				<p className="mt-0.5 text-xs leading-snug text-muted line-clamp-2">
+				<p className="mt-0.5 text-xs leading-snug text-muted line-clamp-1">
 					{artistLine}
 				</p>
 				{releaseYear ? (

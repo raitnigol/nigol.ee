@@ -393,6 +393,337 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 	{
 		id: "paks-matu-ja-roki-15-aastat-liiga-hilja",
 		spotifyAlbumId: "3DxUydeUdVDyAK9Jbac0Y5"
+	},
+
+	{
+		id: "gang-starr-moment-of-truth",
+		title: "Moment Of Truth",
+		artists: "Gang Starr",
+		spotifyAlbumId: "5f6Nz2v1DESbpu1NerEql2"
+	},
+	{
+		id: "black-eyed-peas-the-end",
+		title: "THE E.N.D. (THE ENERGY NEVER DIES)",
+		artists: "Black Eyed Peas",
+		spotifyAlbumId: "3lng6RAtdksQ2q02Fk5jaB"
+	},
+	{
+		id: "eminem-music-to-be-murdered-by",
+		title: "Music To Be Murdered By",
+		artists: "Eminem",
+		spotifyAlbumId: "4otkd9As6YaxxEkIjXPiZ6"
+	},
+	{
+		id: "notorious-big-born-again",
+		title: "Born Again",
+		artists: "The Notorious B.I.G.",
+		spotifyAlbumId: "43giRpsldWH8a0BamKbdu9"
+	},
+	{
+		id: "nas-it-was-written",
+		title: "It Was Written",
+		artists: "Nas",
+		spotifyAlbumId: "78Fgb88MY0ECc4GVMejqTg"
+	},
+	{
+		id: "mobb-deep-the-infamous",
+		title: "The Infamous",
+		artists: "Mobb Deep",
+		spotifyAlbumId: "1cCAb1vN8uUsdfEylVmTLs"
+	},
+	{
+		id: "50-cent-get-rich-or-die-tryin",
+		title: "Get Rich Or Die Tryin'",
+		artists: "50 Cent",
+		spotifyAlbumId: "5G5rgQHzdQnw32SI0WjIo5"
+	},
+	{
+		id: "gza-liquid-swords",
+		title: "Liquid Swords",
+		artists: "GZA",
+		spotifyAlbumId: "3k8xoyOXkGgZxUKgpmxz4P"
+	},
+	{
+		id: "fugees-the-score",
+		title: "The Score",
+		artists: "Fugees",
+		spotifyAlbumId: "4z6F5s3RVaOsekuaegbLfD"
+	},
+	{
+		id: "eminem-encore",
+		title: "Encore",
+		artists: "Eminem",
+		spotifyAlbumId: "7tsXPtLqhab1zWeubbf6JH"
+	},
+	{
+		id: "eminem-kamikaze",
+		title: "Kamikaze",
+		artists: "Eminem",
+		spotifyAlbumId: "3HNnxK7NgLXbDoxRZxNWiR"
+	},
+	{
+		id: "eminem-recovery",
+		title: "Recovery",
+		artists: "Eminem",
+		spotifyAlbumId: "47BiFcV59TQi2s9SkBo2pb"
+	},
+	{
+		id: "travis-scott-astroworld",
+		title: "ASTROWORLD",
+		artists: "Travis Scott",
+		spotifyAlbumId: "41GuZcammIkupMPKH2OJ6I"
+	},
+	{
+		id: "lana-del-rey-did-you-know-that-theres-a-tunnel-under-ocean-blvd",
+		title: "Did you know that there's a tunnel under Ocean Blvd",
+		artists: "Lana Del Rey",
+		spotifyAlbumId: "5HOHne1wzItQlIYmLXLYfZ"
+	},
+	{
+		id: "lana-del-rey-lust-for-life",
+		title: "Lust For Life",
+		artists: "Lana Del Rey",
+		spotifyAlbumId: "7xYiTrbTL57QO0bb4hXIKo"
+	},
+	{
+		id: "lana-del-rey-blue-banisters",
+		title: "Blue Banisters",
+		artists: "Lana Del Rey",
+		spotifyAlbumId: "2wwCc6fcyhp1tfY3J6Javr"
+	},
+	{
+		id: "lana-del-rey-chemtrails-over-the-country-club",
+		title: "Chemtrails Over The Country Club",
+		artists: "Lana Del Rey",
+		spotifyAlbumId: "6QeosPQpJckkW0Obir5RT8"
+	},
+	{
+		id: "lana-del-rey-norman-fucking-rockwell",
+		title: "Norman Fucking Rockwell!",
+		artists: "Lana Del Rey",
+		spotifyAlbumId: "5XpEKORZ4y6OrCZSKsi46A"
+	},
+	{
+		id: "charli-xcx-brat-and-its-completely-different-but-also-still-brat",
+		title: "Brat and it's completely different but also still brat",
+		artists: "Charli xcx",
+		spotifyAlbumId: "36P07bti6xD99o7S1acmin"
+	},
+	{
+		id: "daft-punk-random-access-memories-10th-anniversary-edition",
+		title: "Random Access Memories (10th Anniversary Edition)",
+		artists: "Daft Punk",
+		spotifyAlbumId: "4mAhdh996uW5SnnFKXUmC0"
+	},
+	{
+		id: "tyler-the-creator-igor",
+		title: "IGOR",
+		artists: "Tyler, The Creator",
+		spotifyAlbumId: "5zi7WsKlIiUXv09tbGLKsE"
+	},
+	{
+		id: "mac-miller-circles",
+		title: "Circles",
+		artists: "Mac Miller",
+		spotifyAlbumId: "5sY6UIQ32GqwMLAfSNEaXb"
+	},
+	{
+		id: "doja-cat-scarlet",
+		title: "Scarlet",
+		artists: "Doja Cat",
+		spotifyAlbumId: "6DmPNcfpkXBVRJsEIJY9tl"
+	},
+	{
+		id: "mac-miller-swimming",
+		title: "Swimming",
+		artists: "Mac Miller",
+		spotifyAlbumId: "5wtE5aLX5r7jOosmPhJhhk"
+	},
+	{
+		id: "kanye-west-ye",
+		title: "ye",
+		artists: "Kanye West",
+		spotifyAlbumId: "2Ek1q2haOnxVqhvVKqMvJe"
+	},
+	{
+		id: "jay-z-kanye-west-watch-the-throne",
+		title: "Watch The Throne",
+		artists: "JAY-Z, Kanye West",
+		spotifyAlbumId: "0OcMap99vLEeGkBCfCwRwS"
+	},
+	{
+		id: "doja-cat-planet-her-deluxe",
+		title: "Planet Her (Deluxe)",
+		artists: "Doja Cat",
+		spotifyAlbumId: "4XLPYMERZZaBzkJg0mkdvO"
+	},
+	{
+		id: "xxxtentacion-question-mark",
+		title: "?",
+		artists: "XXXTENTACION",
+		spotifyAlbumId: "2Ti79nwTsont5ZHfdxIzAm"
+	},
+	{
+		id: "juice-wrld-legends-never-die",
+		title: "Legends Never Die",
+		artists: "Juice WRLD",
+		spotifyAlbumId: "6n9DKpOxwifT5hOXtgLZSL"
+	},
+	{
+		id: "juice-wrld-death-race-for-love",
+		title: "Death Race For Love",
+		artists: "Juice WRLD",
+		spotifyAlbumId: "1GYVNOzwhx1nMcIJDogSNp"
+	},
+	{
+		id: "xxxtentacion-skins",
+		title: "SKINS",
+		artists: "XXXTENTACION",
+		spotifyAlbumId: "1qsQOC4Jn0fnaUZLAbs4dz"
+	},
+	{
+		id: "pop-smoke-meet-the-woo",
+		title: "Meet The Woo",
+		artists: "Pop Smoke",
+		spotifyAlbumId: "3PL3Of7YmQ76TzbQPrHC50"
+	},
+	{
+		id: "playboi-carti-music",
+		title: "MUSIC",
+		artists: "Playboi Carti",
+		spotifyAlbumId: "0fSfkmx0tdPqFYkJuNX74a"
+	},
+	{
+		id: "playboi-carti-whole-lotta-red",
+		title: "Whole Lotta Red",
+		artists: "Playboi Carti",
+		spotifyAlbumId: "2QRedhP5RmKJiJ1i8VgDGR"
+	},
+	{
+		id: "playboi-carti-playboi-carti",
+		title: "Playboi Carti",
+		artists: "Playboi Carti",
+		spotifyAlbumId: "4rJgzzfFHAVFhCSt2P4I3j"
+	},
+	{
+		id: "mobb-deep-hell-on-earth",
+		title: "Hell On Earth",
+		artists: "Mobb Deep",
+		spotifyAlbumId: "6BWf3fxsgSDhES4Cm4oyy5"
+	},
+	{
+		id: "mobb-deep-murda-muzik",
+		title: "Murda Muzik",
+		artists: "Mobb Deep",
+		spotifyAlbumId: "25NNQGZBd9oLAO1xTeq5oQ"
+	},
+	{
+		id: "mobb-deep-infamy",
+		title: "Infamy",
+		artists: "Mobb Deep",
+		spotifyAlbumId: "2hSnMHuLYfpp8hvdpZRjAk"
+	},
+	{
+		id: "mobb-deep-amerikaz-nightmare",
+		title: "Amerikaz Nightmare",
+		artists: "Mobb Deep",
+		spotifyAlbumId: "7j358KRnAMmabpFQoymvCp"
+	},
+	{
+		id: "kanye-west-late-registration",
+		title: "Late Registration",
+		artists: "Kanye West",
+		spotifyAlbumId: "5ll74bqtkcXlKE7wwkMq4g"
+	},
+	{
+		id: "wu-tang-clan-enter-the-wu-tang-36-chambers",
+		title: "Enter The Wu-Tang (36 Chambers)",
+		artists: "Wu-Tang Clan",
+		spotifyAlbumId: "0ujpvwNskNwgU6nb2krDZS"
+	},
+	{
+		id: "wu-tang-clan-wu-tang-forever",
+		title: "Wu-Tang Forever",
+		artists: "Wu-Tang Clan",
+		spotifyAlbumId: "4r3TaXjF2b1qwCpxjIpW43"
+	},
+	{
+		id: "outkast-stankonia",
+		title: "Stankonia",
+		artists: "Outkast",
+		spotifyAlbumId: "2tm3Ht61kqqRZtIYsBjxEj"
+	},
+	{
+		id: "kendrick-lamar-mr-morale-and-the-big-steppers",
+		title: "Mr. Morale & The Big Steppers",
+		artists: "Kendrick Lamar",
+		spotifyAlbumId: "79ONNoS4M9tfIA1mYLBYVX"
+	},
+	{
+		id: "notorious-big-ready-to-die-10th-anniversary-edition",
+		title: "Ready To Die (10th Anniversary Edition)",
+		artists: "The Notorious B.I.G.",
+		spotifyAlbumId: "3cn4R9wTztnrWLVf87FESr"
+	},
+	{
+		id: "kendrick-lamar-to-pimp-a-butterfly",
+		title: "To Pimp A Butterfly",
+		artists: "Kendrick Lamar",
+		spotifyAlbumId: "7ycBtnsMtyVbbwTfJwRjSP"
+	},
+	{
+		id: "future-metro-boomin-we-dont-trust-you",
+		title: "WE DON'T TRUST YOU",
+		artists: "Future, Metro Boomin",
+		spotifyAlbumId: "4iqbFIdGOTzXeDtt9owjQn"
+	},
+	{
+		id: "tyler-the-creator-call-me-if-you-get-lost",
+		title: "CALL ME IF YOU GET LOST",
+		artists: "Tyler, The Creator",
+		spotifyAlbumId: "45ba6QAtNrdv6Ke4MFOKk9"
+	},
+	{
+		id: "tyler-the-creator-wolf",
+		title: "Wolf",
+		artists: "Tyler, The Creator",
+		spotifyAlbumId: "40QTqOBBxCEIQlLNdSjFQB"
+	},
+	{
+		id: "tyler-the-creator-flower-boy",
+		title: "Flower Boy",
+		artists: "Tyler, The Creator",
+		spotifyAlbumId: "2nkto6YNI4rUYTLqEwWJ3o"
+	},
+	{
+		id: "mac-miller-balloonerism",
+		title: "Balloonerism",
+		artists: "Mac Miller",
+		spotifyAlbumId: "2ANFIaCb53iam0MBkFFoxY"
+	},
+	{
+		id: "kendrick-lamar-damn",
+		title: "DAMN.",
+		artists: "Kendrick Lamar",
+		spotifyAlbumId: "4eLPsYPBmXABThSJ821sqY"
+	},
+	{
+		id: "kid-cudi-man-on-the-moon-the-end-of-day",
+		title: "Man On The Moon: The End Of Day",
+		artists: "Kid Cudi",
+		spotifyAlbumId: "47y3PbX8oIDCkYAFylCJz0"
+	},
+	{
+		id: "skepta-konnichiwa",
+		title: "Konnichiwa",
+		artists: "Skepta",
+		spotifyAlbumId: "6s4vWWWxNrGcKhrOFYRZzk"
+	},
+	{
+		id: "melanie-martinez-cry-baby-deluxe-edition",
+		title: "Cry Baby (Deluxe Edition)",
+		artists: "Melanie Martinez",
+		spotifyAlbumId: "5JpH5T1sCYnUyZD6TM0QaY"
 	}
 ];
 
