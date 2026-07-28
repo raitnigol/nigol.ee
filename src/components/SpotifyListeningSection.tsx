@@ -53,7 +53,7 @@ function rankGenres(
 		}
 	}
 
-	return [...counts.entries()]
+	return Array.from(counts.entries())
 		.map(([name, count]) => ({ name, count }))
 		.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
 		.slice(0, limit);

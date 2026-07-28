@@ -250,7 +250,7 @@ export function PhysicalMediaCoverflow() {
 						modifier: 1,
 						slideShadows: false
 					}}
-					onSwiper={swiper => {
+					onSwiper={(swiper: SwiperInstance) => {
 						swiperRef.current = swiper;
 						syncActiveIndex(swiper);
 					}}
