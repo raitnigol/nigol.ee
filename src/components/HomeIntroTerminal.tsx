@@ -5,6 +5,10 @@ import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 import { copypastas } from "../data/copypastas";
 import { COPYPASTA_LAST_ID_KEY, pickCopypasta } from "../lib/copypasta";
 import { cowsay, getCowsayMaxWidth } from "../lib/cowsay";
+import {
+	hasSeenHomeTerminalIntro,
+	markHomeTerminalIntroSeen
+} from "../lib/homeTerminal";
 import { EE_DOMAIN_REGISTER_URL, EIF_URL, VOCO_AASTA_TEGIJA_2020_URL } from "../lib/site";
 import {
 	buildSshTranscript,
@@ -126,12 +130,17 @@ function useSshTranscriptAnimation(lines: TranscriptLine[] | null) {
 	useEffect(() => {
 		if (!lines?.length) return;
 
-		if (prefersReducedMotion()) {
+		const finishImmediately = () => {
 			setProgress({
 				lineIndex: completeCount - 1,
 				charCount: Infinity
 			});
 			setTranscriptComplete(true);
+			markHomeTerminalIntroSeen();
+		};
+
+		if (prefersReducedMotion() || hasSeenHomeTerminalIntro()) {
+			finishImmediately();
 			return;
 		}
 
@@ -170,6 +179,7 @@ function useSshTranscriptAnimation(lines: TranscriptLine[] | null) {
 
 			if (!cancelled && id === runId.current) {
 				setTranscriptComplete(true);
+				markHomeTerminalIntroSeen();
 			}
 		})();
 

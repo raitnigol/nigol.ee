@@ -22,7 +22,7 @@ export const socials: SocialInfo[] = [
     },
     {
         name: "Spotify",
-        image: "/images/logos/spotify.png",
+        image: "/images/logos/spotify.svg",
         url: "https://open.spotify.com/user/1190538422"
     },
     {

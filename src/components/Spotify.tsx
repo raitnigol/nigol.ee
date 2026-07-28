@@ -25,7 +25,7 @@ const formatDuration = (ms: number) => {
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
-const SPOTIFY_LOGO = "/images/logos/spotify.png";
+const SPOTIFY_LOGO = "/images/logos/spotify.svg";
 const EMPTY_ALBUM_ART = "/images/emptysong.jpg";
 
 type SpotifyProps = {

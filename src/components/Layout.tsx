@@ -1,6 +1,14 @@
+import dynamic from "next/dynamic";
+import { Analytics } from "@vercel/analytics/react";
+
 import Footer from "./Footer";
 import SiteHeader from "./Navbar";
-import { Analytics } from "@vercel/analytics/react";
+
+const NekoCompanion = dynamic(
+	() =>
+		import("./NekoCompanion").then(module => module.NekoCompanion),
+	{ ssr: false }
+);
 
 export default function Layout({ children }: React.PropsWithChildren<{}>) {
 	return (
@@ -10,6 +18,7 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
 			<div className="site-shell site-footer-wrap">
 				<Footer />
 			</div>
+			<NekoCompanion />
 			<Analytics />
 		</div>
 	);
