@@ -1,7 +1,8 @@
 import TransitionLink from "./TransitionLink";
 import { PauseIcon, PlayIcon } from "@heroicons/react/solid";
 import Image from "next/future/image";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
+import type { RefObject } from "preact";
 import useSWR from "swr";
 
 import {
@@ -27,6 +28,10 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const SPOTIFY_LOGO = "/images/logos/spotify.svg";
 const EMPTY_ALBUM_ART = "/images/emptysong.jpg";
+const NOW_PLAYING_KEY = "/api/nowPlaying";
+const PLAYING_POLL_MS = 15_000;
+const IDLE_POLL_MS = 60_000;
+const PROGRESS_TICK_MS = 1_000;
 
 type SpotifyProps = {
 	variant?: "default" | "terminal";
@@ -39,20 +44,42 @@ function getAlbumArtUrl(track: SpotifyApi.TrackObjectFull | null | undefined) {
 	return images[1]?.url ?? images[0]?.url ?? images.at(-1)?.url ?? EMPTY_ALBUM_ART;
 }
 
-function useNowPlaying() {
+function useInViewport(rootRef: RefObject<HTMLElement>) {
+	const [isVisible, setIsVisible] = useState(true);
+
+	useEffect(() => {
+		const element = rootRef.current;
+		if (!element) return;
+
+		const observer = new IntersectionObserver(
+			([entry]) => setIsVisible(entry.isIntersecting),
+			{ rootMargin: "48px" }
+		);
+
+		observer.observe(element);
+		return () => observer.disconnect();
+	}, [rootRef]);
+
+	return isVisible;
+}
+
+function useNowPlaying(rootRef: RefObject<HTMLElement>) {
+	const isVisible = useInViewport(rootRef);
 	const { data, error } = useSWR<
 		NowPlayingResponseSuccess,
 		NowPlayingResponseError
-	>("/api/nowPlaying", fetcher, { refreshInterval: 5000 });
+	>(isVisible ? NOW_PLAYING_KEY : null, fetcher, {
+		refreshInterval: data => {
+			if (!data || "error" in data) return IDLE_POLL_MS;
+			return data.isPlayingNow ? PLAYING_POLL_MS : IDLE_POLL_MS;
+		}
+	});
 
-	const isLoading = !data && !error;
-
+	const isLoading = isVisible && !data && !error;
 	const [time, setTime] = useState(0);
 
 	useEffect(() => {
-		if (!data?.track) return;
-
-		if (!data.isPlayingNow) {
+		if (!data?.track || !data.isPlayingNow || !isVisible) {
 			setTime(0);
 			return;
 		}
@@ -70,13 +97,12 @@ function useNowPlaying() {
 							data.track!.duration_ms
 					  )
 			);
-		}, 100);
+		}, PROGRESS_TICK_MS);
 
 		return () => clearInterval(interval);
-	}, [data]);
+	}, [data, isVisible]);
 
 	const albumArtUrl = data?.track ? getAlbumArtUrl(data.track) : null;
-	const isRemoteAlbumArt = albumArtUrl?.startsWith("http") ?? false;
 	const showProgress = Boolean(data?.track);
 	const progressMs = data?.isPlayingNow ? time : 0;
 	const ownedPhysicalMedia = data?.track
@@ -88,7 +114,6 @@ function useNowPlaying() {
 		error,
 		isLoading,
 		albumArtUrl,
-		isRemoteAlbumArt,
 		showProgress,
 		progressMs,
 		ownedPhysicalMedia
@@ -111,19 +136,20 @@ function TerminalRow({
 }
 
 function SpotifyTerminal({
-	showArtwork = true
+	showArtwork = true,
+	nowPlaying
 }: {
 	showArtwork?: boolean;
+	nowPlaying: ReturnType<typeof useNowPlaying>;
 }) {
 	const {
 		data,
 		error,
 		isLoading,
 		albumArtUrl,
-		isRemoteAlbumArt,
 		progressMs,
 		ownedPhysicalMedia
-	} = useNowPlaying();
+	} = nowPlaying;
 
 	const failed = Boolean(error || (data && "error" in data));
 	const track =
@@ -155,7 +181,6 @@ function SpotifyTerminal({
 									alt=""
 									width={96}
 									height={96}
-									unoptimized={isRemoteAlbumArt}
 									className="spotify-terminal__preview-image"
 								/>
 							) : (
@@ -225,15 +250,18 @@ function SpotifyTerminal({
 	);
 }
 
-function SpotifyWidget() {
+function SpotifyWidget({
+	nowPlaying
+}: {
+	nowPlaying: ReturnType<typeof useNowPlaying>;
+}) {
 	const {
 		data,
 		albumArtUrl,
-		isRemoteAlbumArt,
 		showProgress,
 		progressMs,
 		ownedPhysicalMedia
-	} = useNowPlaying();
+	} = nowPlaying;
 
 	return (
 		<div className="spotify-widget">
@@ -248,8 +276,6 @@ function SpotifyWidget() {
 						}
 						width={256}
 						height={256}
-						priority={true}
-						unoptimized={isRemoteAlbumArt}
 						className={`spotify-widget__image${
 							ownedPhysicalMedia ? " spotify-widget__image--owned" : ""
 						}`}
@@ -382,9 +408,16 @@ export default function Spotify({
 	variant = "default",
 	showArtwork = true
 }: SpotifyProps) {
-	if (variant === "terminal") {
-		return <SpotifyTerminal showArtwork={showArtwork} />;
-	}
+	const rootRef = useRef<HTMLDivElement>(null);
+	const nowPlaying = useNowPlaying(rootRef);
 
-	return <SpotifyWidget />;
+	return (
+		<div ref={rootRef} className="spotify-root">
+			{variant === "terminal" ? (
+				<SpotifyTerminal showArtwork={showArtwork} nowPlaying={nowPlaying} />
+			) : (
+				<SpotifyWidget nowPlaying={nowPlaying} />
+			)}
+		</div>
+	);
 }

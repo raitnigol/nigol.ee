@@ -11,12 +11,14 @@
 		"dev": "next dev",
 		"format": "prettier --write .",
 		"lint": "next lint",
-		"build": "next build",
+		"build": "tsx scripts/generate-sitemap.ts && next build",
 		"start": "next start",
 		"spotify:sync": "tsx scripts/fetch-spotify-artists-metadata.ts && tsx scripts/fetch-physical-media-metadata.ts",
 		"spotify:auth": "tsx scripts/spotify-get-refresh-token.ts"
 	},
 	"dependencies": {
+		"@fontsource/inter": "^5.3.0",
+		"@fontsource/outfit": "^5.3.0",
 		"@heroicons/react": "^1.0.6",
 		"@next/bundle-analyzer": "^12.2.1",
 		"@prefresh/babel-plugin": "^0.4.0",

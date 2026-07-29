@@ -1,3 +1,7 @@
+import "@fontsource/inter/800.css";
+import "@fontsource/outfit/500.css";
+import "@fontsource/outfit/700.css";
+
 import "../styles/index.scss";
 
 import type { AppProps } from "next/app";
@@ -15,17 +19,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 					content="initial-scale=1.0, width=device-width"
 				/>
 				<meta name="theme-color" content="#000000" />
-
-				<link rel="preconnect" href="https://fonts.googleapis.com" />
-				<link
-					rel="preconnect"
-					href="https://fonts.gstatic.com"
-					crossOrigin="anonymous"
-				/>
-				<link
-					href="https://fonts.googleapis.com/css2?family=Inter:wght@800&family=Outfit:wght@500;700&display=swap"
-					rel="stylesheet"
-				/>
 			</Head>
 			<Layout>
 				<Component {...pageProps} />

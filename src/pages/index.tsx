@@ -3,6 +3,8 @@ import GenericMeta from "../components/GenericMeta";
 import { HomeIntroTerminal } from "../components/HomeIntroTerminal";
 import { SocialIconLink } from "../components/SocialIconLink";
 import { socials } from "../data/socials";
+import { profileSchema } from "../lib/profileSchema";
+import Head from "next/head";
 
 export default function Home() {
 	return (
@@ -12,6 +14,14 @@ export default function Home() {
 				description="Rait Nigol — Chief Information Security Officer & System Administrator at Estonian Internet Foundation."
 				path="/"
 			/>
+			<Head>
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify(profileSchema)
+					}}
+				/>
+			</Head>
 
 			<div className="home">
 				<h1 className="sr-only">Rait Nigol</h1>
