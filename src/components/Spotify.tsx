@@ -125,65 +125,60 @@ function SpotifyTerminal({
 		ownedPhysicalMedia
 	} = useNowPlaying();
 
-	if (isLoading && !data) {
-		return (
-			<div className="spotify-terminal home-terminal__text">
-				<TerminalRow label="Status">loading…</TerminalRow>
-			</div>
-		);
-	}
+	const failed = Boolean(error || (data && "error" in data));
+	const track =
+		data && !("error" in data) && data.track ? data.track : null;
+	const isPlayingNow = Boolean(track && data && !("error" in data) && data.isPlayingNow);
+	const playedAt =
+		data && !("error" in data) ? data.playedAt : undefined;
+	const artistNames = track
+		? track.artists.map(artist => artist.name).join(", ")
+		: null;
 
-	if (error || (data && "error" in data)) {
-		return (
-			<div className="spotify-terminal home-terminal__text">
-				<TerminalRow label="Status">error</TerminalRow>
-				<p className="spotify-terminal__note">
-					Unable to fetch playback status.
-				</p>
-			</div>
-		);
-	}
-
-	if (!data?.track) {
-		return (
-			<div className="spotify-terminal home-terminal__text">
-				<TerminalRow label="Status">offline</TerminalRow>
-				<p className="spotify-terminal__note">No recent activity.</p>
-			</div>
-		);
-	}
-
-	const { track, isPlayingNow, playedAt } = data;
-	const artistNames = track.artists.map(artist => artist.name).join(", ");
+	let statusText = "loading…";
+	if (failed) statusText = "error";
+	else if (!isLoading && !track) statusText = "offline";
+	else if (track) statusText = isPlayingNow ? "currently playing" : "last played";
 
 	return (
 		<div className="spotify-terminal home-terminal__text">
 			<div className="spotify-terminal__layout">
-				{showArtwork && albumArtUrl ? (
+				{showArtwork ? (
 					<figure className="spotify-terminal__preview">
 						<figcaption className="spotify-terminal__preview-label">
 							album-art.jpg
 						</figcaption>
 						<div className="spotify-terminal__preview-frame">
-							<Image
-								src={albumArtUrl}
-								alt=""
-								width={96}
-								height={96}
-								unoptimized={isRemoteAlbumArt}
-								className="spotify-terminal__preview-image"
-							/>
+							{albumArtUrl ? (
+								<Image
+									src={albumArtUrl}
+									alt=""
+									width={96}
+									height={96}
+									unoptimized={isRemoteAlbumArt}
+									className="spotify-terminal__preview-image"
+								/>
+							) : (
+								<div
+									className="spotify-terminal__preview-image spotify-terminal__preview-image--empty"
+									aria-hidden
+								/>
+							)}
 						</div>
 					</figure>
 				) : null}
 
 				<div className="spotify-terminal__meta">
-					<TerminalRow label="Status">
-						{isPlayingNow ? "currently playing" : "last played"}
+					<TerminalRow label="Status">{statusText}</TerminalRow>
+					<TerminalRow label="Track">
+						{track?.name ?? (isLoading ? "…" : "—")}
 					</TerminalRow>
-					<TerminalRow label="Track">{track.name}</TerminalRow>
-					<TerminalRow label="Artist">{artistNames}</TerminalRow>
-					<TerminalRow label="Album">{track.album.name}</TerminalRow>
+					<TerminalRow label="Artist">
+						{artistNames ?? (isLoading ? "…" : "—")}
+					</TerminalRow>
+					<TerminalRow label="Album">
+						{track?.album.name ?? (isLoading ? "…" : "—")}
+					</TerminalRow>
 					{ownedPhysicalMedia ? (
 						<TerminalRow label="Shelf">
 							<TransitionLink
@@ -194,15 +189,17 @@ function SpotifyTerminal({
 								</a>
 							</TransitionLink>
 						</TerminalRow>
-					) : null}
-					{isPlayingNow ? (
+					) : (
+						<TerminalRow label="Shelf">—</TerminalRow>
+					)}
+					{isPlayingNow && track ? (
 						<TerminalRow label="Time">
 							<span className="spotify-terminal__time">
 								{formatDuration(progressMs)} /{" "}
 								{formatDuration(track.duration_ms)}
 							</span>
 							<span className="spotify-terminal__playback-icon" aria-hidden>
-								{data.isPaused ? (
+								{data && !("error" in data) && data.isPaused ? (
 									<PlayIcon className="h-3 w-3" />
 								) : (
 									<PauseIcon className="h-3 w-3" />
@@ -211,9 +208,15 @@ function SpotifyTerminal({
 						</TerminalRow>
 					) : (
 						<TerminalRow label="Played">
-							{playedAt
-								? formatPlayedAt(playedAt)
-								: "recently on Spotify"}
+							{failed
+								? "unable to fetch"
+								: track
+									? playedAt
+										? formatPlayedAt(playedAt)
+										: "recently on Spotify"
+									: isLoading
+										? "…"
+										: "no recent activity"}
 						</TerminalRow>
 					)}
 				</div>

@@ -1,6 +1,7 @@
 import TransitionLink from "./TransitionLink";
 import Spotify from "./Spotify";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
+import type { Ref } from "preact";
 
 import { copypastas } from "../data/copypastas";
 import { COPYPASTA_LAST_ID_KEY, pickCopypasta } from "../lib/copypasta";
@@ -36,6 +37,34 @@ function prefersReducedMotion(): boolean {
 
 function sleep(ms: number) {
 	return new Promise<void>(resolve => setTimeout(resolve, ms));
+}
+
+function TerminalWindow({
+	title,
+	ariaLabel,
+	bodyRef,
+	children
+}: {
+	title: string;
+	ariaLabel: string;
+	bodyRef?: Ref<HTMLDivElement>;
+	children: React.ReactNode;
+}) {
+	return (
+		<section className="home-terminal" aria-label={ariaLabel}>
+			<div className="home-terminal__chrome">
+				<div className="home-terminal__dots" aria-hidden>
+					<span />
+					<span />
+					<span />
+				</div>
+				<p className="home-terminal__title">{title}</p>
+			</div>
+			<div ref={bodyRef} className="home-terminal__body">
+				{children}
+			</div>
+		</section>
+	);
 }
 
 function TranscriptLineView({
@@ -82,6 +111,17 @@ function TerminalCommand({
 				<div className="home-terminal__output">{children}</div>
 			) : null}
 		</div>
+	);
+}
+
+function IdlePrompt() {
+	return (
+		<p className="home-terminal__line home-terminal__line--idle">
+			<span className="home-terminal__prompt" aria-hidden>
+				{SESSION_PROMPT}
+			</span>{" "}
+			<span className="home-terminal__cursor" aria-hidden />
+		</p>
 	);
 }
 
@@ -191,15 +231,12 @@ function useSshTranscriptAnimation(lines: TranscriptLine[] | null) {
 	return { progress, transcriptComplete };
 }
 
-export function HomeIntroTerminal() {
+function CowsayTerminal() {
 	const bodyRef = useRef<HTMLDivElement>(null);
 	const [copypastaParagraphs, setCopypastaParagraphs] = useState(
 		() => SSR_COPYPASTA.paragraphs
 	);
 	const [cowsayWidth, setCowsayWidth] = useState(40);
-	const sshTranscript = useVisitorTranscript();
-	const { progress, transcriptComplete } =
-		useSshTranscriptAnimation(sshTranscript);
 
 	useLayoutEffect(() => {
 		const body = bodyRef.current;
@@ -223,17 +260,37 @@ export function HomeIntroTerminal() {
 	const cowsayArt = cowsay(copypastaParagraphs.join("\n\n"), cowsayWidth);
 
 	return (
-		<section className="home-terminal" aria-label="Introduction">
-			<div className="home-terminal__chrome">
-				<div className="home-terminal__dots" aria-hidden>
-					<span />
-					<span />
-					<span />
-				</div>
-				<p className="home-terminal__title">guest@nigol.ee — ssh</p>
-			</div>
+		<TerminalWindow
+			title="guest@nigol.ee — cowsay"
+			ariaLabel="Cowsay"
+			bodyRef={bodyRef}
+		>
+			<TerminalCommand command="cowsay < copypasta.txt">
+				<blockquote className="home-terminal__cowsay" cite="">
+					<pre aria-hidden suppressHydrationWarning>
+						{cowsayArt}
+					</pre>
+					<span className="sr-only">
+						{copypastaParagraphs.join("\n\n")}
+					</span>
+				</blockquote>
+			</TerminalCommand>
+			<IdlePrompt />
+		</TerminalWindow>
+	);
+}
 
-			<div ref={bodyRef} className="home-terminal__body">
+export function HomeIntroTerminal() {
+	const sshTranscript = useVisitorTranscript();
+	const { progress, transcriptComplete } =
+		useSshTranscriptAnimation(sshTranscript);
+
+	return (
+		<div className="home-terminals">
+			<TerminalWindow
+				title="guest@nigol.ee — ssh"
+				ariaLabel="Introduction"
+			>
 				<div className="home-terminal__ssh-transcript">
 					{(sshTranscript ?? []).map((line, index) => {
 						if (index > progress.lineIndex) return null;
@@ -346,25 +403,11 @@ export function HomeIntroTerminal() {
 						<Spotify variant="terminal" showArtwork />
 					</TerminalCommand>
 
-					<TerminalCommand command="cowsay < copypasta.txt">
-						<blockquote className="home-terminal__cowsay" cite="">
-							<pre aria-hidden suppressHydrationWarning>
-								{cowsayArt}
-							</pre>
-							<span className="sr-only">
-								{copypastaParagraphs.join("\n\n")}
-							</span>
-						</blockquote>
-					</TerminalCommand>
-
-					<p className="home-terminal__line home-terminal__line--idle">
-						<span className="home-terminal__prompt" aria-hidden>
-							{SESSION_PROMPT}
-						</span>{" "}
-						<span className="home-terminal__cursor" aria-hidden />
-					</p>
+					<IdlePrompt />
 				</div>
-			</div>
-		</section>
+			</TerminalWindow>
+
+			<CowsayTerminal />
+		</div>
 	);
 }
