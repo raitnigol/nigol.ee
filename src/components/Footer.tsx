@@ -1,5 +1,30 @@
 const SITE_SOURCE_URL = "https://github.com/raitnigol/nigol.ee";
 
+function BuildBadge() {
+	const sha = process.env.NEXT_PUBLIC_COMMIT_SHA;
+	if (!sha) return null;
+
+	const short = sha.slice(0, 7);
+	const href = `${SITE_SOURCE_URL}/commit/${sha}`;
+
+	return (
+		<>
+			<span className="site-footer__sep" aria-hidden>
+				·
+			</span>
+			<a
+				href={href}
+				target="_blank"
+				rel="noopener noreferrer"
+				className="site-footer__source focus-ring"
+				title={`Build ${sha}`}
+			>
+				{short}
+			</a>
+		</>
+	);
+}
+
 export default function Footer() {
 	return (
 		<footer className="site-footer">
@@ -17,6 +42,7 @@ export default function Footer() {
 				>
 					Source code
 				</a>
+				<BuildBadge />
 			</p>
 
 			<div className="site-footer__badges" aria-label="Buttons">

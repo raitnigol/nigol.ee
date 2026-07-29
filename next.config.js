@@ -7,6 +7,9 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 /** @type {import("next").NextConfig} */
 const config = {
+	env: {
+		NEXT_PUBLIC_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA ?? ""
+	},
 	reactStrictMode: true,
 	swcMinify: true,
 	i18n: { locales: ["en-US"], defaultLocale: "en-US" },
