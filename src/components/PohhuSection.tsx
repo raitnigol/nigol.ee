@@ -323,7 +323,6 @@ function CertifiedArtistCard({
 	};
 
 	const imageSrc = photoSrc || spotifyImageUrl;
-	const useSpotifyCdn = imageSrc?.startsWith("http") ?? false;
 	const artistName = artist?.name;
 	const hasPlaylist = Boolean(profile.playlist);
 
@@ -347,8 +346,7 @@ function CertifiedArtistCard({
 							: "(min-width: 1024px) 16rem, (min-width: 768px) 14rem, 100vw"
 					}
 					loading="lazy"
-					unoptimized={useSpotifyCdn}
-					className="h-full w-full object-cover"
+				className="h-full w-full object-cover"
 					onError={handlePhotoError}
 				/>
 			) : (

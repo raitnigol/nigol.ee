@@ -167,7 +167,6 @@ interface TrackProps {
 
 function Track({ track, rank, priority }: TrackProps) {
 	const coverUrl = track.album.images[0]?.url;
-	const isRemoteCover = coverUrl?.startsWith("http") ?? false;
 	const artistLine = track.artists.map(artist => artist.name).join(", ");
 	const releaseYear = getReleaseYear(track.album.release_date);
 
@@ -187,7 +186,6 @@ function Track({ track, rank, priority }: TrackProps) {
 						width={512}
 						height={512}
 						priority={priority}
-						unoptimized={isRemoteCover}
 						className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
 					/>
 				) : null}

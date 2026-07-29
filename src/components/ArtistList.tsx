@@ -164,7 +164,6 @@ interface ArtistCardProps {
 
 function ArtistCard({ artist, rank, priority }: ArtistCardProps) {
 	const imageUrl = getArtistImageUrl(artist);
-	const isRemoteImage = imageUrl?.startsWith("http") ?? false;
 
 	return (
 		<a
@@ -182,7 +181,6 @@ function ArtistCard({ artist, rank, priority }: ArtistCardProps) {
 						width={320}
 						height={320}
 						priority={priority}
-						unoptimized={isRemoteImage}
 						className="h-full w-full object-cover rounded-lg transition duration-300 group-hover:scale-[1.02]"
 					/>
 				) : (
