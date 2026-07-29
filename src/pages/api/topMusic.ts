@@ -75,6 +75,10 @@ export default async function handler(
 			cachedTime = Date.now() + 24 * 60 * 60 * 1000;
 		}
 
+		res.setHeader(
+			"Cache-Control",
+			"public, s-maxage=3600, stale-while-revalidate=86400"
+		);
 		res.status(200).json(cached);
 	} catch (err) {
 		res.status(500).json({ error: (err as any)?.message });

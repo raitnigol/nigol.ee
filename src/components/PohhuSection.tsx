@@ -347,7 +347,7 @@ function CertifiedArtistCard({
 					}
 					loading="lazy"
 				className="h-full w-full object-cover"
-					onError={handlePhotoError}
+				onError={handlePhotoError}
 				/>
 			) : (
 				<div className="flex h-full w-full items-center justify-center animate-pulse bg-slate-900 text-subtle">

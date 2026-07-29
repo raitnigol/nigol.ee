@@ -89,7 +89,12 @@ export function PhysicalMediaCoverflow() {
 	const { data: nowPlaying } = useSWR<NowPlayingResponseSuccess>(
 		mounted ? "/api/nowPlaying" : null,
 		nowPlayingFetcher,
-		{ refreshInterval: 5000 }
+		{
+			refreshInterval: data => {
+				if (!data || "error" in data) return 60_000;
+				return data.isPlayingNow ? 15_000 : 60_000;
+			}
+		}
 	);
 
 	const nowPlayingOwned =
