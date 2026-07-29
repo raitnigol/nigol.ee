@@ -7,21 +7,21 @@ import type { TopMusicResponseSuccess } from "../pages/api/topMusic";
 const trackSections = [
 	{
 		id: "short",
-		title: "Top tracks · Past month",
+		title: "Top tracks I've listened to in the past month",
 		tracksKey: "short" as const,
 		artistsKey: "short" as const,
 		genreLabel: "Past month"
 	},
 	{
 		id: "medium",
-		title: "Top tracks · Past 6 months",
+		title: "Top tracks I've listened to in the past 6 months",
 		tracksKey: "medium" as const,
 		artistsKey: "medium" as const,
 		genreLabel: "Past 6 months"
 	},
 	{
 		id: "long",
-		title: "Top tracks · All time",
+		title: "Top tracks I've listened to of all time",
 		tracksKey: "long" as const,
 		artistsKey: "long" as const,
 		genreLabel: "All time"
@@ -166,7 +166,7 @@ export function SpotifyListeningSection() {
 							: "text-subtle"
 					}`}
 				>
-					Top artists · All time
+					Top artists I've listened to of all time
 				</h3>
 				<ArtistList
 					artists={topMusic?.artists.items}
