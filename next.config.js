@@ -41,14 +41,23 @@ const config = {
 	webpack: config => {
 		config.resolve.alias = {
 			...config.resolve.alias,
-			"@fontsource/inter/800.css": require.resolve(
-				"@fontsource/inter/800.css"
+			"@fontsource/inter/latin-800.css": require.resolve(
+				"@fontsource/inter/latin-800.css"
 			),
-			"@fontsource/outfit/500.css": require.resolve(
-				"@fontsource/outfit/500.css"
+			"@fontsource/inter/latin-ext-800.css": require.resolve(
+				"@fontsource/inter/latin-ext-800.css"
 			),
-			"@fontsource/outfit/700.css": require.resolve(
-				"@fontsource/outfit/700.css"
+			"@fontsource/outfit/latin-500.css": require.resolve(
+				"@fontsource/outfit/latin-500.css"
+			),
+			"@fontsource/outfit/latin-ext-500.css": require.resolve(
+				"@fontsource/outfit/latin-ext-500.css"
+			),
+			"@fontsource/outfit/latin-700.css": require.resolve(
+				"@fontsource/outfit/latin-700.css"
+			),
+			"@fontsource/outfit/latin-ext-700.css": require.resolve(
+				"@fontsource/outfit/latin-ext-700.css"
 			)
 		};
 

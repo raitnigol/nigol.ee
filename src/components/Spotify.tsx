@@ -135,6 +135,16 @@ function TerminalRow({
 	);
 }
 
+function TerminalSkeleton({ width }: { width: string }) {
+	return (
+		<span
+			className="spotify-terminal__skeleton"
+			style={{ width }}
+			aria-hidden
+		/>
+	);
+}
+
 function SpotifyTerminal({
 	showArtwork = true,
 	nowPlaying
@@ -161,13 +171,17 @@ function SpotifyTerminal({
 		? track.artists.map(artist => artist.name).join(", ")
 		: null;
 
-	let statusText = "loading…";
+	let statusText: React.ReactNode = "loading…";
 	if (failed) statusText = "error";
-	else if (!isLoading && !track) statusText = "offline";
-	else if (track) statusText = isPlayingNow ? "currently playing" : "last played";
+	else if (isLoading) statusText = <TerminalSkeleton width="7.5rem" />;
+	else if (!track) statusText = "offline";
+	else statusText = isPlayingNow ? "currently playing" : "last played";
 
 	return (
-		<div className="spotify-terminal home-terminal__text">
+		<div
+			className="spotify-terminal home-terminal__text"
+			aria-busy={isLoading || undefined}
+		>
 			<div className="spotify-terminal__layout">
 				{showArtwork ? (
 					<figure className="spotify-terminal__preview">
@@ -185,7 +199,11 @@ function SpotifyTerminal({
 								/>
 							) : (
 								<div
-									className="spotify-terminal__preview-image spotify-terminal__preview-image--empty"
+									className={
+										isLoading
+											? "spotify-terminal__preview-image spotify-terminal__preview-image--skeleton"
+											: "spotify-terminal__preview-image spotify-terminal__preview-image--empty"
+									}
 									aria-hidden
 								/>
 							)}
@@ -196,13 +214,16 @@ function SpotifyTerminal({
 				<div className="spotify-terminal__meta">
 					<TerminalRow label="Status">{statusText}</TerminalRow>
 					<TerminalRow label="Track">
-						{track?.name ?? (isLoading ? "…" : "—")}
+						{track?.name ??
+							(isLoading ? <TerminalSkeleton width="9rem" /> : "—")}
 					</TerminalRow>
 					<TerminalRow label="Artist">
-						{artistNames ?? (isLoading ? "…" : "—")}
+						{artistNames ??
+							(isLoading ? <TerminalSkeleton width="7rem" /> : "—")}
 					</TerminalRow>
 					<TerminalRow label="Album">
-						{track?.album.name ?? (isLoading ? "…" : "—")}
+						{track?.album.name ??
+							(isLoading ? <TerminalSkeleton width="8rem" /> : "—")}
 					</TerminalRow>
 					{ownedPhysicalMedia ? (
 						<TerminalRow label="Shelf">
@@ -215,7 +236,9 @@ function SpotifyTerminal({
 							</TransitionLink>
 						</TerminalRow>
 					) : (
-						<TerminalRow label="Shelf">—</TerminalRow>
+						<TerminalRow label="Shelf">
+							{isLoading ? <TerminalSkeleton width="3rem" /> : "—"}
+						</TerminalRow>
 					)}
 					{isPlayingNow && track ? (
 						<TerminalRow label="Time">
@@ -240,7 +263,7 @@ function SpotifyTerminal({
 										? formatPlayedAt(playedAt)
 										: "recently on Spotify"
 									: isLoading
-										? "…"
+										? <TerminalSkeleton width="6.5rem" />
 										: "no recent activity"}
 						</TerminalRow>
 					)}

@@ -1,11 +1,9 @@
+import dynamic from "next/dynamic";
 import TransitionLink from "./TransitionLink";
 import Spotify from "./Spotify";
-import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import type { Ref } from "preact";
 
-import { copypastas } from "../data/copypastas";
-import { COPYPASTA_LAST_ID_KEY, pickCopypasta } from "../lib/copypasta";
-import { cowsay, getCowsayMaxWidth } from "../lib/cowsay";
 import {
 	hasSeenHomeTerminalIntro,
 	markHomeTerminalIntroSeen
@@ -15,14 +13,23 @@ import {
 	buildSshTranscript,
 	FALLBACK_VISITOR_IP,
 	formatSshLastLogin,
+	SSH_TRANSCRIPT_STATIC,
 	type TranscriptLine
 } from "../lib/sshTranscript";
 
-const SSR_COPYPASTA = copypastas[0];
+const CowsayTerminal = dynamic(
+	() => import("./CowsayTerminal").then(module => module.CowsayTerminal),
+	{
+		ssr: false,
+		loading: () => <CowsayTerminalPlaceholder />
+	}
+);
+
 const SESSION_PROMPT = "guest@nigol.ee:~$";
 const CHAR_MS = 14;
 const LINE_GAP_MS = 24;
 const MUTED_LINE_MS = 18;
+const SSH_LINE_COUNT = SSH_TRANSCRIPT_STATIC.length + 1;
 
 type TranscriptProgress = {
 	lineIndex: number;
@@ -125,29 +132,41 @@ function IdlePrompt() {
 	);
 }
 
-function useVisitorTranscript() {
-	const [lines, setLines] = useState<TranscriptLine[] | null>(null);
+function CowsayTerminalPlaceholder() {
+	return (
+		<section
+			className="home-terminal home-terminal--cowsay-pending"
+			aria-hidden
+		>
+			<div className="home-terminal__chrome">
+				<div className="home-terminal__dots">
+					<span />
+					<span />
+					<span />
+				</div>
+				<p className="home-terminal__title">guest@nigol.ee — cowsay</p>
+			</div>
+			<div className="home-terminal__body home-terminal__body--cowsay-pending" />
+		</section>
+	);
+}
+
+/** Resolve visitor IP in the background; start with a docs fallback so UI isn't blocked. */
+function useVisitorIp() {
+	const [ip, setIp] = useState(FALLBACK_VISITOR_IP);
 
 	useEffect(() => {
 		let cancelled = false;
 
 		(async () => {
-			let ip = FALLBACK_VISITOR_IP;
-
 			try {
 				const response = await fetch("/api/visitor");
-				if (response.ok) {
-					const data = (await response.json()) as { ip?: string | null };
-					if (data.ip) ip = data.ip;
-				}
+				if (!response.ok) return;
+				const data = (await response.json()) as { ip?: string | null };
+				if (!cancelled && data.ip) setIp(data.ip);
 			} catch {
-				// Use documentation fallback IP.
+				// Keep documentation fallback IP.
 			}
-
-			if (cancelled) return;
-
-			const lastLogin = formatSshLastLogin(new Date(), ip);
-			setLines(buildSshTranscript(lastLogin));
 		})();
 
 		return () => {
@@ -155,32 +174,33 @@ function useVisitorTranscript() {
 		};
 	}, []);
 
-	return lines;
+	return ip;
 }
 
-function useSshTranscriptAnimation(lines: TranscriptLine[] | null) {
-	const completeCount = lines?.length ?? 0;
-	const [progress, setProgress] = useState<TranscriptProgress>({
-		lineIndex: -1,
-		charCount: 0
-	});
-	const [transcriptComplete, setTranscriptComplete] = useState(false);
+function useSshTranscriptLines(visitorIp: string) {
+	const [loginAt] = useState(() => new Date());
+
+	return buildSshTranscript(formatSshLastLogin(loginAt, visitorIp));
+}
+
+function useSshTranscriptAnimation(lines: TranscriptLine[]) {
+	const [progress, setProgress] = useState<TranscriptProgress>(() =>
+		prefersReducedMotion() || hasSeenHomeTerminalIntro()
+			? { lineIndex: SSH_LINE_COUNT - 1, charCount: Infinity }
+			: { lineIndex: -1, charCount: 0 }
+	);
+	const linesRef = useRef(lines);
 	const runId = useRef(0);
 
-	useEffect(() => {
-		if (!lines?.length) return;
+	linesRef.current = lines;
 
-		const finishImmediately = () => {
+	useEffect(() => {
+		if (prefersReducedMotion() || hasSeenHomeTerminalIntro()) {
 			setProgress({
-				lineIndex: completeCount - 1,
+				lineIndex: SSH_LINE_COUNT - 1,
 				charCount: Infinity
 			});
-			setTranscriptComplete(true);
 			markHomeTerminalIntroSeen();
-		};
-
-		if (prefersReducedMotion() || hasSeenHomeTerminalIntro()) {
-			finishImmediately();
 			return;
 		}
 
@@ -188,13 +208,13 @@ function useSshTranscriptAnimation(lines: TranscriptLine[] | null) {
 		let cancelled = false;
 
 		setProgress({ lineIndex: -1, charCount: 0 });
-		setTranscriptComplete(false);
 
 		(async () => {
-			for (let lineIndex = 0; lineIndex < completeCount; lineIndex++) {
+			for (let lineIndex = 0; lineIndex < SSH_LINE_COUNT; lineIndex++) {
 				if (cancelled || id !== runId.current) return;
 
-				const line = lines[lineIndex];
+				const line = linesRef.current[lineIndex];
+				if (!line) return;
 
 				if (line.prompt) {
 					for (
@@ -218,7 +238,6 @@ function useSshTranscriptAnimation(lines: TranscriptLine[] | null) {
 			}
 
 			if (!cancelled && id === runId.current) {
-				setTranscriptComplete(true);
 				markHomeTerminalIntroSeen();
 			}
 		})();
@@ -226,64 +245,16 @@ function useSshTranscriptAnimation(lines: TranscriptLine[] | null) {
 		return () => {
 			cancelled = true;
 		};
-	}, [lines, completeCount]);
-
-	return { progress, transcriptComplete };
-}
-
-function CowsayTerminal() {
-	const bodyRef = useRef<HTMLDivElement>(null);
-	const [copypastaParagraphs, setCopypastaParagraphs] = useState(
-		() => SSR_COPYPASTA.paragraphs
-	);
-	const [cowsayWidth, setCowsayWidth] = useState(40);
-
-	useLayoutEffect(() => {
-		const body = bodyRef.current;
-		if (!body) return;
-
-		const lastId = sessionStorage.getItem(COPYPASTA_LAST_ID_KEY);
-		const picked = pickCopypasta(copypastas, lastId);
-		sessionStorage.setItem(COPYPASTA_LAST_ID_KEY, picked.id);
-
-		setCopypastaParagraphs(picked.paragraphs);
-		setCowsayWidth(getCowsayMaxWidth(body));
-
-		const observer = new ResizeObserver(() => {
-			setCowsayWidth(getCowsayMaxWidth(body));
-		});
-		observer.observe(body);
-
-		return () => observer.disconnect();
+		// Once on mount — IP updates must not restart the typewriter.
 	}, []);
 
-	const cowsayArt = cowsay(copypastaParagraphs.join("\n\n"), cowsayWidth);
-
-	return (
-		<TerminalWindow
-			title="guest@nigol.ee — cowsay"
-			ariaLabel="Cowsay"
-			bodyRef={bodyRef}
-		>
-			<TerminalCommand command="cowsay < copypasta.txt">
-				<blockquote className="home-terminal__cowsay" cite="">
-					<pre aria-hidden suppressHydrationWarning>
-						{cowsayArt}
-					</pre>
-					<span className="sr-only">
-						{copypastaParagraphs.join("\n\n")}
-					</span>
-				</blockquote>
-			</TerminalCommand>
-			<IdlePrompt />
-		</TerminalWindow>
-	);
+	return progress;
 }
 
 export function HomeIntroTerminal() {
-	const sshTranscript = useVisitorTranscript();
-	const { progress, transcriptComplete } =
-		useSshTranscriptAnimation(sshTranscript);
+	const visitorIp = useVisitorIp();
+	const sshTranscript = useSshTranscriptLines(visitorIp);
+	const progress = useSshTranscriptAnimation(sshTranscript);
 
 	return (
 		<div className="home-terminals">
@@ -292,7 +263,7 @@ export function HomeIntroTerminal() {
 				ariaLabel="Introduction"
 			>
 				<div className="home-terminal__ssh-transcript">
-					{(sshTranscript ?? []).map((line, index) => {
+					{sshTranscript.map((line, index) => {
 						if (index > progress.lineIndex) return null;
 
 						const isComplete = index < progress.lineIndex;
@@ -310,13 +281,7 @@ export function HomeIntroTerminal() {
 					})}
 				</div>
 
-				<div
-					className={
-						transcriptComplete
-							? "home-terminal__session"
-							: "home-terminal__session home-terminal__session--pending"
-					}
-				>
+				<div className="home-terminal__session">
 					<TerminalCommand command="whoami">
 						<p className="home-terminal__text">
 							Hello! I am Rait Nigol, Chief Information Security Officer &
