@@ -11,9 +11,9 @@ import useSWR from "swr";
 
 import { listedPhysicalMediaCollection } from "../data/physicalMedia";
 import { sampleCoverAccent } from "../lib/coverColor";
-import { findOwnedPhysicalMedia, getPhysicalMediaIdFromHash, getListedPhysicalMediaIndex } from "../lib/physicalMediaMatch";
+import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
+import type { PhysicalMediaAlbumMeta } from "../lib/physicalMediaSpotifyMeta";
 import type { NowPlayingResponseSuccess } from "../pages/api/nowPlaying";
-import type { PhysicalMediaAlbumMeta } from "../pages/api/physicalMedia";
 
 import "swiper/swiper-bundle.css";
 
@@ -72,24 +72,17 @@ function formatAlbumCredit(meta: PhysicalMediaAlbumMeta): string | null {
 	return meta.label;
 }
 
-function getInitialIndexFromHash(): number {
-	if (typeof window === "undefined") return 0;
-	const id = getPhysicalMediaIdFromHash(window.location.hash);
-	if (!id) return 0;
-	const index = getListedPhysicalMediaIndex(id);
-	return index >= 0 ? index : 0;
-}
+type PhysicalMediaCoverflowProps = {
+	spotifyMeta: Record<string, PhysicalMediaAlbumMeta>;
+};
 
-export function PhysicalMediaCoverflow() {
+export function PhysicalMediaCoverflow({
+	spotifyMeta
+}: PhysicalMediaCoverflowProps) {
 	const [mounted, setMounted] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [accentColor, setAccentColor] = useState(FALLBACK_ACCENT);
-	const [spotifyMeta, setSpotifyMeta] = useState<
-		Record<string, PhysicalMediaAlbumMeta>
-	>({});
-	const [spotifyLoaded, setSpotifyLoaded] = useState(false);
 	const swiperRef = useRef<SwiperInstance | null>(null);
-	const initialSlideRef = useRef(0);
 
 	const total = listedPhysicalMediaCollection.length;
 	const canNavigate = total > 1;
@@ -118,35 +111,7 @@ export function PhysicalMediaCoverflow() {
 		: -1;
 
 	useEffect(() => {
-		initialSlideRef.current = getInitialIndexFromHash();
 		setMounted(true);
-	}, []);
-
-	useEffect(() => {
-		const onHashChange = () => {
-			const id = getPhysicalMediaIdFromHash(window.location.hash);
-			if (!id) return;
-			const index = getListedPhysicalMediaIndex(id);
-			if (index < 0) return;
-			const swiper = swiperRef.current;
-			if (!swiper) return;
-			if (loop) swiper.slideToLoop(index);
-			else swiper.slideTo(index);
-		};
-
-		window.addEventListener("hashchange", onHashChange);
-		return () => window.removeEventListener("hashchange", onHashChange);
-	}, [loop]);
-
-	useEffect(() => {
-		fetch("/api/physicalMedia")
-			.then(res => res.json())
-			.then(data => {
-				if (data.error || !data.albums) return;
-				setSpotifyMeta(data.albums);
-			})
-			.catch(console.error)
-			.finally(() => setSpotifyLoaded(true));
 	}, []);
 
 	useEffect(() => {
@@ -254,7 +219,7 @@ export function PhysicalMediaCoverflow() {
 					effect="coverflow"
 					grabCursor={canNavigate}
 					centeredSlides
-					initialSlide={initialSlideRef.current}
+					initialSlide={0}
 					loop={loop}
 					loopAdditionalSlides={loop ? 3 : 0}
 					rewind={!loop && canNavigate}
@@ -325,11 +290,7 @@ export function PhysicalMediaCoverflow() {
 										<div
 											className="album-coverflow__cover-image album-coverflow__cover-image--loading"
 											role="img"
-											aria-label={
-												spotifyLoaded
-													? `${coverAlt} cover unavailable`
-													: `Loading ${coverAlt} cover`
-											}
+											aria-label={`${coverAlt} cover unavailable`}
 										/>
 									)}
 								</div>
@@ -412,15 +373,7 @@ export function PhysicalMediaCoverflow() {
 								</p>
 							</>
 						) : (
-							<p
-								className={
-									spotifyLoaded
-										? "album-coverflow__blurb"
-										: "album-coverflow__blurb album-coverflow__blurb--loading"
-								}
-							>
-								{spotifyLoaded ? "\u00a0" : "Loading album details…"}
-							</p>
+							<p className="album-coverflow__blurb">{"\u00a0"}</p>
 						)}
 					</div>
 				</div>
