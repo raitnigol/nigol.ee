@@ -381,7 +381,7 @@ export function HomeIntroTerminal() {
 					</TerminalCommand>
 
 					<TerminalCommand command="spotifyctl status">
-						<Spotify variant="terminal" showArtwork />
+						<Spotify showArtwork />
 					</TerminalCommand>
 
 					<IdlePrompt />

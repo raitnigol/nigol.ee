@@ -1,23 +1,16 @@
-import { useEffect } from "preact/hooks";
+import type { GetStaticProps } from "next";
 
 import GenericMeta from "../components/GenericMeta";
 import { PhysicalMediaCoverflow } from "../components/PhysicalMediaCoverflow";
 import { SpotifyListeningSection } from "../components/SpotifyListeningSection";
-import { scrollToHashElement } from "../lib/scrollToHash";
+import { loadPhysicalMediaMeta } from "../lib/loadPhysicalMediaMeta";
+import type { PhysicalMediaAlbumMeta } from "../lib/physicalMediaSpotifyMeta";
 
-export default function PhysicalMedia() {
-	useEffect(() => {
-		const scrollToHash = () => {
-			if (window.location.hash) {
-				scrollToHashElement(window.location.hash);
-			}
-		};
+type PhysicalMediaPageProps = {
+	spotifyMeta: Record<string, PhysicalMediaAlbumMeta>;
+};
 
-		scrollToHash();
-		window.addEventListener("hashchange", scrollToHash);
-		return () => window.removeEventListener("hashchange", scrollToHash);
-	}, []);
-
+export default function PhysicalMedia({ spotifyMeta }: PhysicalMediaPageProps) {
 	return (
 		<>
 			<GenericMeta
@@ -40,9 +33,19 @@ export default function PhysicalMedia() {
 				</p>
 			</div>
 
-			<PhysicalMediaCoverflow />
+			<PhysicalMediaCoverflow spotifyMeta={spotifyMeta} />
 
 			<SpotifyListeningSection />
 		</>
 	);
 }
+
+export const getStaticProps: GetStaticProps<PhysicalMediaPageProps> = async () => {
+	const meta = loadPhysicalMediaMeta();
+
+	return {
+		props: {
+			spotifyMeta: meta.albums
+		}
+	};
+};

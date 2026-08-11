@@ -1,8 +1,6 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { listedPhysicalMediaCollection } from "../src/data/physicalMedia";
-import { physicalMediaAlbumHref } from "../src/lib/physicalMediaMatch";
 import { SITE_URL } from "../src/lib/site";
 
 const STATIC_PATHS = ["/", "/music", "/physical-media"] as const;
@@ -33,12 +31,7 @@ ${entries}
 `;
 }
 
-const urls = [
-	...STATIC_PATHS.map(toAbsoluteUrl),
-	...listedPhysicalMediaCollection.map(item =>
-		toAbsoluteUrl(physicalMediaAlbumHref(item.id))
-	)
-];
+const urls = STATIC_PATHS.map(toAbsoluteUrl);
 
 const outputPath = resolve(process.cwd(), "public/sitemap.xml");
 writeFileSync(outputPath, buildSitemapXml(urls), "utf8");

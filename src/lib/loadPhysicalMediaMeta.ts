@@ -1,24 +1,14 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import path from "path";
 
 import {
 	isPhysicalMediaListed,
 	physicalMediaCollection
-} from "../../data/physicalMedia";
+} from "../data/physicalMedia";
 import type {
 	PhysicalMediaAlbumMeta,
-	PhysicalMediaApiResponse
-} from "../../lib/physicalMediaSpotifyMeta";
-
-export type { PhysicalMediaAlbumMeta, PhysicalMediaApiResponse };
-
-export type PhysicalMediaResponseSuccess = PhysicalMediaApiResponse;
-
-export type PhysicalMediaResponseError = { error: unknown };
-export type PhysicalMediaResponse =
-	| PhysicalMediaResponseSuccess
-	| PhysicalMediaResponseError;
+	PhysicalMediaSpotifyMetaFile
+} from "./physicalMediaSpotifyMeta";
 
 const META_FILE = path.join(
 	process.cwd(),
@@ -46,7 +36,8 @@ function isValidAlbumMeta(value: unknown): value is PhysicalMediaAlbumMeta {
 	);
 }
 
-function loadGeneratedMeta(): PhysicalMediaApiResponse {
+/** Build-time load of generated Spotify meta for the CD shelf. */
+export function loadPhysicalMediaMeta(): PhysicalMediaSpotifyMetaFile {
 	if (!fs.existsSync(META_FILE)) {
 		throw new Error(
 			`Missing generated metadata at ${META_FILE}. Run: yarn spotify:sync`
@@ -54,7 +45,7 @@ function loadGeneratedMeta(): PhysicalMediaApiResponse {
 	}
 
 	const raw = fs.readFileSync(META_FILE, "utf8");
-	const data = JSON.parse(raw) as Partial<PhysicalMediaApiResponse>;
+	const data = JSON.parse(raw) as Partial<PhysicalMediaSpotifyMetaFile>;
 
 	if (!data.albums || typeof data.albums !== "object") {
 		throw new Error(`Malformed generated metadata in ${META_FILE}`);
@@ -68,47 +59,19 @@ function loadGeneratedMeta(): PhysicalMediaApiResponse {
 
 	const albums = data.albums;
 	const loaded = Object.keys(albums).length;
-	const generatedAt =
-		typeof data.generatedAt === "string"
-			? data.generatedAt
-			: new Date(0).toISOString();
-	const source =
-		typeof data.source === "string" ? data.source : "unknown";
-	const failed = Array.isArray(data.failed)
-		? data.failed.filter((entry): entry is string => typeof entry === "string")
-		: [];
 
 	return {
 		albums,
 		loaded,
 		total: listedTotal,
 		complete: loaded >= listedTotal,
-		generatedAt,
-		source,
-		failed
+		generatedAt:
+			typeof data.generatedAt === "string"
+				? data.generatedAt
+				: new Date(0).toISOString(),
+		source: typeof data.source === "string" ? data.source : "unknown",
+		failed: Array.isArray(data.failed)
+			? data.failed.filter((entry): entry is string => typeof entry === "string")
+			: []
 	};
-}
-
-export default function handler(
-	req: NextApiRequest,
-	res: NextApiResponse<PhysicalMediaResponse>
-) {
-	if (req.method !== "GET") {
-		res.status(405).json({ error: "Method not allowed." });
-		return;
-	}
-
-	try {
-		const response = loadGeneratedMeta();
-
-		res.setHeader(
-			"Cache-Control",
-			response.complete
-				? "public, s-maxage=3600, stale-while-revalidate=86400"
-				: "no-store"
-		);
-		res.status(200).json(response);
-	} catch (err) {
-		res.status(500).json({ error: (err as Error).message });
-	}
 }

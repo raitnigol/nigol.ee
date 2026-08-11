@@ -5,10 +5,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import type { RefObject } from "preact";
 import useSWR from "swr";
 
-import {
-	findOwnedPhysicalMedia,
-	physicalMediaAlbumHref
-} from "../lib/physicalMediaMatch";
+import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
 import { formatPlayedAt } from "../lib/spotify";
 import type {
 	NowPlayingResponseError,
@@ -26,7 +23,6 @@ const formatDuration = (ms: number) => {
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
-const SPOTIFY_LOGO = "/images/logos/spotify.svg";
 const EMPTY_ALBUM_ART = "/images/emptysong.jpg";
 const NOW_PLAYING_KEY = "/api/nowPlaying";
 const PLAYING_POLL_MS = 15_000;
@@ -34,7 +30,6 @@ const IDLE_POLL_MS = 60_000;
 const PROGRESS_TICK_MS = 1_000;
 
 type SpotifyProps = {
-	variant?: "default" | "terminal";
 	showArtwork?: boolean;
 };
 
@@ -227,9 +222,7 @@ function SpotifyTerminal({
 					</TerminalRow>
 					{ownedPhysicalMedia ? (
 						<TerminalRow label="Shelf">
-							<TransitionLink
-								href={physicalMediaAlbumHref(ownedPhysicalMedia.id)}
-							>
+							<TransitionLink href="/physical-media">
 								<a className="home__link home__link--pro focus-ring">
 									owned (physical copy)
 								</a>
@@ -273,174 +266,13 @@ function SpotifyTerminal({
 	);
 }
 
-function SpotifyWidget({
-	nowPlaying
-}: {
-	nowPlaying: ReturnType<typeof useNowPlaying>;
-}) {
-	const {
-		data,
-		albumArtUrl,
-		showProgress,
-		progressMs,
-		ownedPhysicalMedia
-	} = nowPlaying;
-
-	return (
-		<div className="spotify-widget">
-			<div className="spotify-widget__art">
-				{albumArtUrl ? (
-					<Image
-						src={albumArtUrl}
-						alt={
-							data?.track
-								? `${data.track.name} album art`
-								: "Spotify album art"
-						}
-						width={256}
-						height={256}
-						className={`spotify-widget__image${
-							ownedPhysicalMedia ? " spotify-widget__image--owned" : ""
-						}`}
-					/>
-				) : (
-					<div className="spotify-widget__image spotify-widget__image--empty" aria-hidden />
-				)}
-				{ownedPhysicalMedia ? (
-					<TransitionLink
-						href={physicalMediaAlbumHref(ownedPhysicalMedia.id)}
-					>
-						<a
-							className="spotify-widget__shelf-link focus-ring"
-							aria-label="This album is on my CD shelf"
-						>
-							<span className="spotify-widget__shelf-link-inner">
-								<span className="spotify-widget__shelf-disc" aria-hidden />
-								<span>On shelf</span>
-							</span>
-						</a>
-					</TransitionLink>
-				) : null}
-			</div>
-
-			<div className="spotify-widget__body">
-				<p className="spotify-widget__track">
-					{data?.track ? (
-						<>
-							<a
-								href={data.track.external_urls.spotify}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="spotify-widget__track-name focus-ring"
-							>
-								{data.track.name}
-							</a>
-							<span className="spotify-widget__by"> by </span>
-							{data.track.artists.map((artist, i) => (
-								<span key={data.track?.id + artist.id}>
-									<a
-										href={artist.external_urls.spotify}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="spotify-widget__artist focus-ring"
-									>
-										{artist.name}
-									</a>
-									{i < data.track?.artists.length! - 1 ? ", " : null}
-								</span>
-							))}
-						</>
-					) : (
-						<span className="spotify-widget__idle">Not listening to anything</span>
-					)}
-				</p>
-
-				{data?.track ? (
-					<p className="spotify-widget__album">
-						on{" "}
-						<a
-							href={data.track.album.external_urls.spotify}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="spotify-widget__album-name focus-ring"
-						>
-							{data.track.album.name}
-						</a>
-					</p>
-				) : null}
-
-				{showProgress && data?.track ? (
-					<div className="spotify-widget__progress">
-						<div className="spotify-widget__progress-bar">
-							<div
-								className="spotify-widget__progress-fill"
-								style={{
-									width: `${
-										(progressMs / data.track.duration_ms) * 100
-									}%`
-								}}
-							/>
-						</div>
-						<div className="spotify-widget__progress-meta">
-							<span>{formatDuration(progressMs)}</span>
-							<span className="spotify-widget__progress-icon" aria-hidden>
-								{data.isPlayingNow ? (
-									data.isPaused ? (
-										<PlayIcon className="h-3.5 w-3.5" />
-									) : (
-										<PauseIcon className="h-3.5 w-3.5" />
-									)
-								) : (
-									<Image
-										src={SPOTIFY_LOGO}
-										alt=""
-										width={14}
-										height={14}
-										className="h-3.5 w-3.5"
-									/>
-								)}
-							</span>
-							<span>{formatDuration(data.track.duration_ms)}</span>
-						</div>
-						{!data.isPlayingNow ? (
-							<p className="spotify-widget__last-played">
-								{data.playedAt
-									? `Last played ${formatPlayedAt(data.playedAt)}`
-									: "Last played on Spotify"}
-							</p>
-						) : null}
-					</div>
-				) : (
-					<p className="spotify-widget__brand">
-						<Image
-							src={SPOTIFY_LOGO}
-							alt=""
-							width={14}
-							height={14}
-							className="h-3.5 w-3.5"
-						/>
-						Spotify
-					</p>
-				)}
-			</div>
-		</div>
-	);
-}
-
-export default function Spotify({
-	variant = "default",
-	showArtwork = true
-}: SpotifyProps) {
+export default function Spotify({ showArtwork = true }: SpotifyProps) {
 	const rootRef = useRef<HTMLDivElement>(null);
 	const nowPlaying = useNowPlaying(rootRef);
 
 	return (
 		<div ref={rootRef} className="spotify-root">
-			{variant === "terminal" ? (
-				<SpotifyTerminal showArtwork={showArtwork} nowPlaying={nowPlaying} />
-			) : (
-				<SpotifyWidget nowPlaying={nowPlaying} />
-			)}
+			<SpotifyTerminal showArtwork={showArtwork} nowPlaying={nowPlaying} />
 		</div>
 	);
 }
