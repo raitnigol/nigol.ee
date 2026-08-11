@@ -32,10 +32,12 @@ function useDeferredNekoReady() {
 			window.removeEventListener("pointermove", onInteract);
 			window.removeEventListener("keydown", onInteract);
 			window.removeEventListener("scroll", onInteract);
-			if (idleId !== undefined && "cancelIdleCallback" in window) {
-				window.cancelIdleCallback(idleId);
+			if (idleId !== undefined) {
+				window.cancelIdleCallback?.(idleId);
 			}
-			if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+			if (timeoutId !== undefined) {
+				clearTimeout(timeoutId);
+			}
 		};
 
 		const enable = () => {
@@ -59,7 +61,7 @@ function useDeferredNekoReady() {
 			passive: true
 		});
 
-		if ("requestIdleCallback" in window) {
+		if (typeof window.requestIdleCallback === "function") {
 			idleId = window.requestIdleCallback(enable, { timeout: 4000 });
 		} else {
 			timeoutId = window.setTimeout(enable, 2500);
