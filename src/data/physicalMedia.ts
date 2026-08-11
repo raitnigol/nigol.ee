@@ -17,6 +17,40 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 		spotifyAlbumId: "5VoeRuTrGhTbKelUfwymwu"
 	},
 	{
+		id: "violet-bent-backwards-over-the-grass",
+		spotifyShowId: "3DIkc5GRg2bP8cm6UP0N65"
+	},
+	{
+		id: "lana-del-rey-lust-for-life",
+		title: "Lust For Life",
+		artists: "Lana Del Rey",
+		spotifyAlbumId: "7xYiTrbTL57QO0bb4hXIKo"
+	},
+	{
+		id: "lana-del-rey-norman-fucking-rockwell",
+		title: "Norman Fucking Rockwell!",
+		artists: "Lana Del Rey",
+		spotifyAlbumId: "5XpEKORZ4y6OrCZSKsi46A"
+	},
+	{
+		id: "lana-del-rey-chemtrails-over-the-country-club",
+		title: "Chemtrails Over The Country Club",
+		artists: "Lana Del Rey",
+		spotifyAlbumId: "6QeosPQpJckkW0Obir5RT8"
+	},
+	{
+		id: "lana-del-rey-blue-banisters",
+		title: "Blue Banisters",
+		artists: "Lana Del Rey",
+		spotifyAlbumId: "2wwCc6fcyhp1tfY3J6Javr"
+	},
+	{
+		id: "lana-del-rey-did-you-know-that-theres-a-tunnel-under-ocean-blvd",
+		title: "Did you know that there's a tunnel under Ocean Blvd",
+		artists: "Lana Del Rey",
+		spotifyAlbumId: "5HOHne1wzItQlIYmLXLYfZ"
+	},
+	{
 		id: "slim-shady-lp",
 		title: "The Slim Shady LP",
 		artists: "Eminem",
@@ -119,10 +153,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 		spotifyAlbumId: "3OrucS4sHv6Bl9GS4rafEk"
 	},
 	{
-		id: "violet-bent-backwards-over-the-grass",
-		spotifyShowId: "3DIkc5GRg2bP8cm6UP0N65"
-	},
-	{
 		id: "the-eminem-show",
 		spotifyAlbumId: "2cWBwpqMsDJC1ZUwz813lo"
 	},
@@ -183,10 +213,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 		spotifyAlbumId: "1CJDBCPg27ASz4eWE7oeNz"
 	},
 	{
-		id: "stone-temple-pilots-thank-you",
-		spotifyAlbumId: "1fyLNx6wxgDA59wFInnyup"
-	},
-	{
 		id: "enya-a-day-without-rain",
 		spotifyAlbumId: "2ioso1tqQ5zABQDVYyiUi5"
 	},
@@ -213,10 +239,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 	{
 		id: "imogen-heap-ellipse",
 		spotifyAlbumId: "1H8velOQ9zUFqpuQPd2bkO"
-	},
-	{
-		id: "deftones-around-the-fur",
-		spotifyAlbumId: "7o4UsmV37Sg5It2Eb7vHzu"
 	},
 	{
 		id: "ookulm-valk-selgest-taevast",
@@ -247,10 +269,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 		spotifyAlbumId: "1aX41cQgMNeRscbLtPVt6F"
 	},
 	{
-		id: "grimes-visions",
-		spotifyAlbumId: "3HED2IUaNSnbOe88a7ZdwM"
-	},
-	{
 		id: "erkki-hyva-varjust-rambini",
 		spotifyAlbumId: "1ecl1zfy1Ehb7iaW9xUO8B"
 	},
@@ -261,10 +279,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 	{
 		id: "ella-and-her-fellas-blue-skies",
 		spotifyAlbumId: null
-	},
-	{
-		id: "the-rogers-sisters-the-invisible-deck",
-		spotifyAlbumId: "3BadYoqkGiOt9PYS8FIxMO"
 	},
 	{
 		id: "tenuzu-no-chiizu-girls-like-us",
@@ -289,10 +303,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 	{
 		id: "shaggy-hot-shot",
 		spotifyAlbumId: "3MT88SSyxQGbqYXj4LVk3b"
-	},
-	{
-		id: "the-game-the-documentary-2",
-		spotifyAlbumId: "6uQi7sMUciyWBT5alp1V2Y"
 	},
 	{
 		id: "gigi-dagostino-tecno-fes",
@@ -363,10 +373,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 		spotifyAlbumId: null
 	},
 	{
-		id: "milk-maid-yucca",
-		spotifyAlbumId: "5gWn3pZ5MqGYSOjATkqNoK"
-	},
-	{
 		id: "ines-kiusatus",
 		spotifyAlbumId: "2UJzLg9QAkDEo2Kf5VWW5O"
 	},
@@ -394,7 +400,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 		id: "paks-matu-ja-roki-15-aastat-liiga-hilja",
 		spotifyAlbumId: "3DxUydeUdVDyAK9Jbac0Y5"
 	},
-
 	{
 		id: "gang-starr-moment-of-truth",
 		title: "Moment Of Truth",
@@ -472,36 +477,6 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 		title: "ASTROWORLD",
 		artists: "Travis Scott",
 		spotifyAlbumId: "41GuZcammIkupMPKH2OJ6I"
-	},
-	{
-		id: "lana-del-rey-did-you-know-that-theres-a-tunnel-under-ocean-blvd",
-		title: "Did you know that there's a tunnel under Ocean Blvd",
-		artists: "Lana Del Rey",
-		spotifyAlbumId: "5HOHne1wzItQlIYmLXLYfZ"
-	},
-	{
-		id: "lana-del-rey-lust-for-life",
-		title: "Lust For Life",
-		artists: "Lana Del Rey",
-		spotifyAlbumId: "7xYiTrbTL57QO0bb4hXIKo"
-	},
-	{
-		id: "lana-del-rey-blue-banisters",
-		title: "Blue Banisters",
-		artists: "Lana Del Rey",
-		spotifyAlbumId: "2wwCc6fcyhp1tfY3J6Javr"
-	},
-	{
-		id: "lana-del-rey-chemtrails-over-the-country-club",
-		title: "Chemtrails Over The Country Club",
-		artists: "Lana Del Rey",
-		spotifyAlbumId: "6QeosPQpJckkW0Obir5RT8"
-	},
-	{
-		id: "lana-del-rey-norman-fucking-rockwell",
-		title: "Norman Fucking Rockwell!",
-		artists: "Lana Del Rey",
-		spotifyAlbumId: "5XpEKORZ4y6OrCZSKsi46A"
 	},
 	{
 		id: "charli-xcx-brat-and-its-completely-different-but-also-still-brat",
@@ -725,6 +700,7 @@ export const physicalMediaCollection: PhysicalMediaItem[] = [
 		artists: "Melanie Martinez",
 		spotifyAlbumId: "5JpH5T1sCYnUyZD6TM0QaY"
 	}
+
 ];
 
 export function isPhysicalMediaListed(item: PhysicalMediaItem): boolean {
