@@ -1,9 +1,10 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
+import { listedPoeticWorks, poeticWorkHref } from "../src/data/poeticJustice";
 import { SITE_URL } from "../src/lib/site";
 
-const STATIC_PATHS = ["/", "/music", "/physical-media"] as const;
+const STATIC_PATHS = ["/", "/music", "/physical-media", "/poetic-justice"] as const;
 
 function toAbsoluteUrl(path: string): string {
 	if (path === "/") return `${SITE_URL}/`;
@@ -31,7 +32,10 @@ ${entries}
 `;
 }
 
-const urls = STATIC_PATHS.map(toAbsoluteUrl);
+const urls = [
+	...STATIC_PATHS.map(toAbsoluteUrl),
+	...listedPoeticWorks.map(work => toAbsoluteUrl(poeticWorkHref(work.id)))
+];
 
 const outputPath = resolve(process.cwd(), "public/sitemap.xml");
 writeFileSync(outputPath, buildSitemapXml(urls), "utf8");
