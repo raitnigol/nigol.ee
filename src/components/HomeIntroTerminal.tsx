@@ -151,26 +151,42 @@ function CowsayTerminalPlaceholder() {
 	);
 }
 
-/** Resolve visitor IP in the background; start with a docs fallback so UI isn't blocked. */
+/** Resolve visitor IP after idle so it never competes with first paint. */
 function useVisitorIp() {
 	const [ip, setIp] = useState(FALLBACK_VISITOR_IP);
 
 	useEffect(() => {
 		let cancelled = false;
+		let idleId: number | undefined;
+		let timeoutId: number | undefined;
 
-		(async () => {
-			try {
-				const response = await fetch("/api/visitor");
-				if (!response.ok) return;
-				const data = (await response.json()) as { ip?: string | null };
-				if (!cancelled && data.ip) setIp(data.ip);
-			} catch {
-				// Keep documentation fallback IP.
-			}
-		})();
+		const loadIp = () => {
+			if (cancelled) return;
+
+			fetch("/api/visitor")
+				.then(response => (response.ok ? response.json() : null))
+				.then((data: { ip?: string | null } | null) => {
+					if (!cancelled && data?.ip) setIp(data.ip);
+				})
+				.catch(() => {
+					// Keep documentation fallback IP.
+				});
+		};
+
+		if (typeof window.requestIdleCallback === "function") {
+			idleId = window.requestIdleCallback(loadIp, { timeout: 5000 });
+		} else {
+			timeoutId = window.setTimeout(loadIp, 2000);
+		}
 
 		return () => {
 			cancelled = true;
+			if (idleId !== undefined) {
+				window.cancelIdleCallback?.(idleId);
+			}
+			if (timeoutId !== undefined) {
+				clearTimeout(timeoutId);
+			}
 		};
 	}, []);
 
