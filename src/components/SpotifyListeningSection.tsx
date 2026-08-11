@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 
 import { ArtistList } from "./ArtistList";
 import { TrackList } from "./TrackList";
@@ -91,20 +91,47 @@ function TopGenresLine({
 }
 
 export function SpotifyListeningSection() {
+	const rootRef = useRef<HTMLDivElement>(null);
 	const [topMusic, setTopMusic] = useState<TopMusicResponseSuccess | null>(
 		null
 	);
 	const [activeCarousel, setActiveCarousel] = useState(0);
+	const [shouldFetch, setShouldFetch] = useState(false);
 
 	useEffect(() => {
+		const element = rootRef.current;
+		if (!element) return;
+
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (!entry?.isIntersecting) return;
+				setShouldFetch(true);
+				observer.disconnect();
+			},
+			{ rootMargin: "240px 0px" }
+		);
+
+		observer.observe(element);
+		return () => observer.disconnect();
+	}, []);
+
+	useEffect(() => {
+		if (!shouldFetch) return;
+
+		let cancelled = false;
+
 		fetch("/api/topMusic")
 			.then(res => res.json())
 			.then(info => {
-				if (info.error) return;
+				if (cancelled || info.error) return;
 				setTopMusic(info);
 			})
 			.catch(console.error);
-	}, []);
+
+		return () => {
+			cancelled = true;
+		};
+	}, [shouldFetch]);
 
 	const genreRangeKey =
 		activeCarousel >= ARTISTS_SECTION_INDEX
@@ -127,7 +154,7 @@ export function SpotifyListeningSection() {
 	const genres = useMemo(() => rankGenres(genreArtists), [genreArtists]);
 
 	return (
-		<div className="mt-16 md:mt-20">
+		<div ref={rootRef} className="mt-16 md:mt-20">
 			<h2 id="spotify-listening" className={chapterHeadingClass}>
 				On Spotify
 				<span

@@ -288,12 +288,17 @@ export function PhysicalMediaCoverflow() {
 					onSlideChange={syncActiveIndex}
 					onSlideChangeTransitionEnd={syncActiveIndex}
 				>
-					{listedPhysicalMediaCollection.map(item => {
+					{listedPhysicalMediaCollection.map((item, index) => {
 						const isNowPlayingCd =
 							nowPlayingOwned?.id === item.id && nowPlaying?.isPlayingNow;
 						const meta = spotifyMeta[item.id];
 						const coverUrl = meta?.coverImageUrl;
 						const coverAlt = meta?.name ?? item.title ?? "Album cover";
+						const distance = Math.min(
+							Math.abs(index - activeIndex),
+							total - Math.abs(index - activeIndex)
+						);
+						const loadEager = distance <= 2;
 
 						return (
 							<SwiperSlide
@@ -312,7 +317,7 @@ export function PhysicalMediaCoverflow() {
 											width={600}
 											height={600}
 											className="album-coverflow__cover-image"
-											loading="eager"
+											loading={loadEager ? "eager" : "lazy"}
 											decoding="async"
 											draggable={false}
 										/>
