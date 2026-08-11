@@ -7,11 +7,17 @@ import {
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperInstance } from "swiper";
+import { useRouter } from "next/router";
 import useSWR from "swr";
 
 import { listedPhysicalMediaCollection } from "../data/physicalMedia";
 import { sampleCoverAccent } from "../lib/coverColor";
-import { findOwnedPhysicalMedia, getPhysicalMediaIdFromHash, getListedPhysicalMediaIndex } from "../lib/physicalMediaMatch";
+import {
+	findOwnedPhysicalMedia,
+	getPhysicalMediaIdFromHash,
+	getListedPhysicalMediaIndex,
+	physicalMediaAlbumHref
+} from "../lib/physicalMediaMatch";
 import type { NowPlayingResponseSuccess } from "../pages/api/nowPlaying";
 import type { PhysicalMediaAlbumMeta } from "../pages/api/physicalMedia";
 
@@ -20,6 +26,24 @@ import "swiper/swiper-bundle.css";
 const FALLBACK_ACCENT = "rgb(52 211 153)";
 
 const nowPlayingFetcher = (url: string) => fetch(url).then(res => res.json());
+
+function prefersReducedMotion(): boolean {
+	if (typeof window === "undefined") return false;
+	return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function resolveFocusIndex(focusId?: string | null): number {
+	if (focusId) {
+		const index = getListedPhysicalMediaIndex(focusId);
+		if (index >= 0) return index;
+	}
+
+	if (typeof window === "undefined") return 0;
+	const hashId = getPhysicalMediaIdFromHash(window.location.hash);
+	if (!hashId) return 0;
+	const hashIndex = getListedPhysicalMediaIndex(hashId);
+	return hashIndex >= 0 ? hashIndex : 0;
+}
 
 function formatAlbumSentence(
 	meta: PhysicalMediaAlbumMeta,
@@ -72,15 +96,18 @@ function formatAlbumCredit(meta: PhysicalMediaAlbumMeta): string | null {
 	return meta.label;
 }
 
-function getInitialIndexFromHash(): number {
-	if (typeof window === "undefined") return 0;
-	const id = getPhysicalMediaIdFromHash(window.location.hash);
-	if (!id) return 0;
-	const index = getListedPhysicalMediaIndex(id);
-	return index >= 0 ? index : 0;
-}
+type PhysicalMediaCoverflowProps = {
+	/** Album id from `/physical-media/[id]` — sets initial slide + disc-pull. */
+	focusId?: string | null;
+	/** Keep the URL in sync with the active disc (album deep-link pages). */
+	syncUrl?: boolean;
+};
 
-export function PhysicalMediaCoverflow() {
+export function PhysicalMediaCoverflow({
+	focusId = null,
+	syncUrl = false
+}: PhysicalMediaCoverflowProps) {
+	const router = useRouter();
 	const [mounted, setMounted] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [accentColor, setAccentColor] = useState(FALLBACK_ACCENT);
@@ -88,8 +115,10 @@ export function PhysicalMediaCoverflow() {
 		Record<string, PhysicalMediaAlbumMeta>
 	>({});
 	const [spotifyLoaded, setSpotifyLoaded] = useState(false);
+	const [discPull, setDiscPull] = useState(false);
 	const swiperRef = useRef<SwiperInstance | null>(null);
 	const initialSlideRef = useRef(0);
+	const skipUrlSyncRef = useRef(true);
 
 	const total = listedPhysicalMediaCollection.length;
 	const canNavigate = total > 1;
@@ -118,9 +147,15 @@ export function PhysicalMediaCoverflow() {
 		: -1;
 
 	useEffect(() => {
-		initialSlideRef.current = getInitialIndexFromHash();
+		const index = resolveFocusIndex(focusId);
+		initialSlideRef.current = index;
+		setActiveIndex(index);
 		setMounted(true);
-	}, []);
+
+		if (focusId && index >= 0 && !prefersReducedMotion()) {
+			setDiscPull(true);
+		}
+	}, [focusId]);
 
 	useEffect(() => {
 		const onHashChange = () => {
@@ -166,6 +201,28 @@ export function PhysicalMediaCoverflow() {
 		};
 	}, [activeIndex, mounted, spotifyMeta, total]);
 
+	useEffect(() => {
+		if (!syncUrl || !mounted) return;
+
+		const item = listedPhysicalMediaCollection[activeIndex];
+		if (!item) return;
+
+		const nextPath = physicalMediaAlbumHref(item.id);
+		const currentPath = router.asPath.split("?")[0]?.split("#")[0] ?? "";
+		if (currentPath === nextPath) {
+			skipUrlSyncRef.current = false;
+			return;
+		}
+
+		// Skip the first sync right after mount — URL already matches focusId.
+		if (skipUrlSyncRef.current) {
+			skipUrlSyncRef.current = false;
+			return;
+		}
+
+		void router.replace(nextPath, undefined, { shallow: true, scroll: false });
+	}, [activeIndex, mounted, router, syncUrl]);
+
 	if (!mounted || total === 0) {
 		return <div className="album-coverflow min-h-[20rem]" aria-hidden />;
 	}
@@ -186,6 +243,10 @@ export function PhysicalMediaCoverflow() {
 
 	const syncActiveIndex = (swiper: SwiperInstance) => {
 		setActiveIndex(loop ? swiper.realIndex : swiper.activeIndex);
+	};
+
+	const handleDiscPullEnd = () => {
+		setDiscPull(false);
 	};
 
 	return (
@@ -309,7 +370,18 @@ export function PhysicalMediaCoverflow() {
 										: "album-coverflow__slide"
 								}
 							>
-								<div className="album-coverflow__cover">
+								<div
+									className={
+										discPull && index === activeIndex
+											? "album-coverflow__cover album-coverflow__cover--disc-pull"
+											: "album-coverflow__cover"
+									}
+									onAnimationEnd={
+										discPull && index === activeIndex
+											? handleDiscPullEnd
+											: undefined
+									}
+								>
 									{coverUrl ? (
 										<img
 											src={coverUrl}

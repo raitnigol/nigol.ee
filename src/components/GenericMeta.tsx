@@ -7,13 +7,17 @@ interface GenericMetaProps {
 	description: string;
 	path?: string;
 	image?: string;
+	imageWidth?: number;
+	imageHeight?: number;
 }
 
 export default function GenericMeta({
 	title,
 	description,
 	path = "/",
-	image = DEFAULT_OG_IMAGE
+	image = DEFAULT_OG_IMAGE,
+	imageWidth = 1200,
+	imageHeight = 630
 }: GenericMetaProps) {
 	const canonicalPath = path.startsWith("/") ? path : `/${path}`;
 	const url = `${SITE_URL}${canonicalPath === "/" ? "" : canonicalPath}`;
@@ -31,8 +35,8 @@ export default function GenericMeta({
 			<meta property="og:description" content={description} />
 			<meta property="og:url" content={url} />
 			<meta property="og:image" content={image} />
-			<meta property="og:image:width" content="1200" />
-			<meta property="og:image:height" content="630" />
+			<meta property="og:image:width" content={String(imageWidth)} />
+			<meta property="og:image:height" content={String(imageHeight)} />
 			<meta property="og:locale" content="en_US" />
 			<meta name="twitter:card" content="summary_large_image" />
 			<meta name="twitter:title" content={pageTitle} />
