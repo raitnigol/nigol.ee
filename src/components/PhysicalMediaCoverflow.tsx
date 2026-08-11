@@ -11,7 +11,7 @@ import useSWR from "swr";
 
 import { listedPhysicalMediaCollection } from "../data/physicalMedia";
 import { sampleCoverAccent } from "../lib/coverColor";
-import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
+import { findOwnedPhysicalMedia, getPhysicalMediaIdFromHash, getListedPhysicalMediaIndex } from "../lib/physicalMediaMatch";
 import type { NowPlayingResponseSuccess } from "../pages/api/nowPlaying";
 import type { PhysicalMediaAlbumMeta } from "../pages/api/physicalMedia";
 
@@ -72,6 +72,14 @@ function formatAlbumCredit(meta: PhysicalMediaAlbumMeta): string | null {
 	return meta.label;
 }
 
+function getInitialIndexFromHash(): number {
+	if (typeof window === "undefined") return 0;
+	const id = getPhysicalMediaIdFromHash(window.location.hash);
+	if (!id) return 0;
+	const index = getListedPhysicalMediaIndex(id);
+	return index >= 0 ? index : 0;
+}
+
 export function PhysicalMediaCoverflow() {
 	const [mounted, setMounted] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
@@ -81,6 +89,7 @@ export function PhysicalMediaCoverflow() {
 	>({});
 	const [spotifyLoaded, setSpotifyLoaded] = useState(false);
 	const swiperRef = useRef<SwiperInstance | null>(null);
+	const initialSlideRef = useRef(0);
 
 	const total = listedPhysicalMediaCollection.length;
 	const canNavigate = total > 1;
@@ -109,8 +118,25 @@ export function PhysicalMediaCoverflow() {
 		: -1;
 
 	useEffect(() => {
+		initialSlideRef.current = getInitialIndexFromHash();
 		setMounted(true);
 	}, []);
+
+	useEffect(() => {
+		const onHashChange = () => {
+			const id = getPhysicalMediaIdFromHash(window.location.hash);
+			if (!id) return;
+			const index = getListedPhysicalMediaIndex(id);
+			if (index < 0) return;
+			const swiper = swiperRef.current;
+			if (!swiper) return;
+			if (loop) swiper.slideToLoop(index);
+			else swiper.slideTo(index);
+		};
+
+		window.addEventListener("hashchange", onHashChange);
+		return () => window.removeEventListener("hashchange", onHashChange);
+	}, [loop]);
 
 	useEffect(() => {
 		fetch("/api/physicalMedia")
@@ -228,7 +254,7 @@ export function PhysicalMediaCoverflow() {
 					effect="coverflow"
 					grabCursor={canNavigate}
 					centeredSlides
-					initialSlide={0}
+					initialSlide={initialSlideRef.current}
 					loop={loop}
 					loopAdditionalSlides={loop ? 3 : 0}
 					rewind={!loop && canNavigate}
