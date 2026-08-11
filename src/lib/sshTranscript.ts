@@ -7,7 +7,7 @@ export type TranscriptLine = {
 	delay?: number;
 };
 
-const SSH_TRANSCRIPT_STATIC: TranscriptLine[] = [
+export const SSH_TRANSCRIPT_STATIC: TranscriptLine[] = [
 	{ prompt: "$", text: "ssh guest@nigol.ee" },
 	{
 		text: "The authenticity of host 'nigol.ee' can't be established.",

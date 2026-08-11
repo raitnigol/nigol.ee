@@ -22,7 +22,13 @@ const api = new Spotify({
 	clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 	refreshToken: process.env.SPOTIFY_REFRESH_TOKEN
 });
+
+/** Keep edge/CDN responses warm between client polls (15s while playing). */
+const CACHE_MS = 12_000;
+
 let expirationTime = 0;
+let cachedTime = 0;
+let cached: NowPlayingResponseSuccess | undefined;
 
 export default async function handler(
 	req: NextApiRequest,
@@ -34,6 +40,15 @@ export default async function handler(
 	}
 
 	try {
+		if (cached && Date.now() < cachedTime) {
+			res.setHeader(
+				"Cache-Control",
+				"public, s-maxage=15, stale-while-revalidate=60"
+			);
+			res.status(200).json(cached);
+			return;
+		}
+
 		if (Date.now() > expirationTime) {
 			const response = await api.refreshAccessToken();
 			api.setAccessToken(response.body.access_token);
@@ -67,9 +82,12 @@ export default async function handler(
 			}
 		}
 
+		cached = response;
+		cachedTime = Date.now() + CACHE_MS;
+
 		res.setHeader(
 			"Cache-Control",
-			"public, s-maxage=5, stale-while-revalidate=10"
+			"public, s-maxage=15, stale-while-revalidate=60"
 		);
 		res.status(200).json(response);
 	} catch (err) {
