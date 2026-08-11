@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-28T19:15:57.829Z",
+  "generatedAt": "2026-08-11T18:24:51.370Z",
   "source": "spotify-album-id",
-  "total": 126,
-  "loaded": 126,
+  "total": 120,
+  "loaded": 120,
   "complete": true,
   "failed": [],
   "albums": {
@@ -18,6 +18,84 @@
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/5VoeRuTrGhTbKelUfwymwu",
       "copyright": "© 2012 Lana Del Rey, under exclusive licence to Polydor Ltd. (UK). Under exclusive licence to Interscope Records in the USA"
+    },
+    "violet-bent-backwards-over-the-grass": {
+      "collectionId": "violet-bent-backwards-over-the-grass",
+      "name": "Violet Bent Backwards Over The Grass",
+      "artists": "Lana Del Rey",
+      "coverImageUrl": "https://i.scdn.co/image/ab6765630000ba8ac468308b98445cd58b33fde2",
+      "releaseYear": null,
+      "releaseDate": "",
+      "label": null,
+      "totalTracks": 14,
+      "albumType": "show",
+      "spotifyUrl": "https://open.spotify.com/show/3DIkc5GRg2bP8cm6UP0N65",
+      "copyright": null
+    },
+    "lana-del-rey-lust-for-life": {
+      "collectionId": "lana-del-rey-lust-for-life",
+      "name": "Lust For Life",
+      "artists": "Lana Del Rey",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27395e2fd1accb339fa14878190",
+      "releaseYear": "2017",
+      "releaseDate": "2017-07-21",
+      "label": "Polydor Records",
+      "totalTracks": 16,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/7xYiTrbTL57QO0bb4hXIKo",
+      "copyright": "© 2017 Lana Del Rey, under exclusive licence to Polydor Ltd. (UK). Under exclusive licence to Interscope Records in the USA"
+    },
+    "lana-del-rey-norman-fucking-rockwell": {
+      "collectionId": "lana-del-rey-norman-fucking-rockwell",
+      "name": "Norman Fucking Rockwell!",
+      "artists": "Lana Del Rey",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273879e9318cb9f4e05ee552ac9",
+      "releaseYear": "2019",
+      "releaseDate": "2019-08-30",
+      "label": "Polydor Records",
+      "totalTracks": 14,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/5XpEKORZ4y6OrCZSKsi46A",
+      "copyright": "© 2019 Lana Del Rey, under exclusive licence to Universal Music Operations Limited"
+    },
+    "lana-del-rey-chemtrails-over-the-country-club": {
+      "collectionId": "lana-del-rey-chemtrails-over-the-country-club",
+      "name": "Chemtrails Over The Country Club",
+      "artists": "Lana Del Rey",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273ca929c6e766cb8591a286e0d",
+      "releaseYear": "2021",
+      "releaseDate": "2021-03-19",
+      "label": "Polydor Records",
+      "totalTracks": 11,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/6QeosPQpJckkW0Obir5RT8",
+      "copyright": "© 2021 Lana Del Rey, under exclusive licence to Universal Music Operations Limited"
+    },
+    "lana-del-rey-blue-banisters": {
+      "collectionId": "lana-del-rey-blue-banisters",
+      "name": "Blue Banisters",
+      "artists": "Lana Del Rey",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2736946deb6f548e464b385ee0e",
+      "releaseYear": "2021",
+      "releaseDate": "2021-10-22",
+      "label": "Polydor Records",
+      "totalTracks": 15,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/2wwCc6fcyhp1tfY3J6Javr",
+      "copyright": "© 2021 Lana Del Rey, under exclusive licence to Universal Music Operations Limited"
+    },
+    "lana-del-rey-did-you-know-that-theres-a-tunnel-under-ocean-blvd": {
+      "collectionId": "lana-del-rey-did-you-know-that-theres-a-tunnel-under-ocean-blvd",
+      "name": "Did you know that there's a tunnel under Ocean Blvd",
+      "artists": "Lana Del Rey",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27359ae8cf65d498afdd5585634",
+      "releaseYear": "2023",
+      "releaseDate": "2023-03-24",
+      "label": "Polydor Records",
+      "totalTracks": 16,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/5HOHne1wzItQlIYmLXLYfZ",
+      "copyright": "© 2023 Lana Del Rey, under exclusive licence to Universal Music Operations Limited"
     },
     "slim-shady-lp": {
       "collectionId": "slim-shady-lp",
@@ -240,19 +318,6 @@
       "spotifyUrl": "https://open.spotify.com/album/3OrucS4sHv6Bl9GS4rafEk",
       "copyright": "© 1995 Interscope Records"
     },
-    "violet-bent-backwards-over-the-grass": {
-      "collectionId": "violet-bent-backwards-over-the-grass",
-      "name": "Violet Bent Backwards Over The Grass",
-      "artists": "Lana Del Rey",
-      "coverImageUrl": "https://i.scdn.co/image/ab6765630000ba8ac468308b98445cd58b33fde2",
-      "releaseYear": null,
-      "releaseDate": "",
-      "label": null,
-      "totalTracks": 14,
-      "albumType": "show",
-      "spotifyUrl": "https://open.spotify.com/show/3DIkc5GRg2bP8cm6UP0N65",
-      "copyright": null
-    },
     "the-eminem-show": {
       "collectionId": "the-eminem-show",
       "name": "The Eminem Show",
@@ -448,19 +513,6 @@
       "spotifyUrl": "https://open.spotify.com/album/1CJDBCPg27ASz4eWE7oeNz",
       "copyright": "© 2019 Interscope Records (Night Street Records)"
     },
-    "stone-temple-pilots-thank-you": {
-      "collectionId": "stone-temple-pilots-thank-you",
-      "name": "Thank You",
-      "artists": "Stone Temple Pilots",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27377696910e15c42a5e37636e5",
-      "releaseYear": "2003",
-      "releaseDate": "2003-11-10",
-      "label": "Atlantic Records",
-      "totalTracks": 15,
-      "albumType": "compilation",
-      "spotifyUrl": "https://open.spotify.com/album/1fyLNx6wxgDA59wFInnyup",
-      "copyright": "© 2003 Atlantic Recording Corporation for the United States and WEA International Inc. for the world outside of the United States"
-    },
     "enya-a-day-without-rain": {
       "collectionId": "enya-a-day-without-rain",
       "name": "A Day Without Rain",
@@ -551,19 +603,6 @@
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/1H8velOQ9zUFqpuQPd2bkO",
       "copyright": "(P) 2009 Megaphonic Records"
-    },
-    "deftones-around-the-fur": {
-      "collectionId": "deftones-around-the-fur",
-      "name": "Around the Fur",
-      "artists": "Deftones",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2730b1129853982ea17845d4eb6",
-      "releaseYear": "1997",
-      "releaseDate": "1997-10-27",
-      "label": "Maverick",
-      "totalTracks": 10,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/7o4UsmV37Sg5It2Eb7vHzu",
-      "copyright": "© 1997 Maverick Recording Company"
     },
     "ookulm-valk-selgest-taevast": {
       "collectionId": "ookulm-valk-selgest-taevast",
@@ -656,19 +695,6 @@
       "spotifyUrl": "https://open.spotify.com/album/1aX41cQgMNeRscbLtPVt6F",
       "copyright": "(P) 2013 Getting Out Our Dreams and Columbia Records, a Division of Sony Music Entertainment"
     },
-    "grimes-visions": {
-      "collectionId": "grimes-visions",
-      "name": "Visions",
-      "artists": "Grimes",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273550133f6d334ed152d75aa56",
-      "releaseYear": "2012",
-      "releaseDate": "2012-02-21",
-      "label": "4AD",
-      "totalTracks": 13,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/3HED2IUaNSnbOe88a7ZdwM",
-      "copyright": "2012 Arbutus Records under exclusive license to 4AD Ltd"
-    },
     "erkki-hyva-varjust-rambini": {
       "collectionId": "erkki-hyva-varjust-rambini",
       "name": "Varjust Rambini",
@@ -694,19 +720,6 @@
       "albumType": "compilation",
       "spotifyUrl": "https://open.spotify.com/album/5jTDb0T6N65C4OTKzrinRY",
       "copyright": "2010 Turn Up The Music"
-    },
-    "the-rogers-sisters-the-invisible-deck": {
-      "collectionId": "the-rogers-sisters-the-invisible-deck",
-      "name": "The Invisible Deck",
-      "artists": "The Rogers Sisters",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273c791cc7c5c976abb2f00a218",
-      "releaseYear": "2006",
-      "releaseDate": "2006-03-07",
-      "label": "Too Pure",
-      "totalTracks": 10,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/3BadYoqkGiOt9PYS8FIxMO",
-      "copyright": "2006 Too Pure Records Ltd"
     },
     "will-smith-big-willie-style": {
       "collectionId": "will-smith-big-willie-style",
@@ -759,19 +772,6 @@
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/3MT88SSyxQGbqYXj4LVk3b",
       "copyright": "© 2000 UMG Recordings, Inc."
-    },
-    "the-game-the-documentary-2": {
-      "collectionId": "the-game-the-documentary-2",
-      "name": "The Documentary 2",
-      "artists": "The Game",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273719750925b5047e79fdd0571",
-      "releaseYear": "2015",
-      "releaseDate": "2015-10-09",
-      "label": "eOne Music",
-      "totalTracks": 19,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/6uQi7sMUciyWBT5alp1V2Y",
-      "copyright": "2015 Blood Money & Entertainment One U.S., LP"
     },
     "gigi-dagostino-tecno-fes": {
       "collectionId": "gigi-dagostino-tecno-fes",
@@ -876,19 +876,6 @@
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/720ViUzXxJIuvO1G3w5zor",
       "copyright": "2012 Marilyn Jurman"
-    },
-    "milk-maid-yucca": {
-      "collectionId": "milk-maid-yucca",
-      "name": "Yucca",
-      "artists": "Milk Maid",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2738f2a4c105e592c6ccf934c9a",
-      "releaseYear": "2011",
-      "releaseDate": "2011-06-20",
-      "label": "FatCat Records",
-      "totalTracks": 11,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/5gWn3pZ5MqGYSOjATkqNoK",
-      "copyright": "2011 Fat Cat Records"
     },
     "ines-kiusatus": {
       "collectionId": "ines-kiusatus",
@@ -1097,71 +1084,6 @@
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/41GuZcammIkupMPKH2OJ6I",
       "copyright": "(P) 2018 Cactus Jack Records, LLC under exclusive licensed to Epic Records, a division of Sony Music Entertainment"
-    },
-    "lana-del-rey-did-you-know-that-theres-a-tunnel-under-ocean-blvd": {
-      "collectionId": "lana-del-rey-did-you-know-that-theres-a-tunnel-under-ocean-blvd",
-      "name": "Did you know that there's a tunnel under Ocean Blvd",
-      "artists": "Lana Del Rey",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27359ae8cf65d498afdd5585634",
-      "releaseYear": "2023",
-      "releaseDate": "2023-03-24",
-      "label": "Polydor Records",
-      "totalTracks": 16,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/5HOHne1wzItQlIYmLXLYfZ",
-      "copyright": "© 2023 Lana Del Rey, under exclusive licence to Universal Music Operations Limited"
-    },
-    "lana-del-rey-lust-for-life": {
-      "collectionId": "lana-del-rey-lust-for-life",
-      "name": "Lust For Life",
-      "artists": "Lana Del Rey",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27395e2fd1accb339fa14878190",
-      "releaseYear": "2017",
-      "releaseDate": "2017-07-21",
-      "label": "Polydor Records",
-      "totalTracks": 16,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/7xYiTrbTL57QO0bb4hXIKo",
-      "copyright": "© 2017 Lana Del Rey, under exclusive licence to Polydor Ltd. (UK). Under exclusive licence to Interscope Records in the USA"
-    },
-    "lana-del-rey-blue-banisters": {
-      "collectionId": "lana-del-rey-blue-banisters",
-      "name": "Blue Banisters",
-      "artists": "Lana Del Rey",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2736946deb6f548e464b385ee0e",
-      "releaseYear": "2021",
-      "releaseDate": "2021-10-22",
-      "label": "Polydor Records",
-      "totalTracks": 15,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/2wwCc6fcyhp1tfY3J6Javr",
-      "copyright": "© 2021 Lana Del Rey, under exclusive licence to Universal Music Operations Limited"
-    },
-    "lana-del-rey-chemtrails-over-the-country-club": {
-      "collectionId": "lana-del-rey-chemtrails-over-the-country-club",
-      "name": "Chemtrails Over The Country Club",
-      "artists": "Lana Del Rey",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273ca929c6e766cb8591a286e0d",
-      "releaseYear": "2021",
-      "releaseDate": "2021-03-19",
-      "label": "Polydor Records",
-      "totalTracks": 11,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/6QeosPQpJckkW0Obir5RT8",
-      "copyright": "© 2021 Lana Del Rey, under exclusive licence to Universal Music Operations Limited"
-    },
-    "lana-del-rey-norman-fucking-rockwell": {
-      "collectionId": "lana-del-rey-norman-fucking-rockwell",
-      "name": "Norman Fucking Rockwell!",
-      "artists": "Lana Del Rey",
-      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273879e9318cb9f4e05ee552ac9",
-      "releaseYear": "2019",
-      "releaseDate": "2019-08-30",
-      "label": "Polydor Records",
-      "totalTracks": 14,
-      "albumType": "album",
-      "spotifyUrl": "https://open.spotify.com/album/5XpEKORZ4y6OrCZSKsi46A",
-      "copyright": "© 2019 Lana Del Rey, under exclusive licence to Universal Music Operations Limited"
     },
     "charli-xcx-brat-and-its-completely-different-but-also-still-brat": {
       "collectionId": "charli-xcx-brat-and-its-completely-different-but-also-still-brat",
