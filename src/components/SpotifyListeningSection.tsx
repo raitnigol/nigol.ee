@@ -166,7 +166,7 @@ export function SpotifyListeningSection() {
 							: "text-subtle"
 					}`}
 				>
-					Top artists I've listened to of all time
+					{"Top artists I've listened to of all time"}
 				</h3>
 				<ArtistList
 					artists={topMusic?.artists.items}
