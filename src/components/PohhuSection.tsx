@@ -119,11 +119,30 @@ function LocalCoverImage({
 const debtBorderClass =
 	"border-2 border-red-600/90 hover:border-red-500/90";
 
+const paidBorderClass =
+	"border-2 border-emerald-500/70 hover:border-emerald-400/80";
+
+function isOutstandingInvestment(
+	status: FundedRelease["investmentStatus"]
+): status is "not_repaid" | "partially_paid" {
+	return status === "not_repaid" || status === "partially_paid";
+}
+
 function InvestmentStatusFooter({
 	status
 }: {
 	status: NonNullable<FundedRelease["investmentStatus"]>;
 }) {
+	if (status === "paid_in_full") {
+		return (
+			<p className="mt-3 border-t border-emerald-950/50 pt-3">
+				<span className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-400">
+					Investment paid in full
+				</span>
+			</p>
+		);
+	}
+
 	const label =
 		status === "partially_paid"
 			? "Investment partially paid"
@@ -139,13 +158,18 @@ function InvestmentStatusFooter({
 }
 
 function FundedReleaseBannerCard({ release }: { release: FundedRelease }) {
-	const outstanding = Boolean(release.investmentStatus);
+	const outstanding = isOutstandingInvestment(release.investmentStatus);
+	const paidInFull = release.investmentStatus === "paid_in_full";
 
 	return (
 		<li className="md:col-span-2">
 			<article
 				className={`overflow-hidden rounded-xl bg-slate-950/60 ${
-					outstanding ? debtBorderClass : "border border-slate-800"
+					outstanding
+						? debtBorderClass
+						: paidInFull
+							? paidBorderClass
+							: "border border-slate-800"
 				}`}
 			>
 				<div className="flex min-h-[10rem] flex-col justify-center px-5 py-5 md:min-h-[11rem] md:px-8 md:py-6">
@@ -176,7 +200,8 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 		return <FundedReleaseBannerCard release={release} />;
 	}
 
-	const unpaid = Boolean(release.investmentStatus);
+	const outstanding = isOutstandingInvestment(release.investmentStatus);
+	const paidInFull = release.investmentStatus === "paid_in_full";
 	const coverImage = release.coverImage ?? "";
 	const spotifyUrl = release.spotifyUrl ?? "#";
 
@@ -187,9 +212,11 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 				target="_blank"
 				rel="noopener noreferrer"
 				className={`group block h-full overflow-hidden rounded-xl bg-slate-950/60 transition hover:bg-slate-900/80 ${
-					unpaid
+					outstanding
 						? `focus-ring-debt ${debtBorderClass}`
-						: "focus-ring border border-slate-800 hover:border-violet-500/35"
+						: paidInFull
+							? `focus-ring ${paidBorderClass}`
+							: "focus-ring border border-slate-800 hover:border-violet-500/35"
 				}`}
 			>
 				<div className="aspect-square w-full bg-slate-900">
@@ -214,7 +241,7 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 					{release.format ? (
 						<p className="mt-1 text-xs text-subtle">{release.format}</p>
 					) : null}
-					{release.pressRun && !release.investmentStatus ? (
+					{release.pressRun && !outstanding ? (
 						<p className="mt-1 text-xs text-subtle">
 							Press run · {release.pressRun}
 						</p>

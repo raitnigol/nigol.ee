@@ -13,8 +13,8 @@ export interface FundedRelease {
 	/** Banner cards: longer body copy. Supports **bold** via plain text or use description as string. */
 	description?: string;
 	subtitle?: string;
-	/** Payment status; removed from the site once repaid in full. */
-	investmentStatus?: "not_repaid" | "partially_paid";
+	/** Payment status for outstanding debt; use paid_in_full to celebrate repayment. */
+	investmentStatus?: "not_repaid" | "partially_paid" | "paid_in_full";
 }
 
 export interface CertifiedArtistPlaylist {
@@ -80,7 +80,7 @@ export const pohhuExhibitionsEventsDivider = "Exhibitions & events";
 export const pohhuFundingModel: string[] = [
 	"How we work: {{$.pohhu¥}} pays the **up-front cost** of everything and only expects to be paid that sum back.",
 	"{{$.pohhu¥}} currently funds releases on a **non-profit basis** — all proceeds from sales beyond the initial investment go directly to the artists. It is up to them how they distribute it amongst themselves.",
-	"Payment status notes on each release are removed once the project has been **paid in full**."
+	"Payment status notes stay on each release until the project has been **paid in full** — then the badge flips to that."
 ];
 
 /** Physical media, funded releases, and artifacts — shown under the releases block. */
@@ -252,7 +252,7 @@ export const fundedReleases: FundedRelease[] = [
 			"https://open.spotify.com/album/4nAQMGAxq1RzdnYUUbtN3J",
 		coverImage: "/images/pohhu/releases/12-liitrit.jpg",
 		pressRun: "100 CDs",
-		investmentStatus: "partially_paid"
+		investmentStatus: "paid_in_full"
 	},
 	{
 		artists: "SKIZØ, Benakanister",
