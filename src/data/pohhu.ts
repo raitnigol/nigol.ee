@@ -13,8 +13,8 @@ export interface FundedRelease {
 	/** Banner cards: longer body copy. Supports **bold** via plain text or use description as string. */
 	description?: string;
 	subtitle?: string;
-	/** Payment status; removed from the site once repaid in full. */
-	investmentStatus?: "not_repaid" | "partially_paid";
+	/** Payment status for outstanding debt; use paid_in_full to celebrate repayment. */
+	investmentStatus?: "not_repaid" | "partially_paid" | "paid_in_full";
 }
 
 export interface CertifiedArtistPlaylist {
@@ -66,29 +66,28 @@ export const pohhuManifestoAfterCore: string[] = [
 	"{{$.pohhu¥}} is not against money. We are against **letting money decide what is worth making**."
 ];
 
-export const pohhuPhysicalMediaDivider = "Physical media";
+export const pohhuPhysicalMediaDivider =
+	"{{$.pohhu¥}} — our dedication to physical media";
 
 export const pohhuLineupDivider = "Lineup";
-
-export const pohhuFundedReleasesTitle = "Releases funded by {{$.pohhu¥}}";
 
 export const pohhuFundedReleasesSubsectionTitle = "{{$.pohhu¥}} × 963 Records";
 
 export const pohhuExhibitionsEventsDivider = "Exhibitions & events";
 
-/** How funding works and when payment badges come down. */
+/** How funding / repayment works for the releases below. */
 export const pohhuFundingModel: string[] = [
-	"How we work: {{$.pohhu¥}} pays the **up-front cost** of everything and only expects to be paid that sum back.",
-	"{{$.pohhu¥}} currently funds releases on a **non-profit basis** — all proceeds from sales beyond the initial investment go directly to the artists. It is up to them how they distribute it amongst themselves.",
-	"Payment status notes on each release are removed once the project has been **paid in full**."
+	"How we currently work: {{$.pohhu¥}} invests the **up-front cost** of everything tied to releasing a project, and we only expect that sum back — **without taking a cut**. There is a running joke that we are the first in the industry to run a **10/90 split**. That line is funny because it is basically true on paper, but we do not treat it as an expectation. If the artists decide we did enough that a little should come back to keep the \"non-profit\" machine running, that is their call.",
+	"{{$.pohhu¥}} has currently funded **one CD release** — *12 LIITRIT* by **Benakanister** and **mehkel** (who produced the tracks) — and another release that also brings **SKIZØ** into the picture: the **PÄRNU–TARTU MIXTAPE**.",
+	"Below, each project carries a payment status for whether the **initial investment** has come back yet or not."
 ];
 
 /** Physical media, funded releases, and artifacts — shown under the releases block. */
 export const pohhuFundedReleasesIntro: string[] = [
-	"{{$.pohhu¥}} operates across audio, video, design, visual culture, marketing, physical media, digital media, and whatever else needs to exist. It is not built to fit cleanly into one category. Sometimes the work is a track. Sometimes it is a tape, a disc, a cover, a video, a campaign, a website, an archive, or some physical trace that proves a moment happened.",
-	"We do more than release things. We **build artifacts**. Tapes, discs, videos, visuals, campaigns, archives, digital objects, and physical media that would otherwise get buried under the feed and forgotten by next week.",
-	"{{$.pohhu¥}} puts back into the scene **before there is even money to put back**. That is the stupid and beautiful part.",
-	"We believe **small artists** should still be able to leave a **large impact**. Not everything important needs to be optimized, monetized, or reduced to dashboard numbers. **Physical releases**, independent support, and scene-first thinking are how we help artists leave something behind that feels real, lasts longer, and means more than another number on a streaming platform."
+	"{{$.pohhu¥}} operates across audio, video, design, visual culture, marketing, physical media, digital media, and whatever else needs to exist. We do not build — or approve of — work that has to cleanly fit one category. Sometimes the work is a single track. Sometimes it is a tape, a disc, a cover, a video, a campaign, a website, an archive, or something completely different: a **physical trace** that proves a moment happened.",
+	"We do more than release things. We **build artifacts**. Tapes, discs, videos, visuals, campaigns, archives, digital objects, and physical media that would otherwise get buried under the feed and forgotten by next week — we try to catch that stuff when we get the chance and when we recognize that it matters.",
+	"Our collective tries to put back into the **underground scene** before there is even money to put back. We do not operate on a profit basis, and that is what makes it beautiful — at least for us. You could call us a **\"non-profit\"**.",
+	"We believe **small artists** should still be able to leave a **large impact** when the skill is there. Not everything needs to be optimized, monetized, or reduced to a dashboard of statistics. **Physical releases**, independent support, and scene-first thinking are how we help artists leave something behind that feels real, lasts longer, and means more than another number on a streaming platform."
 ];
 
 /** Standalone pull line — avoids ** / * parser clashes. */
@@ -252,7 +251,7 @@ export const fundedReleases: FundedRelease[] = [
 			"https://open.spotify.com/album/4nAQMGAxq1RzdnYUUbtN3J",
 		coverImage: "/images/pohhu/releases/12-liitrit.jpg",
 		pressRun: "100 CDs",
-		investmentStatus: "partially_paid"
+		investmentStatus: "paid_in_full"
 	},
 	{
 		artists: "SKIZØ, Benakanister",
