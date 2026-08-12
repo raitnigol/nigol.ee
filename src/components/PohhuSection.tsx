@@ -9,7 +9,6 @@ import {
 	kevilniusMerch,
 	pohhuFundedReleasesIntro,
 	pohhuFundedReleasesSubsectionTitle,
-	pohhuFundedReleasesTitle,
 	pohhuFundingModel,
 	pohhuFoundingCore,
 	pohhuFoundingCoreIntro,
@@ -17,6 +16,7 @@ import {
 	pohhuManifestoBeforeCore,
 	pohhuManifestoClosing,
 	pohhuManifestoPullquote,
+	pohhuPhysicalMediaDivider,
 	type CertifiedArtistProfile,
 	type FundedRelease,
 	type KiviArtShowLink
@@ -56,7 +56,7 @@ function PohhuChapter({
 }) {
 	return (
 		<h3 id={id} className={`${chapterHeadingClass} ${className}`.trim()}>
-			{title}
+			<FormattedText text={title} />
 			<span
 				className="mt-3 block h-px w-14 bg-violet-400/75 md:mt-4 md:w-16"
 				aria-hidden
@@ -634,13 +634,10 @@ export default function PohhuSection({
 
 			<PohhuChapter
 				id="pohhu-physical-media"
-				title="Physical media"
+				title={pohhuPhysicalMediaDivider}
 				className="mt-14 md:mt-16"
 			/>
 
-			<h4 id="pohhu-funded-releases" className={sectionHeadingClass}>
-				<FormattedText text={pohhuFundedReleasesTitle} />
-			</h4>
 			<div className="prose-readable mb-6">
 				{pohhuFundedReleasesIntro.map((paragraph, i) => (
 					<ManifestoParagraph key={`releases-intro-${i}`} text={paragraph} />
