@@ -1667,6 +1667,260 @@
 	}
 }
 
+.poetic-justice {
+	position: relative;
+	max-width: 42rem;
+
+	&::before {
+		content: "";
+		pointer-events: none;
+		position: absolute;
+		inset: -2rem -1.5rem auto;
+		height: 14rem;
+		z-index: -1;
+		background:
+			radial-gradient(
+				ellipse 70% 80% at 12% 20%,
+				rgb(251 113 133 / 12%),
+				transparent 60%
+			),
+			radial-gradient(
+				ellipse 55% 70% at 88% 0%,
+				rgb(253 186 116 / 8%),
+				transparent 55%
+			);
+	}
+
+	&__intro {
+		margin-bottom: 2.5rem;
+	}
+
+	&__page-title {
+		margin: 0 0 1.25rem;
+		font-family: theme("fontFamily.heading");
+		font-size: clamp(1.875rem, 4vw, 3rem);
+		font-weight: 800;
+		letter-spacing: 0.06em;
+		line-height: 1.1;
+		text-transform: uppercase;
+		color: #fff;
+	}
+
+	&__title-rule {
+		display: block;
+		width: 3.5rem;
+		height: 1px;
+		margin-top: 0.75rem;
+		background: rgb(253 164 175 / 75%);
+
+		@media (min-width: 768px) {
+			width: 4rem;
+			margin-top: 1rem;
+		}
+	}
+
+	&__lede {
+		margin: 0 0 1rem;
+		max-width: 36rem;
+		font-size: 1.0625rem;
+		line-height: 1.65;
+		color: var(--text-secondary);
+
+		@media (min-width: 768px) {
+			font-size: 1.125rem;
+		}
+	}
+
+	&__license {
+		margin: 0;
+		max-width: 36rem;
+		font-size: 0.9375rem;
+		line-height: 1.55;
+		color: var(--text-muted);
+
+		&--compact {
+			font-size: 0.875rem;
+		}
+	}
+
+	&__license-link {
+		color: #fecdd3;
+		text-decoration: underline;
+		text-decoration-color: rgb(253 164 175 / 35%);
+		text-underline-offset: 3px;
+		transition: text-decoration-color 0.2s ease;
+
+		&:hover {
+			text-decoration-color: rgb(253 164 175 / 75%);
+		}
+	}
+
+	&__filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 1.5rem;
+	}
+
+	&__filter {
+		margin: 0;
+		padding: 0.35rem 0.75rem;
+		border: 1px solid rgb(255 255 255 / 12%);
+		border-radius: 0.35rem;
+		background: transparent;
+		font: inherit;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--text-muted);
+		cursor: pointer;
+		transition:
+			color 0.2s ease,
+			border-color 0.2s ease,
+			background-color 0.2s ease;
+
+		&:hover {
+			color: #fff;
+			border-color: rgb(253 164 175 / 35%);
+		}
+
+		&--active {
+			color: #fff;
+			border-color: rgb(253 164 175 / 55%);
+			background: rgb(251 113 133 / 12%);
+		}
+	}
+
+	&__empty {
+		margin: 0;
+		color: var(--text-muted);
+	}
+
+	&__list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	&__list-item {
+		border-top: 1px solid rgb(255 255 255 / 8%);
+
+		&:last-child {
+			border-bottom: 1px solid rgb(255 255 255 / 8%);
+		}
+	}
+
+	&__list-link {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.35rem 1rem;
+		padding: 1.1rem 0.15rem;
+		text-decoration: none;
+		color: inherit;
+		transition: background-color 0.2s ease;
+
+		&:hover .poetic-justice__list-title {
+			color: #fecdd3;
+		}
+	}
+
+	&__list-title {
+		grid-column: 1;
+		font-family: theme("fontFamily.heading");
+		font-size: 1.125rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		color: #fff;
+		transition: color 0.2s ease;
+	}
+
+	&__list-kind {
+		grid-column: 2;
+		align-self: center;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: #fda4af;
+	}
+
+	&__list-blurb {
+		grid-column: 1 / -1;
+		font-size: 0.9375rem;
+		line-height: 1.5;
+		color: var(--text-muted);
+	}
+
+	&__back {
+		margin: 0 0 1.75rem;
+	}
+
+	&__back-link {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--text-muted);
+		text-decoration: none;
+		transition: color 0.2s ease;
+
+		&:hover {
+			color: #fecdd3;
+		}
+	}
+
+	&__piece-header {
+		margin-bottom: 2rem;
+	}
+
+	&__piece-title {
+		margin: 0 0 0.75rem;
+		font-family: theme("fontFamily.heading");
+		font-size: clamp(2rem, 5vw, 3.25rem);
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		line-height: 1.1;
+		color: #fff;
+	}
+
+	&__meta {
+		margin: 0;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: #fda4af;
+	}
+
+	&__meta-sep {
+		margin: 0 0.45rem;
+		opacity: 0.55;
+	}
+
+	&__body {
+		margin: 0;
+		font-size: 1.125rem;
+		line-height: 1.75;
+		white-space: pre-wrap;
+		color: var(--text-secondary);
+
+		@media (min-width: 768px) {
+			font-size: 1.1875rem;
+			line-height: 1.8;
+		}
+
+		&--pending {
+			font-style: italic;
+			color: var(--text-muted);
+		}
+	}
+
+	&__piece-footer {
+		margin-top: 2.5rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid rgb(255 255 255 / 10%);
+	}
+}
+
 @layer utilities {
 	.no-scrollbar {
 		scrollbar-width: none;

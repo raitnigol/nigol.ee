@@ -30,6 +30,11 @@ const pages: PageData[] = [
 		href: "/physical-media",
 		title: "CD Collection",
 		color: "text-emerald-400"
+	},
+	{
+		href: "/poetic-justice",
+		title: "Poetic Justice",
+		color: "text-rose-300"
 	}
 ];
 
