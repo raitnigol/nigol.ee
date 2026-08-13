@@ -66,14 +66,15 @@ export const pohhuManifestoAfterCore: string[] = [
 	"{{$.pohhu¥}} is not against money. We are against **letting money decide what is worth making**."
 ];
 
-export const pohhuPhysicalMediaDivider =
-	"{{$.pohhu¥}} — our dedication to physical media";
+export const pohhuPhysicalMediaDivider = "Physical media";
 
 export const pohhuLineupDivider = "Lineup";
 
 export const pohhuFundedReleasesSubsectionTitle = "{{$.pohhu¥}} × 963 Records";
 
 export const pohhuExhibitionsEventsDivider = "Exhibitions & events";
+
+export const pohhuMerchDivider = "Merch";
 
 /** How funding / repayment works for the releases below. */
 export const pohhuFundingModel: string[] = [
@@ -115,8 +116,12 @@ export interface MerchProductDetail {
 export const kevilniusMerch = {
 	vendor: "Kevilnius",
 	title: "Artifact_01 // Project_Panther.exe",
-	price: "50",
+	/** Current sale price */
+	price: "30",
+	/** Original / compare-at price (shown struck through) */
+	compareAtPrice: "50",
 	currency: "€",
+	saleLabel: "Sale",
 	details: [
 		{ label: "Blank", value: "Stanley/Stella Blaster 2.0" },
 		{ label: "Fabric", value: "200 GSM · 100% cotton" },
@@ -130,9 +135,9 @@ export const kevilniusMerch = {
 		"*NB! The sexy gentleman in the product photos is not included in the final sale.*"
 	],
 	orderFormUrl: "https://forms.gle/v5saqsBvRHETZmMz9",
-	orderFormLabel: "Order via Google Forms",
+	orderFormLabel: "Add to order",
 	instagramUrl: "https://www.instagram.com/kevilnius/",
-	instagramLabel: "Kevilnius on Instagram",
+	instagramLabel: "Message on Instagram",
 	modelCredit: {
 		name: "Oliver Ode",
 		instagramHandle: "odenaator",
