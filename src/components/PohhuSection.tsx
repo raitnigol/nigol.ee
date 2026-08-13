@@ -1,4 +1,5 @@
 import Image from "next/future/image";
+import type { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import {
@@ -7,6 +8,7 @@ import {
 	fundedReleases,
 	kiviArtShow,
 	kevilniusMerch,
+	pohhuExhibitionsEventsDivider,
 	pohhuFundedReleasesIntro,
 	pohhuFundedReleasesSubsectionTitle,
 	pohhuFundingModel,
@@ -16,7 +18,9 @@ import {
 	pohhuManifestoBeforeCore,
 	pohhuManifestoClosing,
 	pohhuManifestoPullquote,
+	pohhuMerchDivider,
 	pohhuPhysicalMediaDivider,
+	pohhuLineupDivider,
 	type CertifiedArtistProfile,
 	type FundedRelease,
 	type KiviArtShowLink
@@ -36,38 +40,49 @@ function formatFollowers(count: number) {
 	return new Intl.NumberFormat("en-US").format(count);
 }
 
-const chapterHeadingClass =
-	"scroll-anchor mb-8 font-heading text-3xl font-extrabold uppercase tracking-[0.06em] text-white md:mb-10 md:text-4xl md:tracking-[0.08em] lg:text-5xl";
+function PohhuChapter({ id, title }: { id: string; title: string }) {
+	return (
+		<h3 id={id} className="pohhu-chapter scroll-anchor">
+			<FormattedText text={title} />
+			<span className="pohhu-chapter__rule" aria-hidden />
+		</h3>
+	);
+}
 
-const sectionHeadingClass =
-	"scroll-anchor mb-5 font-heading text-xl font-bold tracking-tight text-white md:mb-6 md:text-2xl";
+function PohhuSubhead({
+	id,
+	children
+}: {
+	id: string;
+	children: ComponentChildren;
+}) {
+	return (
+		<h4 id={id} className="pohhu-subhead scroll-anchor">
+			{children}
+		</h4>
+	);
+}
 
-const subsectionHeadingClass =
-	"scroll-anchor mb-4 font-heading text-lg font-semibold tracking-tight text-zinc-100 md:text-xl";
-
-function PohhuChapter({
+function PohhuBlock({
 	id,
 	title,
-	className = ""
+	children
 }: {
 	id: string;
 	title: string;
-	className?: string;
+	children: ComponentChildren;
 }) {
 	return (
-		<h3 id={id} className={`${chapterHeadingClass} ${className}`.trim()}>
-			<FormattedText text={title} />
-			<span
-				className="mt-3 block h-px w-14 bg-violet-400/75 md:mt-4 md:w-16"
-				aria-hidden
-			/>
-		</h3>
+		<section className="pohhu-block" aria-labelledby={id}>
+			<PohhuChapter id={id} title={title} />
+			<div className="pohhu-block__body">{children}</div>
+		</section>
 	);
 }
 
 function ManifestoParagraph({ text }: { text: string }) {
 	return (
-		<p className="mb-4 text-base leading-relaxed md:text-lg">
+		<p className="pohhu-copy">
 			<FormattedText text={text} />
 		</p>
 	);
@@ -75,7 +90,7 @@ function ManifestoParagraph({ text }: { text: string }) {
 
 function ManifestoPullquote({ text }: { text: string }) {
 	return (
-		<p className="my-6 border-l-2 border-violet-500/50 pl-4 text-lg font-semibold leading-snug md:text-xl">
+		<p className="pohhu-pullquote">
 			<FormattedText text={text} />
 		</p>
 	);
@@ -95,7 +110,7 @@ function LocalCoverImage({
 	if (failed) {
 		return (
 			<div
-				className={`flex h-full w-full items-center justify-center bg-slate-800 text-xs font-bold uppercase tracking-wider text-subtle ${className ?? ""}`}
+				className={`flex h-full w-full items-center justify-center bg-slate-900 text-xs font-bold uppercase tracking-wider text-subtle ${className ?? ""}`}
 			>
 				Cover
 			</div>
@@ -116,80 +131,49 @@ function LocalCoverImage({
 	);
 }
 
-const debtBorderClass =
-	"border-2 border-red-600/90 hover:border-red-500/90";
-
-const paidBorderClass =
-	"border-2 border-emerald-500/70 hover:border-emerald-400/80";
-
-function isOutstandingInvestment(
-	status: FundedRelease["investmentStatus"]
-): status is "not_repaid" | "partially_paid" {
-	return status === "not_repaid" || status === "partially_paid";
+function investmentStatusLabel(
+	status: NonNullable<FundedRelease["investmentStatus"]>
+): string {
+	if (status === "paid_in_full") return "Paid";
+	if (status === "partially_paid") return "Partial";
+	return "Open";
 }
 
-function InvestmentStatusFooter({
+function InvestmentStatusMark({
 	status
 }: {
 	status: NonNullable<FundedRelease["investmentStatus"]>;
 }) {
-	if (status === "paid_in_full") {
-		return (
-			<p className="mt-3 border-t border-emerald-950/50 pt-3">
-				<span className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-400">
-					Investment paid in full
-				</span>
-			</p>
-		);
-	}
+	const tone =
+		status === "paid_in_full"
+			? "pohhu-status pohhu-status--paid"
+			: status === "partially_paid"
+				? "pohhu-status pohhu-status--partial"
+				: "pohhu-status pohhu-status--open";
 
-	const label =
-		status === "partially_paid"
-			? "Investment partially paid"
-			: "Investment not repaid";
-
-	return (
-		<p className="mt-3 border-t border-red-950/60 pt-3">
-			<span className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-red-400">
-				{label}
-			</span>
-		</p>
-	);
+	return <span className={tone}>{investmentStatusLabel(status)}</span>;
 }
 
 function FundedReleaseBannerCard({ release }: { release: FundedRelease }) {
-	const outstanding = isOutstandingInvestment(release.investmentStatus);
-	const paidInFull = release.investmentStatus === "paid_in_full";
-
 	return (
 		<li className="md:col-span-2">
-			<article
-				className={`overflow-hidden rounded-xl bg-slate-950/60 ${
-					outstanding
-						? debtBorderClass
-						: paidInFull
-							? paidBorderClass
-							: "border border-slate-800"
-				}`}
-			>
-				<div className="flex min-h-[10rem] flex-col justify-center px-5 py-5 md:min-h-[11rem] md:px-8 md:py-6">
+			<article className="pohhu-release pohhu-release--banner">
+				<div className="pohhu-release__meta">
 					{release.subtitle ? (
-						<p className="text-xs font-bold uppercase tracking-[0.14em] text-subtle">
-							{release.subtitle}
-						</p>
-					) : null}
-					<h4 className="mt-1 text-lg font-bold leading-tight text-white md:text-xl">
-						{release.title}
-					</h4>
-					{release.description ? (
-						<p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted md:text-base">
-							<FormattedText text={release.description} />
-						</p>
+						<span className="pohhu-release__year">{release.subtitle}</span>
 					) : null}
 					{release.investmentStatus ? (
-						<InvestmentStatusFooter status={release.investmentStatus} />
+						<InvestmentStatusMark status={release.investmentStatus} />
 					) : null}
 				</div>
+				<h4 className="pohhu-release__title pohhu-release__title--banner">
+					{release.title}
+				</h4>
+				{release.description ? (
+					<p className="mt-3 text-sm leading-relaxed text-muted md:text-base">
+						<FormattedText text={release.description} />
+					</p>
+				) : null}
 			</article>
 		</li>
 	);
@@ -200,8 +184,6 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 		return <FundedReleaseBannerCard release={release} />;
 	}
 
-	const outstanding = isOutstandingInvestment(release.investmentStatus);
-	const paidInFull = release.investmentStatus === "paid_in_full";
 	const coverImage = release.coverImage ?? "";
 	const spotifyUrl = release.spotifyUrl ?? "#";
 
@@ -211,47 +193,79 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 				href={spotifyUrl}
 				target="_blank"
 				rel="noopener noreferrer"
-				className={`group block h-full overflow-hidden rounded-xl bg-slate-950/60 transition hover:bg-slate-900/80 ${
-					outstanding
-						? `focus-ring-debt ${debtBorderClass}`
-						: paidInFull
-							? `focus-ring ${paidBorderClass}`
-							: "focus-ring border border-slate-800 hover:border-violet-500/35"
-				}`}
+				className="pohhu-release focus-ring group block h-full"
 			>
-				<div className="aspect-square w-full bg-slate-900">
+				<div className="pohhu-release__cover aspect-square w-full overflow-hidden bg-slate-900">
 					<LocalCoverImage
 						src={coverImage}
 						alt={`${release.title} cover art`}
 						className="h-full w-full object-cover"
 					/>
 				</div>
-				<div className="px-4 py-3">
-					{release.releaseYear ? (
-						<span className="text-xs font-bold uppercase tracking-wider text-violet-400">
-							{release.releaseYear}
-						</span>
-					) : null}
-					<p className="mt-1 text-sm font-bold text-white transition group-hover:text-violet-300">
-						{release.title}
-					</p>
+				<div className="pohhu-release__body">
+					<div className="pohhu-release__meta">
+						{release.releaseYear ? (
+							<span className="pohhu-release__year">{release.releaseYear}</span>
+						) : null}
+						{release.investmentStatus ? (
+							<InvestmentStatusMark status={release.investmentStatus} />
+						) : null}
+					</div>
+					<p className="pohhu-release__title">{release.title}</p>
 					{release.artists ? (
-						<p className="mt-1 text-xs text-muted">{release.artists}</p>
-					) : null}
-					{release.format ? (
-						<p className="mt-1 text-xs text-subtle">{release.format}</p>
-					) : null}
-					{release.pressRun && !outstanding ? (
-						<p className="mt-1 text-xs text-subtle">
-							Press run · {release.pressRun}
-						</p>
-					) : null}
-					{release.investmentStatus ? (
-						<InvestmentStatusFooter status={release.investmentStatus} />
+						<p className="pohhu-release__artists">{release.artists}</p>
 					) : null}
 				</div>
 			</a>
 		</li>
+	);
+}
+
+const POHHU_TOC = [
+	{ href: "#pohhu-manifesto", label: "Manifesto" },
+	{ href: "#pohhu-physical-media", label: "Media" },
+	{ href: "#pohhu-merch", label: "Merch" },
+	{ href: "#pohhu-exhibitions-events", label: "Events" },
+	{ href: "#pohhu-lineup", label: "Lineup" }
+] as const;
+
+function PohhuToc() {
+	return (
+		<nav className="pohhu-toc" aria-label="On this page">
+			<ul className="pohhu-toc__list">
+				{POHHU_TOC.map(item => (
+					<li key={item.href}>
+						<a href={item.href} className="pohhu-toc__link focus-ring">
+							{item.label}
+						</a>
+					</li>
+				))}
+			</ul>
+		</nav>
+	);
+}
+
+function FoundingCoreStrip({ members }: { members: string[] }) {
+	return (
+		<div className="pohhu-core">
+			<p className="pohhu-core__intro">
+				<FormattedText text={pohhuFoundingCoreIntro} />
+			</p>
+			<ul className="pohhu-core__list">
+				{members.map((member, index) => (
+					<li key={member} className="pohhu-core__item">
+						{index > 0 ? (
+							<span className="pohhu-core__sep" aria-hidden>
+								/
+							</span>
+						) : null}
+						<span className="pohhu-core__name">
+							<FormattedText text={member} />
+						</span>
+					</li>
+				))}
+			</ul>
+		</div>
 	);
 }
 
@@ -278,50 +292,27 @@ function KiviBaarSocialLinks({ links }: { links: KiviArtShowLink[] }) {
 
 function SpotifyPlaylistEmbed({
 	playlistId,
-	title,
-	fillHeight = false
+	title
 }: {
 	playlistId: string;
 	title: string;
-	/** Match sibling square media on large screens. */
-	fillHeight?: boolean;
 }) {
 	const embedSrc = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`;
 
 	return (
-		<div
-			className={
-				fillHeight
-					? "flex min-h-[22rem] flex-col overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 ring-1 ring-inset ring-white/5 lg:aspect-square lg:min-h-0"
-					: "overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60 ring-1 ring-inset ring-white/5"
-			}
-		>
-			<div className="shrink-0 border-b border-slate-800/90 px-4 py-3">
-				<p className="text-xs font-bold uppercase tracking-[0.12em] text-violet-400">
-					{title}
-				</p>
-			</div>
-			{fillHeight ? (
-				<div className="relative min-h-[18rem] flex-1">
-					<iframe
-						title={`Spotify playlist: ${title}`}
-						src={embedSrc}
-						className="absolute inset-0 h-full w-full border-0 bg-slate-900"
-						allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-						loading="lazy"
-					/>
-				</div>
-			) : (
-				<iframe
-					title={`Spotify playlist: ${title}`}
-					src={embedSrc}
-					width="100%"
-					height={352}
-					className="block w-full border-0 bg-slate-900"
-					allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-					loading="lazy"
-				/>
-			)}
+		<div className="pohhu-playlist overflow-hidden">
+			<p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-violet-400">
+				{title}
+			</p>
+			<iframe
+				title={`Spotify playlist: ${title}`}
+				src={embedSrc}
+				width="100%"
+				height={352}
+				className="block w-full border-0 bg-slate-900"
+				allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+				loading="lazy"
+			/>
 		</div>
 	);
 }
@@ -351,106 +342,72 @@ function CertifiedArtistCard({
 
 	const imageSrc = photoSrc || spotifyImageUrl;
 	const artistName = artist?.name;
-	const hasPlaylist = Boolean(profile.playlist);
 
-	const photo = (
-		<div
-			className={
-				hasPlaylist
-					? "relative aspect-square w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-900"
-					: "relative aspect-square w-full md:w-56 lg:w-64 flex-shrink-0 overflow-hidden bg-slate-900"
-			}
-		>
-			{imageSrc ? (
-				<Image
-					src={imageSrc}
-					alt={artistName ?? "Artist"}
-					width={300}
-					height={300}
-					sizes={
-						hasPlaylist
-							? "(min-width: 1024px) 40vw, 100vw"
-							: "(min-width: 1024px) 16rem, (min-width: 768px) 14rem, 100vw"
-					}
-					loading="lazy"
-				className="h-full w-full object-cover"
-				onError={handlePhotoError}
-				/>
-			) : (
-				<div className="flex h-full w-full items-center justify-center animate-pulse bg-slate-900 text-subtle">
-					·
+	return (
+		<div className="pohhu-artist">
+			<div className="pohhu-artist__media">
+				<div className="relative aspect-square w-full overflow-hidden bg-slate-900 md:max-w-none">
+					{imageSrc ? (
+						<Image
+							src={imageSrc}
+							alt={artistName ?? "Artist"}
+							width={300}
+							height={300}
+							sizes="(min-width: 640px) 24rem, 100vw"
+							loading="lazy"
+							className="h-full w-full object-cover"
+							onError={handlePhotoError}
+						/>
+					) : (
+						<div className="flex h-full w-full items-center justify-center animate-pulse bg-slate-900 text-subtle">
+							·
+						</div>
+					)}
 				</div>
-			)}
-		</div>
-	);
+			</div>
 
-	const copy = (
-		<div className={hasPlaylist ? "p-5 md:p-6 lg:p-8" : "flex min-w-0 flex-1 flex-col p-5 md:p-6 lg:p-8"}>
-			<div className="mb-4">
-				<h4 className="text-3xl md:text-4xl font-bold tracking-tight">
+			<div className="pohhu-artist__copy">
+				<h4 className="pohhu-artist__name">
 					<a
 						href={spotifyUrl}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="focus-ring text-white border-b border-transparent hover:border-violet-400 transition-colors"
+						className="pohhu-artist__name-link focus-ring"
 					>
 						{artistName ?? "…"}
 					</a>
 				</h4>
 				{artist ? (
-					<p className="mt-2 text-sm text-muted">
-						<span className="text-secondary">
-							{formatFollowers(artist.followers)}
-						</span>{" "}
-						followers on Spotify
+					<p className="pohhu-artist__meta">
+						<span>{formatFollowers(artist.followers)}</span> followers
+						on Spotify
 						{artist.genres.length > 0 ? (
-							<>
-								{" "}
-								· {artist.genres.slice(0, 3).join(", ")}
-							</>
+							<> · {artist.genres.slice(0, 3).join(", ")}</>
 						) : null}
 					</p>
 				) : null}
+
+				<p className="pohhu-copy pohhu-artist__bio">{profile.bio}</p>
+
+				<a
+					href={spotifyUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="pohhu-text-link focus-ring"
+				>
+					Open on Spotify →
+				</a>
 			</div>
 
-			<p className="text-base leading-relaxed text-secondary mb-5">
-				{profile.bio}
-			</p>
-
-			<a
-				href={spotifyUrl}
-				target="_blank"
-				rel="noopener noreferrer"
-				className="focus-ring mt-auto inline-flex w-fit items-center text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
-			>
-				Open on Spotify →
-			</a>
+			{profile.playlist ? (
+				<div className="pohhu-artist__playlist">
+					<SpotifyPlaylistEmbed
+						playlistId={profile.playlist.id}
+						title={profile.playlist.title}
+					/>
+				</div>
+			) : null}
 		</div>
-	);
-
-	if (hasPlaylist && profile.playlist) {
-		return (
-			<div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
-				{photo}
-				<SpotifyPlaylistEmbed
-					playlistId={profile.playlist.id}
-					title={profile.playlist.title}
-					fillHeight
-				/>
-				<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/50 lg:col-span-2">
-					{copy}
-				</article>
-			</div>
-		);
-	}
-
-	return (
-		<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/50">
-			<div className="flex flex-col md:flex-row md:items-stretch">
-				{photo}
-				{copy}
-			</div>
-		</article>
 	);
 }
 
@@ -459,7 +416,9 @@ function KevilniusMerchBlock() {
 		vendor,
 		title,
 		price,
+		compareAtPrice,
 		currency,
+		saleLabel,
 		details,
 		description,
 		orderFormUrl,
@@ -471,8 +430,8 @@ function KevilniusMerchBlock() {
 	} = kevilniusMerch;
 
 	return (
-		<div id="pohhu-kevilnius-merch" className="scroll-anchor mb-10 min-w-0">
-			<div className="merch-product-layout lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start lg:gap-10 xl:gap-12">
+		<div id="pohhu-kevilnius-merch" className="scroll-anchor merch-pdp min-w-0">
+			<div className="merch-product-layout">
 				{gallery.length > 0 ? (
 					<figure className="photo-credit min-w-0">
 						<MerchProductCarouselLazy
@@ -480,34 +439,62 @@ function KevilniusMerchBlock() {
 							dialogLabel="Kevilnius merch photos"
 						/>
 						{modelCredit ? (
-							<figcaption>
+							<figcaption className="merch-pdp__credit">
+								Model{" "}
 								<a
 									href={modelCredit.instagramUrl}
 									target="_blank"
 									rel="noopener noreferrer"
 									className="focus-ring"
 								>
-									{modelCredit.name} / @{modelCredit.instagramHandle}
+									{modelCredit.name}
+								</a>
+								<span aria-hidden> · </span>
+								<a
+									href={modelCredit.instagramUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="focus-ring"
+								>
+									@{modelCredit.instagramHandle}
 								</a>
 							</figcaption>
 						) : null}
 					</figure>
 				) : null}
 
-				<div
-					className={`product-detail min-w-0 ${
-						gallery.length > 0
-							? "mt-8 border-t border-slate-800/90 pt-8 lg:mt-0 lg:border-t-0 lg:pt-1"
-							: ""
-					}`}
-				>
+				<div className="product-detail min-w-0">
 					<header className="product-detail__header">
-						<p className="product-detail__vendor">{vendor}</p>
+						<div className="product-detail__eyebrow">
+							<p className="product-detail__vendor">{vendor}</p>
+							{saleLabel ? (
+								<span className="product-detail__badge">{saleLabel}</span>
+							) : null}
+						</div>
 						<h3 className="product-detail__title">{title}</h3>
-						<p className="product-detail__price">
-							{price}
-							<span className="product-detail__currency"> {currency}</span>
-						</p>
+
+						<div className="product-detail__pricing">
+							{compareAtPrice ? (
+								<p className="product-detail__compare">
+									<span className="sr-only">Original price </span>
+									<s>
+										{compareAtPrice}
+										{currency}
+									</s>
+								</p>
+							) : null}
+							<p className="product-detail__price">
+								<span className="sr-only">Sale price </span>
+								{price}
+								<span className="product-detail__currency">{currency}</span>
+							</p>
+							{compareAtPrice ? (
+								<p className="product-detail__save">
+									Save {Number(compareAtPrice) - Number(price)}
+									{currency}
+								</p>
+							) : null}
+						</div>
 					</header>
 
 					<div className="product-detail__actions">
@@ -519,27 +506,32 @@ function KevilniusMerchBlock() {
 						>
 							{orderFormLabel}
 						</a>
-						<SocialIconLink
+						<a
 							href={instagramUrl}
-							image={socialPlatformIcons.instagram}
-							label={instagramLabel}
-							caption="Instagram"
-							boxed
-						/>
+							target="_blank"
+							rel="noopener noreferrer"
+							className="focus-ring product-detail__secondary-btn"
+						>
+							{instagramLabel}
+						</a>
 					</div>
 
 					{details.length > 0 ? (
-						<dl className="product-detail__specs">
-							{details.map(({ label, value }) => (
-								<div key={label} className="product-detail__spec">
-									<dt className="product-detail__spec-label">{label}</dt>
-									<dd className="product-detail__spec-value">{value}</dd>
-								</div>
-							))}
-						</dl>
+						<div className="product-detail__specs-wrap">
+							<p className="product-detail__specs-heading">Details</p>
+							<dl className="product-detail__specs">
+								{details.map(({ label, value }) => (
+									<div key={label} className="product-detail__spec">
+										<dt className="product-detail__spec-label">{label}</dt>
+										<dd className="product-detail__spec-value">{value}</dd>
+									</div>
+								))}
+							</dl>
+						</div>
 					) : null}
 
 					<div className="product-detail__description">
+						<p className="product-detail__specs-heading">About</p>
 						{description.map((paragraph, i) => (
 							<p key={i} className="product-detail__description-p">
 								<FormattedText text={paragraph} />
@@ -558,150 +550,132 @@ export default function PohhuSection({
 	artistMeta: SpotifyArtistsMetaFile;
 }) {
 	return (
-		<section className="mb-4" aria-labelledby="pohhu-heading">
-			<h2 id="pohhu-heading" className="mb-8 text-center">
-				<span className="sr-only">$.pohhu¥</span>
-				<span className="block">
-					<PohhuLogoReveal />
-				</span>
-				<p className="pohhu-tagline-reveal mt-4 font-heading text-base font-semibold uppercase tracking-[0.2em] md:text-lg md:tracking-[0.24em]">
-					<span className="pohhu-tagline-reveal__text">
-						will take over the world
+		<div className="pohhu-page" aria-labelledby="pohhu-heading">
+			<header className="pohhu-hero">
+				<h2 id="pohhu-heading" className="pohhu-hero__brand">
+					<span className="sr-only">$.pohhu¥</span>
+					<span className="block">
+						<PohhuLogoReveal />
 					</span>
-				</p>
-			</h2>
+					<p className="pohhu-tagline-reveal pohhu-hero__tagline">
+						<span className="pohhu-tagline-reveal__text">
+							will take over the world
+						</span>
+					</p>
+				</h2>
+				<PohhuToc />
+			</header>
 
-			<KevilniusMerchBlock />
-
-			<PohhuChapter id="pohhu-manifesto" title="Manifesto" className="mt-2" />
-
-			<div className="prose-readable mb-10">
-				{pohhuManifestoBeforeCore.map((paragraph, i) => (
-					<ManifestoParagraph key={`before-${i}`} text={paragraph} />
-				))}
-
-				<ManifestoParagraph text={pohhuFoundingCoreIntro} />
-				<ul className="mb-4 ml-4 list-disc space-y-1.5 text-base md:text-lg text-secondary marker:text-violet-400/70">
-					{pohhuFoundingCore.map(member => (
-						<li key={member} className="leading-relaxed pl-1">
-							<FormattedText text={member} />
-						</li>
+			<PohhuBlock id="pohhu-manifesto" title="Manifesto">
+				<div className="pohhu-stack">
+					{pohhuManifestoBeforeCore.map((paragraph, i) => (
+						<ManifestoParagraph key={`before-${i}`} text={paragraph} />
 					))}
-				</ul>
 
-				{pohhuManifestoAfterCore.map((paragraph, i) => (
-					<ManifestoParagraph key={`after-${i}`} text={paragraph} />
-				))}
+					<FoundingCoreStrip members={pohhuFoundingCore} />
 
-				<ManifestoPullquote text={pohhuManifestoPullquote} />
+					{pohhuManifestoAfterCore.map((paragraph, i) => (
+						<ManifestoParagraph key={`after-${i}`} text={paragraph} />
+					))}
 
-				{pohhuManifestoClosing.map((paragraph, i) => (
-					<ManifestoParagraph key={`close-${i}`} text={paragraph} />
-				))}
-			</div>
+					<ManifestoPullquote text={pohhuManifestoPullquote} />
 
-			<div className="mb-10">
-				<article
+					{pohhuManifestoClosing.map((paragraph, i) => (
+						<ManifestoParagraph key={`close-${i}`} text={paragraph} />
+					))}
+				</div>
+
+				<aside
 					id="pohhu-aleksandri-pub"
-					className="scroll-anchor overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60"
+					className="pohhu-aside scroll-anchor"
 				>
-					<div className="border-b border-slate-800/90 px-5 py-4 md:px-6">
-						<p className="flex items-baseline gap-2 font-heading text-xl font-bold tracking-tight text-white md:text-2xl">
-							<span className="select-none text-violet-400/80" aria-hidden>
-								⌖
-							</span>
-							<span>{aleksandriPub.title}</span>
-						</p>
-						<p className="mt-1 pl-6 text-xs font-medium uppercase tracking-[0.16em] text-subtle md:pl-7">
-							{aleksandriPub.subtitle}
-						</p>
-					</div>
-					<div className="prose-readable px-5 py-4 md:px-6">
+					<p className="pohhu-aside__title">
+						<span className="pohhu-aside__mark" aria-hidden>
+							⌖
+						</span>
+						{aleksandriPub.title}
+					</p>
+					<p className="pohhu-aside__kicker">{aleksandriPub.subtitle}</p>
+					<div className="pohhu-aside__body">
 						<ManifestoParagraph text={aleksandriPub.body} />
-						<p className="mb-0">
+						<p className="pohhu-aside__action">
 							<a
 								href={aleksandriPub.mapUrl}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="focus-ring text-sm font-bold text-violet-400 border-b border-violet-400/30 hover:border-violet-300 transition-colors"
+								className="pohhu-text-link focus-ring"
 							>
 								{aleksandriPub.mapLinkLabel} →
 							</a>
 						</p>
 					</div>
-				</article>
-			</div>
+				</aside>
+			</PohhuBlock>
 
-			<PohhuChapter
-				id="pohhu-physical-media"
-				title={pohhuPhysicalMediaDivider}
-				className="mt-14 md:mt-16"
-			/>
-
-			<div className="prose-readable mb-6">
-				{pohhuFundedReleasesIntro.map((paragraph, i) => (
-					<ManifestoParagraph key={`releases-intro-${i}`} text={paragraph} />
-				))}
-			</div>
-			<div className="prose-readable mb-8">
-				{pohhuFundingModel.map((paragraph, i) => (
-					<ManifestoParagraph key={`funding-model-${i}`} text={paragraph} />
-				))}
-			</div>
-
-			<div className="mb-12">
-				<h5 id="pohhu-963-records" className={subsectionHeadingClass}>
-					<FormattedText text={pohhuFundedReleasesSubsectionTitle} />
-				</h5>
-				<ul className="grid gap-4 md:grid-cols-2">
-					{fundedReleases.map(release => (
-						<FundedReleaseCard key={release.title} release={release} />
+			<PohhuBlock id="pohhu-physical-media" title={pohhuPhysicalMediaDivider}>
+				<div className="pohhu-stack">
+					{pohhuFundedReleasesIntro.map((paragraph, i) => (
+						<ManifestoParagraph key={`releases-intro-${i}`} text={paragraph} />
 					))}
-				</ul>
-			</div>
-
-			<PohhuChapter
-				id="pohhu-exhibitions-events"
-				title="Exhibitions & events"
-				className="mt-14 md:mt-16"
-			/>
-
-			<div className="mb-12">
-				<h4 id="pohhu-kivi-art-show" className={subsectionHeadingClass}>
-					<FormattedText text={kiviArtShow.title} />
-				</h4>
-				<div className="prose-readable mb-5">
-					{kiviArtShow.paragraphs.map((paragraph, i) => (
-						<ManifestoParagraph key={`kivi-${i}`} text={paragraph} />
+					{pohhuFundingModel.map((paragraph, i) => (
+						<ManifestoParagraph key={`funding-model-${i}`} text={paragraph} />
 					))}
 				</div>
-				<ImageLightboxGallery
-					items={kiviArtShow.gallery}
-					dialogLabel="Kivi Baar art show gallery"
-					bannerFooter={<KiviBaarSocialLinks links={kiviArtShow.links} />}
-					photosStartLabel={kiviArtShow.photosSectionLabel}
-				/>
-			</div>
 
-			<PohhuChapter
-				id="pohhu-lineup"
-				title="Lineup"
-				className="mt-14 md:mt-16"
-			/>
+				<div className="pohhu-panel">
+					<PohhuSubhead id="pohhu-963-records">
+						<FormattedText text={pohhuFundedReleasesSubsectionTitle} />
+					</PohhuSubhead>
+					<ul className="pohhu-catalog">
+						{fundedReleases.map(release => (
+							<FundedReleaseCard key={release.title} release={release} />
+						))}
+					</ul>
+				</div>
+			</PohhuBlock>
 
-			<h4 id="pohhu-certified-artists" className={sectionHeadingClass}>
-				<span className="text-violet-400">$.pohhu¥</span> Certified Artists
-			</h4>
+			<PohhuBlock id="pohhu-merch" title={pohhuMerchDivider}>
+				<KevilniusMerchBlock />
+			</PohhuBlock>
 
-			<div className="space-y-6">
-				{certifiedArtists.map(profile => (
-					<CertifiedArtistCard
-						key={profile.spotifyId}
-						profile={profile}
-						artist={artistMeta.artists[profile.spotifyId]}
-					/>
-				))}
-			</div>
-		</section>
+			<PohhuBlock
+				id="pohhu-exhibitions-events"
+				title={pohhuExhibitionsEventsDivider}
+			>
+				<div className="pohhu-panel">
+					<PohhuSubhead id="pohhu-kivi-art-show">
+						<FormattedText text={kiviArtShow.title} />
+					</PohhuSubhead>
+					<div className="pohhu-stack">
+						{kiviArtShow.paragraphs.map((paragraph, i) => (
+							<ManifestoParagraph key={`kivi-${i}`} text={paragraph} />
+						))}
+					</div>
+					<div className="pohhu-gallery">
+						<ImageLightboxGallery
+							items={kiviArtShow.gallery}
+							dialogLabel="Kivi Baar art show gallery"
+							thumbnailVariant="bare"
+							bannerFooter={
+								<KiviBaarSocialLinks links={kiviArtShow.links} />
+							}
+							photosStartLabel={kiviArtShow.photosSectionLabel}
+						/>
+					</div>
+				</div>
+			</PohhuBlock>
+
+			<PohhuBlock id="pohhu-lineup" title={pohhuLineupDivider}>
+				<div className="pohhu-lineup">
+					{certifiedArtists.map(profile => (
+						<CertifiedArtistCard
+							key={profile.spotifyId}
+							profile={profile}
+							artist={artistMeta.artists[profile.spotifyId]}
+						/>
+					))}
+				</div>
+			</PohhuBlock>
+		</div>
 	);
 }
