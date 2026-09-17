@@ -3,21 +3,19 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import {
 	EffectCoverflow,
 	Keyboard,
-	Mousewheel
+	Mousewheel,
+	Virtual
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperInstance } from "swiper";
 import useSWR from "swr";
 
 import { listedPhysicalMediaCollection } from "../data/physicalMedia";
-import { sampleCoverAccent } from "../lib/coverColor";
 import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
 import type { PhysicalMediaAlbumMeta } from "../lib/physicalMediaSpotifyMeta";
 import type { NowPlayingResponseSuccess } from "../pages/api/nowPlaying";
 
 import "swiper/swiper-bundle.css";
-
-const FALLBACK_ACCENT = "rgb(52 211 153)";
 
 const nowPlayingFetcher = (url: string) => fetch(url).then(res => res.json());
 
@@ -81,7 +79,6 @@ export function PhysicalMediaCoverflow({
 }: PhysicalMediaCoverflowProps) {
 	const [mounted, setMounted] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [accentColor, setAccentColor] = useState(FALLBACK_ACCENT);
 	const swiperRef = useRef<SwiperInstance | null>(null);
 
 	const total = listedPhysicalMediaCollection.length;
@@ -114,23 +111,6 @@ export function PhysicalMediaCoverflow({
 		setMounted(true);
 	}, []);
 
-	useEffect(() => {
-		if (!mounted || total === 0) return;
-
-		const item = listedPhysicalMediaCollection[activeIndex];
-		const cover = item ? spotifyMeta[item.id]?.coverImageUrl : undefined;
-		if (!cover) return;
-
-		let cancelled = false;
-		sampleCoverAccent(cover).then(color => {
-			if (!cancelled) setAccentColor(color);
-		});
-
-		return () => {
-			cancelled = true;
-		};
-	}, [activeIndex, mounted, spotifyMeta, total]);
-
 	if (!mounted || total === 0) {
 		return <div className="album-coverflow min-h-[20rem]" aria-hidden />;
 	}
@@ -154,14 +134,7 @@ export function PhysicalMediaCoverflow({
 	};
 
 	return (
-		<div
-			className="album-coverflow group/carousel"
-			style={
-				{
-					"--album-accent": accentColor
-				} as Record<string, string>
-			}
-		>
+		<div className="album-coverflow group/carousel">
 			<div className="album-coverflow__stage">
 				<div className="album-coverflow__stage-glow" aria-hidden />
 
@@ -215,7 +188,7 @@ export function PhysicalMediaCoverflow({
 
 				<Swiper
 					className="album-coverflow__swiper"
-					modules={[EffectCoverflow, Keyboard, Mousewheel]}
+					modules={[EffectCoverflow, Keyboard, Mousewheel, Virtual]}
 					effect="coverflow"
 					grabCursor={canNavigate}
 					centeredSlides
@@ -225,6 +198,11 @@ export function PhysicalMediaCoverflow({
 					rewind={!loop && canNavigate}
 					slideToClickedSlide
 					watchSlidesProgress
+					virtual={{
+						addSlidesBefore: 2,
+						addSlidesAfter: 2,
+						slidesPerViewAutoSlideSize: 406
+					}}
 					speed={220}
 					keyboard={{ enabled: true }}
 					mousewheel={{
@@ -251,7 +229,6 @@ export function PhysicalMediaCoverflow({
 						syncActiveIndex(swiper);
 					}}
 					onSlideChange={syncActiveIndex}
-					onSlideChangeTransitionEnd={syncActiveIndex}
 				>
 					{listedPhysicalMediaCollection.map((item, index) => {
 						const isNowPlayingCd =
@@ -268,6 +245,7 @@ export function PhysicalMediaCoverflow({
 						return (
 							<SwiperSlide
 								key={item.id}
+								virtualIndex={index}
 								className={
 									isNowPlayingCd
 										? "album-coverflow__slide album-coverflow__slide--now-playing"

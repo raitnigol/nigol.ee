@@ -88,7 +88,7 @@ export function TrackList({
 									key={track.id}
 									track={track}
 									rank={index + 1}
-									priority={priority}
+									priority={priority && index < 4}
 								/>
 						  ))
 						: [...new Array(24)].map((_, i) => (
