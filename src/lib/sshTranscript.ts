@@ -66,9 +66,3 @@ export function buildSshTranscript(lastLoginLine: string): TranscriptLine[] {
 		{ text: lastLoginLine, muted: true }
 	];
 }
-
-export function buildDefaultSshTranscript(): TranscriptLine[] {
-	return buildSshTranscript(
-		formatSshLastLogin(new Date(), FALLBACK_VISITOR_IP)
-	);
-}

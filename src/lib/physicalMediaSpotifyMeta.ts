@@ -22,8 +22,6 @@ export type PhysicalMediaSpotifyMetaFile = {
 	albums: Record<string, PhysicalMediaAlbumMeta>;
 };
 
-export type PhysicalMediaApiResponse = PhysicalMediaSpotifyMetaFile;
-
 export function mapSearchAlbumMeta(
 	collectionId: string,
 	album: SpotifyApi.AlbumObjectSimplified

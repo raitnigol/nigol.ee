@@ -36,10 +36,6 @@ import type {
 	SpotifyArtistsMetaFile
 } from "../lib/spotifyArtistMeta";
 
-function formatFollowers(count: number) {
-	return new Intl.NumberFormat("en-US").format(count);
-}
-
 function PohhuChapter({ id, title }: { id: string; title: string }) {
 	return (
 		<h2 id={id} className="pohhu-chapter scroll-anchor">
@@ -392,13 +388,9 @@ function CertifiedArtistCard({
 						{artistName ?? "…"}
 					</a>
 				</h3>
-				{artist ? (
+				{artist && artist.genres.length > 0 ? (
 					<p className="pohhu-artist__meta">
-						<span>{formatFollowers(artist.followers)}</span>{" "}
-						followers on Spotify
-						{artist.genres.length > 0 ? (
-							<> · {artist.genres.slice(0, 3).join(", ")}</>
-						) : null}
+						{artist.genres.slice(0, 3).join(", ")}
 					</p>
 				) : null}
 
@@ -707,9 +699,12 @@ export default function PohhuSection({
 				title={pohhuExhibitionsEventsDivider}
 			>
 				<div className="pohhu-panel">
-					<PohhuSubhead id="pohhu-kivi-art-show">
+					<h3
+						id="pohhu-kivi-art-show"
+						className="pohhu-event-title scroll-anchor"
+					>
 						<FormattedText text={kiviArtShow.title} />
-					</PohhuSubhead>
+					</h3>
 					<div className="pohhu-stack">
 						{kiviArtShow.paragraphs.map((paragraph, i) => (
 							<ManifestoParagraph

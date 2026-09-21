@@ -94,7 +94,6 @@ function StaticPhysicalMediaCoverflow({
 	return (
 		<div className="album-coverflow">
 			<div className="album-coverflow__stage">
-				<div className="album-coverflow__stage-glow" aria-hidden />
 				<div className="album-coverflow__static">
 					<div className="album-coverflow__cover">
 						{coverUrl ? (
@@ -313,8 +312,6 @@ export function PhysicalMediaCoverflow({
 			) : null}
 
 			<div className="album-coverflow__stage">
-				<div className="album-coverflow__stage-glow" aria-hidden />
-
 				{canNavigate ? (
 					<button
 						type="button"

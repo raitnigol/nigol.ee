@@ -68,7 +68,7 @@ export const pohhuManifestoAfterCore: string[] = [
 
 export const pohhuPhysicalMediaDivider = "Physical media";
 
-export const pohhuLineupDivider = "Lineup";
+export const pohhuLineupDivider = "{{$.pohhu¥}} LINEUP";
 
 export const pohhuFundedReleasesSubsectionTitle = "{{$.pohhu¥}} × 963 Records";
 
@@ -193,9 +193,9 @@ export interface KiviArtShowGalleryImage {
 export const kiviArtShow = {
 	title: "Kivi Baar × {{$.pohhu¥}} Art Show",
 	paragraphs: [
-		"On **7 January 2026**, **Kivi Baar** let **Nigol** and **Kevilnius** display their digital art — printed out and hung across the venue.",
-		"The display consisted mainly of **Kevilnius**' art pieces, whereas **Nigol** brought out only a few pieces.",
-		"One piece from Nigol sold, and countless pieces from Kevilnius sold. The rest was donated to friends and family.",
+		"On **7 January 2026**, **Kivi Baar** let **Nigol** and **Kevilnius** display their digital art — this time printed out physically and hung across the venue.",
+		"The display consisted mainly of **Kevilnius**' art pieces, whereas **Nigol** brought out only two of his favourite pieces.",
+		"Most of the art displayed on the exhibition ended up being bought, while the rest was donated to friends and family.",
 		"None of this should have been possible without our friend **Tairi**, who managed the internal communication and forwarded it to us — the key that let it really happen.",
 		"The gallery was open from **7 January 2026, 21:00** until the **start of February 2026**."
 	],
