@@ -1,8 +1,14 @@
+import Head from "next/head";
+
 import TransitionLink from "../components/TransitionLink";
 
 export default function Custom404() {
 	return (
 		<>
+			<Head>
+				<title>Page not found · nigol.ee</title>
+				<meta name="robots" content="noindex, nofollow" />
+			</Head>
 			<h1 className="mb-2 heading text-amber-400">
 				404 &ndash; page not found...
 			</h1>

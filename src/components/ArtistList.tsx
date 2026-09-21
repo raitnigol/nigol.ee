@@ -180,6 +180,7 @@ function ArtistCard({ artist, rank, priority }: ArtistCardProps) {
 						alt={artist.name}
 						width={320}
 						height={320}
+						sizes="(min-width: 1024px) 10.5rem, (min-width: 768px) 10rem, (min-width: 480px) 9rem, 8.25rem"
 						priority={priority}
 						className="h-full w-full object-cover rounded-lg transition duration-300 group-hover:scale-[1.02]"
 					/>

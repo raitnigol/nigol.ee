@@ -52,7 +52,9 @@ function loadEnvFile(filePath: string) {
 
 function upsertEnvValue(filePath: string, key: string, value: string) {
 	const line = `${key}="${value}"`;
-	let contents = fs.existsSync(filePath) ? fs.readFileSync(filePath, "utf8") : "";
+	let contents = fs.existsSync(filePath)
+		? fs.readFileSync(filePath, "utf8")
+		: "";
 
 	if (new RegExp(`^${key}=`, "m").test(contents)) {
 		contents = contents.replace(new RegExp(`^${key}=.*$`, "m"), line);
@@ -60,7 +62,10 @@ function upsertEnvValue(filePath: string, key: string, value: string) {
 		contents = `${contents.trimEnd()}\n${line}\n`;
 	}
 
-	fs.writeFileSync(filePath, contents.endsWith("\n") ? contents : `${contents}\n`);
+	fs.writeFileSync(
+		filePath,
+		contents.endsWith("\n") ? contents : `${contents}\n`
+	);
 }
 
 function openBrowser(url: string) {
@@ -68,12 +73,14 @@ function openBrowser(url: string) {
 		process.platform === "darwin"
 			? `open "${url}"`
 			: process.platform === "win32"
-				? `start "" "${url}"`
-				: `xdg-open "${url}"`;
+			? `start "" "${url}"`
+			: `xdg-open "${url}"`;
 
 	exec(cmd, err => {
 		if (err) {
-			console.log("Could not open browser automatically. Open this URL manually:");
+			console.log(
+				"Could not open browser automatically. Open this URL manually:"
+			);
 			console.log(url);
 		}
 	});
@@ -125,23 +132,18 @@ async function finishWithCode(code: string) {
 	}
 
 	const envLocal = path.join(process.cwd(), ".env.local");
-	const envFile = path.join(process.cwd(), ".env");
 
 	upsertEnvValue(envLocal, "SPOTIFY_REFRESH_TOKEN", refreshToken);
-	if (fs.existsSync(envFile)) {
-		upsertEnvValue(envFile, "SPOTIFY_REFRESH_TOKEN", refreshToken);
-	}
 
 	console.log("\n✓ Wrote SPOTIFY_REFRESH_TOKEN to .env.local");
-	if (fs.existsSync(envFile)) {
-		console.log("✓ Also updated .env");
-	}
 	console.log("\nRestart yarn dev, then reload /music.\n");
 }
 
 async function main() {
 	console.log("\nSpotify auth helper\n");
-	console.log("Add BOTH redirect URIs in the Spotify Dashboard → your app → Settings:");
+	console.log(
+		"Add BOTH redirect URIs in the Spotify Dashboard → your app → Settings:"
+	);
 	console.log(`  http://127.0.0.1:${PORT}/callback`);
 	console.log(`  http://localhost:${PORT}/callback`);
 	console.log("\nOpening browser…\n");
@@ -194,7 +196,9 @@ async function main() {
 		console.log(
 			"\nFallback: after approving in the browser, copy the FULL redirect URL"
 		);
-		console.log("(it will look like http://127.0.0.1:53682/callback?code=...)");
+		console.log(
+			"(it will look like http://127.0.0.1:53682/callback?code=...)"
+		);
 		const pasted = await ask("Paste redirect URL here: ");
 		try {
 			const url = new URL(pasted);
@@ -210,7 +214,9 @@ async function main() {
 
 	server.listen(PORT, "127.0.0.1", () => {
 		console.log(`Waiting for Spotify callback on ${REDIRECT_URI} …`);
-		console.log("(If the browser shows INVALID_CLIENT or redirect_uri mismatch,");
+		console.log(
+			"(If the browser shows INVALID_CLIENT or redirect_uri mismatch,"
+		);
 		console.log(" the URIs above are missing/wrong in the Dashboard.)\n");
 	});
 }

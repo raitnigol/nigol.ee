@@ -8,6 +8,8 @@ import type { ComponentChild } from "preact";
 import { createPortal } from "preact/compat";
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
+import { useDialogFocusTrap } from "../lib/useDialogFocusTrap";
+
 export interface LightboxGalleryItem {
 	image: string;
 	alt: string;
@@ -37,10 +39,7 @@ const SWIPE_THRESHOLD_PX = 48;
 
 function GalleryPhotosStartMarker({ label }: { label: string }) {
 	return (
-		<div
-			className="flex items-center gap-3 py-1"
-			aria-hidden="true"
-		>
+		<div className="flex items-center gap-3 py-1" aria-hidden="true">
 			<div className="h-px flex-1 bg-slate-800/80" />
 			<span className="shrink-0 text-[10px] font-medium uppercase tracking-[0.14em] text-subtle">
 				{label}
@@ -64,7 +63,8 @@ function GalleryThumbnail({
 	fillHeight?: boolean;
 }) {
 	if (fit === "contain") {
-		const bareButton = "focus-ring block w-full cursor-zoom-in border-0 bg-transparent p-0 text-left";
+		const bareButton =
+			"focus-ring block w-full cursor-zoom-in border-0 bg-transparent p-0 text-left";
 		const cardButton =
 			"focus-ring block w-full cursor-zoom-in rounded-lg border border-slate-800 bg-slate-900 p-2 text-left transition hover:border-slate-700";
 
@@ -92,7 +92,9 @@ function GalleryThumbnail({
 						fillHeight
 							? "gallery-thumbnail__img gallery-thumbnail__img--fill rounded-md"
 							: `block h-auto w-full ${
-									variant === "bare" ? "rounded-md" : "mx-auto"
+									variant === "bare"
+										? "rounded-md"
+										: "mx-auto"
 							  }`
 					}
 					loading="lazy"
@@ -138,6 +140,7 @@ export function ImageLightboxGallery({
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
 	const [portalReady, setPortalReady] = useState(false);
 	const touchStartX = useRef<number | null>(null);
+	const dialogRef = useDialogFocusTrap(openIndex !== null);
 
 	useEffect(() => {
 		setPortalReady(true);
@@ -166,11 +169,9 @@ export function ImageLightboxGallery({
 			if (event.key === "ArrowRight") goNext();
 		};
 
-		document.body.style.overflow = "hidden";
 		window.addEventListener("keydown", onKeyDown);
 
 		return () => {
-			document.body.style.overflow = "";
 			window.removeEventListener("keydown", onKeyDown);
 		};
 	}, [openIndex, close, goPrev, goNext]);
@@ -182,7 +183,8 @@ export function ImageLightboxGallery({
 
 	const firstPhotoIndex = items.findIndex(item => !item.banner);
 	const hasBanner = items.some(item => item.banner);
-	const showPhotosStartMarker = Boolean(photosStartLabel) && firstPhotoIndex >= 0;
+	const showPhotosStartMarker =
+		Boolean(photosStartLabel) && firstPhotoIndex >= 0;
 	const markerBeforeIndex =
 		hasBanner && firstPhotoIndex > 0 ? firstPhotoIndex : 0;
 
@@ -190,7 +192,9 @@ export function ImageLightboxGallery({
 		<>
 			<ul
 				className={`grid list-none gap-4 md:grid-cols-2 ${
-					equalCellHeight ? "image-lightbox-gallery--equal-height" : ""
+					equalCellHeight
+						? "image-lightbox-gallery--equal-height"
+						: ""
 				} ${className}`}
 			>
 				{items.flatMap((item, index) => {
@@ -199,7 +203,9 @@ export function ImageLightboxGallery({
 					if (showPhotosStartMarker && index === markerBeforeIndex) {
 						nodes.push(
 							<li key="photos-start" className="md:col-span-2">
-								<GalleryPhotosStartMarker label={photosStartLabel!} />
+								<GalleryPhotosStartMarker
+									label={photosStartLabel!}
+								/>
 							</li>
 						);
 					}
@@ -207,7 +213,9 @@ export function ImageLightboxGallery({
 					nodes.push(
 						<li
 							key={item.image}
-							className={item.banner ? "md:col-span-2" : undefined}
+							className={
+								item.banner ? "md:col-span-2" : undefined
+							}
 						>
 							{item.title || item.description ? (
 								<article className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60">
@@ -250,7 +258,9 @@ export function ImageLightboxGallery({
 										fillHeight={equalCellHeight}
 									/>
 									{item.banner && bannerFooter ? (
-										<div className="mt-3">{bannerFooter}</div>
+										<div className="mt-3">
+											{bannerFooter}
+										</div>
 									) : null}
 								</>
 							)}
@@ -264,6 +274,7 @@ export function ImageLightboxGallery({
 			{portalReady && openIndex !== null && current
 				? createPortal(
 						<div
+							ref={dialogRef}
 							className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm touch-pan-y"
 							role="dialog"
 							aria-modal="true"
@@ -274,7 +285,10 @@ export function ImageLightboxGallery({
 									event.touches[0]?.clientX ?? null;
 							}}
 							onTouchEnd={event => {
-								if (touchStartX.current === null || items.length < 2) {
+								if (
+									touchStartX.current === null ||
+									items.length < 2
+								) {
 									return;
 								}
 
@@ -284,7 +298,8 @@ export function ImageLightboxGallery({
 								const delta = endX - touchStartX.current;
 								touchStartX.current = null;
 
-								if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return;
+								if (Math.abs(delta) < SWIPE_THRESHOLD_PX)
+									return;
 								if (delta > 0) goPrev();
 								else goNext();
 							}}
@@ -343,7 +358,9 @@ export function ImageLightboxGallery({
 									{hasMultiple ? (
 										<>
 											{openIndex + 1} / {items.length}
-											<span className="mx-2 text-subtle">·</span>
+											<span className="mx-2 text-subtle">
+												·
+											</span>
 										</>
 									) : null}
 									{current.title ? (

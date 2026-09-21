@@ -4,7 +4,10 @@ import path from "path";
 
 import GenericMeta from "../components/GenericMeta";
 import PohhuSection from "../components/PohhuSection";
-import type { SpotifyArtistsMetaFile } from "../lib/spotifyArtistMeta";
+import {
+	isSpotifyArtistsMetaFile,
+	type SpotifyArtistsMetaFile
+} from "../lib/spotifyArtistMeta";
 
 const ARTISTS_META_FILE = path.join(
 	process.cwd(),
@@ -31,14 +34,17 @@ export default function Music({ artistMeta }: MusicPageProps) {
 
 export const getStaticProps: GetStaticProps<MusicPageProps> = async () => {
 	if (!fs.existsSync(ARTISTS_META_FILE)) {
-		throw new Error(
-			`Missing ${ARTISTS_META_FILE}. Run: yarn spotify:sync`
-		);
+		throw new Error(`Missing ${ARTISTS_META_FILE}. Run: yarn spotify:sync`);
 	}
 
-	const artistMeta = JSON.parse(
+	const artistMeta: unknown = JSON.parse(
 		fs.readFileSync(ARTISTS_META_FILE, "utf8")
-	) as SpotifyArtistsMetaFile;
+	);
+	if (!isSpotifyArtistsMetaFile(artistMeta)) {
+		throw new Error(
+			`Malformed Spotify artist metadata in ${ARTISTS_META_FILE}`
+		);
+	}
 
 	return {
 		props: {

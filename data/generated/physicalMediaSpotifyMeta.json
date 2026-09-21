@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-11T18:24:51.370Z",
+  "generatedAt": "2026-09-17T10:01:43.771Z",
   "source": "spotify-album-id",
-  "total": 120,
-  "loaded": 120,
+  "total": 127,
+  "loaded": 127,
   "complete": true,
   "failed": [],
   "albums": {
@@ -1565,6 +1565,97 @@
       "albumType": "album",
       "spotifyUrl": "https://open.spotify.com/album/5JpH5T1sCYnUyZD6TM0QaY",
       "copyright": "© 2015 Atlantic Recording Corporation for the United States and WEA International Inc. for the world outside of the United States. A Warner Music Group Company"
+    },
+    "ice-spice-like": {
+      "collectionId": "ice-spice-like",
+      "name": "Like..?",
+      "artists": "Ice Spice",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2731036d6502bf3f386248578af",
+      "releaseYear": "2023",
+      "releaseDate": "2023-01-20",
+      "label": "10K Projects/Capitol Records",
+      "totalTracks": 7,
+      "albumType": "single",
+      "spotifyUrl": "https://open.spotify.com/album/2D71WnlFlRNfRm28f1zCVr",
+      "copyright": "© 2023 Dolo Entertainment, Inc., under exclusive license to UMG Recordings, Inc."
+    },
+    "dvsn-sept-5th": {
+      "collectionId": "dvsn-sept-5th",
+      "name": "SEPT 5TH",
+      "artists": "dvsn",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27366f742115942da7024f23738",
+      "releaseYear": "2016",
+      "releaseDate": "2016-03-27",
+      "label": "OVO Sound",
+      "totalTracks": 10,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/2XhC7JL4ULFBP1qlqoR0Vv",
+      "copyright": "2016 OVO Sound under exclusive license to Santa Anna Label Group"
+    },
+    "mangupoiss-karu-rip": {
+      "collectionId": "mangupoiss-karu-rip",
+      "name": "R.I.P.",
+      "artists": "Mängupoiss Käru",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b273791eb65272c6031257356925",
+      "releaseYear": "2021",
+      "releaseDate": "2021-07-09",
+      "label": "Legendaarne Records",
+      "totalTracks": 10,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/6RAC42O7xPZEIMUQ9QKKFE",
+      "copyright": "2021 Legendaarne Records"
+    },
+    "blxst-just-for-clarity-2": {
+      "collectionId": "blxst-just-for-clarity-2",
+      "name": "Just For Clarity 2",
+      "artists": "Blxst",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2735ea07434b1f516dd7e694191",
+      "releaseYear": "2023",
+      "releaseDate": "2023-03-10",
+      "label": "Red Bull Records Inc. / Evgle LLC",
+      "totalTracks": 4,
+      "albumType": "single",
+      "spotifyUrl": "https://open.spotify.com/album/4nw05bSkWU3oVxK5dBcSQE",
+      "copyright": "(C) 2023 Red Bull Records Inc. / Evgle LLC"
+    },
+    "luche-dove-volano-le-aquile": {
+      "collectionId": "luche-dove-volano-le-aquile",
+      "name": "Dove Volano Le Aquile",
+      "artists": "Luchè",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2735558244723616933a29ebcbd",
+      "releaseYear": "2022",
+      "releaseDate": "2022-04-01",
+      "label": "BFM Music",
+      "totalTracks": 19,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/2fheBMJ0R15riUbISACz2F",
+      "copyright": "A Columbia release (P) 2022 BFM Management under exclusive license to Sony Music Entertainment Italy S.p.A."
+    },
+    "adikia-aiti": {
+      "collectionId": "adikia-aiti",
+      "name": "Äiti",
+      "artists": "Adikia",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b27332f171980dea2fe6c27246f0",
+      "releaseYear": "2021",
+      "releaseDate": "2021-10-29",
+      "label": "Rutilus Music",
+      "totalTracks": 10,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/4YBKZqOurZxS5cMJXoAdUd",
+      "copyright": "(P) 2021 Rutilus Musiikkimedia Oy distributed by Sony Music Entertainment Finland Oy"
+    },
+    "unknown-t-blood-diamond": {
+      "collectionId": "unknown-t-blood-diamond",
+      "name": "Blood Diamond",
+      "artists": "Unknown T",
+      "coverImageUrl": "https://i.scdn.co/image/ab67616d0000b2735c22c1a0f9902f6c8c47d5c9",
+      "releaseYear": "2024",
+      "releaseDate": "2024-01-12",
+      "label": "Universal-Island Records Ltd.",
+      "totalTracks": 17,
+      "albumType": "album",
+      "spotifyUrl": "https://open.spotify.com/album/0z3bbwLzSFO7ObKjmaI7TY",
+      "copyright": "© 2023 Unknown T, under exclusive licence to Universal Music Operations Limited"
     }
   }
 }

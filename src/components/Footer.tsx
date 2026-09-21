@@ -45,7 +45,7 @@ export default function Footer() {
 				<BuildBadge />
 			</p>
 
-			<div className="site-footer__badges" aria-label="Buttons">
+			<div className="site-footer__badges">
 				<img
 					src="/images/badges/free-palestine.gif"
 					alt="Free Palestine"

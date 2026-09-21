@@ -1,12 +1,30 @@
+export type PhysicalMediaFormat = "cd" | "vinyl";
+
 export interface PhysicalMediaItem {
 	id: string;
+	format?: PhysicalMediaFormat;
 	/** Optional fallback when Spotify metadata is unavailable. */
 	title?: string;
 	artists?: string;
+	coverImageUrl?: string | null;
+	description?: string;
+	releaseYear?: string | null;
 	/** Spotify album or track ID — synced via `yarn spotify:sync`. */
 	spotifyAlbumId?: string | null;
 	/** Spotify podcast/audiobook show ID when the item is not an album. */
 	spotifyShowId?: string | null;
+}
+
+export interface FeaturedPhysicalMedia {
+	itemId: string;
+	badge: string;
+	eyebrow?: string;
+	valueLabel?: string;
+	story: string;
+	details: Array<{
+		label: string;
+		value: string;
+	}>;
 }
 
 export const physicalMediaCollection: PhysicalMediaItem[] = [
@@ -711,3 +729,100 @@ export function isPhysicalMediaListed(item: PhysicalMediaItem): boolean {
 export const listedPhysicalMediaCollection = physicalMediaCollection.filter(
 	isPhysicalMediaListed
 );
+
+export const vinylCollection: PhysicalMediaItem[] = [
+	{
+		id: "lana-del-rey-did-you-know-that-theres-a-tunnel-under-ocean-blvd",
+		format: "vinyl",
+		title: "Did You Know That There's A Tunnel Under Ocean Blvd",
+		artists: "Lana Del Rey",
+		coverImageUrl:
+			"https://i.discogs.com/V0mq3L8ROcujzgNymtXhvg51j_jbg7bGh9_nojlyADc/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTI3NTk2/MzI4LTE2ODkyODUx/NjItNjQyNC5qcGVn.jpeg",
+		spotifyAlbumId: "5HOHne1wzItQlIYmLXLYfZ",
+		description:
+			"2 × vinyl, LP, album with explicit alternative artwork. Worldwide pressing released 7 July 2023."
+	},
+	{
+		id: "ice-spice-like",
+		format: "vinyl",
+		title: "Like..?",
+		artists: "Ice Spice",
+		spotifyAlbumId: "2D71WnlFlRNfRm28f1zCVr"
+	},
+	{
+		id: "dvsn-sept-5th",
+		format: "vinyl",
+		title: "Sept. 5th",
+		artists: "dvsn",
+		spotifyAlbumId: "2XhC7JL4ULFBP1qlqoR0Vv"
+	},
+	{
+		id: "mangupoiss-karu-rip",
+		format: "vinyl",
+		title: "r.I.p",
+		artists: "mängupoiss käru",
+		spotifyAlbumId: "6RAC42O7xPZEIMUQ9QKKFE"
+	},
+	{
+		id: "blxst-just-for-clarity-2",
+		format: "vinyl",
+		title: "Just For Clarity 2",
+		artists: "BLXST",
+		spotifyAlbumId: "4nw05bSkWU3oVxK5dBcSQE"
+	},
+	{
+		id: "luche-dove-volano-le-aquile",
+		format: "vinyl",
+		title: "Dove Volano Le Aquile",
+		artists: "Luchè",
+		spotifyAlbumId: "2fheBMJ0R15riUbISACz2F"
+	},
+	{
+		id: "adikia-aiti",
+		format: "vinyl",
+		title: "Äiti",
+		artists: "ädikia",
+		spotifyAlbumId: "4YBKZqOurZxS5cMJXoAdUd"
+	},
+	{
+		id: "unknown-t-blood-diamond",
+		format: "vinyl",
+		title: "Blood Diamond",
+		artists: "Unknown T",
+		spotifyAlbumId: "0z3bbwLzSFO7ObKjmaI7TY"
+	}
+];
+
+export const featuredVinyl: FeaturedPhysicalMedia = {
+	itemId: "lana-del-rey-did-you-know-that-theres-a-tunnel-under-ocean-blvd",
+	badge: "Holy Grail",
+	story:
+		"My copy of Did You Know That There's A Tunnel Under Ocean Blvd — the record I value most in the collection.",
+	details: [
+		{
+			label: "Label",
+			value:
+				"Polydor – 5553396 · Interscope Records – 00602455533968"
+		},
+		{
+			label: "Format",
+			value: "2 × vinyl, LP, album, explicit alternative artwork"
+		},
+		{
+			label: "Released",
+			value: "7 Jul 2023"
+		}
+	]
+};
+
+/**
+ * Unique Spotify-backed media used by the metadata sync. Vinyl can reuse an
+ * existing CD entry or introduce a new Spotify album ID.
+ */
+export const spotifyPhysicalMediaCollection = [
+	...physicalMediaCollection,
+	...vinylCollection.filter(
+		vinyl =>
+			!physicalMediaCollection.some(existing => existing.id === vinyl.id)
+	)
+];

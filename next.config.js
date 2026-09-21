@@ -5,24 +5,45 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 	enabled: process.env.ANALYZE === "true"
 });
 
+const securityHeaders = [
+	{
+		key: "Content-Security-Policy",
+		value: "base-uri 'self'; frame-ancestors 'none'; object-src 'none';"
+	},
+	{
+		key: "Permissions-Policy",
+		value: "camera=(), geolocation=(), microphone=()"
+	},
+	{ key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+	{ key: "X-Content-Type-Options", value: "nosniff" },
+	{ key: "X-Frame-Options", value: "DENY" }
+];
+
 /** @type {import("next").NextConfig} */
 const config = {
 	env: {
 		NEXT_PUBLIC_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA ?? ""
 	},
+	poweredByHeader: false,
 	reactStrictMode: true,
 	swcMinify: true,
 	i18n: { locales: ["en-US"], defaultLocale: "en-US" },
 	images: {
-		domains: ["i.scdn.co"],
-		formats: ["image/avif", "image/webp"],
-		dangerouslyAllowSVG: true,
-		contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+		domains: ["i.scdn.co", "i.discogs.com"],
+		formats: ["image/webp"],
 		deviceSizes: [640, 750, 828, 1080, 1200, 1920],
 		imageSizes: [32, 48, 64, 96, 128, 160, 256]
 	},
 	experimental: {
-		esmExternals: false,
+		esmExternals: false
+	},
+	async headers() {
+		return [
+			{
+				source: "/(.*)",
+				headers: securityHeaders
+			}
+		];
 	},
 	async redirects() {
 		return [

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Spotify from "spotify-web-api-node";
+
+import { withSpotifyUserClient } from "../../lib/spotifyUserServer";
 
 export interface NowPlayingResponseSuccess {
 	/**
@@ -7,26 +8,21 @@ export interface NowPlayingResponseSuccess {
 	 */
 	isPlayingNow: boolean;
 	isPaused: boolean;
+	progressMs: number;
+	/** @deprecated Typo kept for cached clients; use progressMs. */
 	progessMs: number;
 	/** ISO 8601 timestamp when the track was last played (recently-played fallback only). */
 	playedAt: string | null;
 	track: SpotifyApi.TrackObjectFull | null;
 }
-export type NowPlayingResponseError = { error: unknown };
+export type NowPlayingResponseError = { error: string };
 export type NowPlayingResponse =
 	| NowPlayingResponseSuccess
 	| NowPlayingResponseError;
 
-const api = new Spotify({
-	clientId: process.env.SPOTIFY_CLIENT_ID,
-	clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-	refreshToken: process.env.SPOTIFY_REFRESH_TOKEN
-});
-
 /** Keep edge/CDN responses warm between client polls (15s while playing). */
 const CACHE_MS = 12_000;
 
-let expirationTime = 0;
 let cachedTime = 0;
 let cached: NowPlayingResponseSuccess | undefined;
 
@@ -35,6 +31,7 @@ export default async function handler(
 	res: NextApiResponse<NowPlayingResponse>
 ) {
 	if (req.method !== "GET") {
+		res.setHeader("Allow", "GET");
 		res.status(405).json({ error: "Method not allowed." });
 		return;
 	}
@@ -49,38 +46,40 @@ export default async function handler(
 			return;
 		}
 
-		if (Date.now() > expirationTime) {
-			const response = await api.refreshAccessToken();
-			api.setAccessToken(response.body.access_token);
+		const response = await withSpotifyUserClient(
+			async (api): Promise<NowPlayingResponseSuccess> => {
+				const result: NowPlayingResponseSuccess = {
+					isPlayingNow: false,
+					isPaused: false,
+					progressMs: 0,
+					progessMs: 0,
+					playedAt: null,
+					track: null
+				};
+				const playing = await api.getMyCurrentPlayingTrack();
 
-			expirationTime = Date.now() + response.body.expires_in * 1000;
-		}
+				if (playing.body?.item && "album" in playing.body.item) {
+					result.isPlayingNow = true;
+					result.track = playing.body.item;
+					result.isPaused = !playing.body.is_playing;
+					result.progressMs = playing.body.progress_ms ?? 0;
+					result.progessMs = result.progressMs;
+				} else {
+					const lastPlayed = await api.getMyRecentlyPlayedTracks({
+						limit: 1
+					});
 
-		let response: NowPlayingResponseSuccess = {
-			isPlayingNow: false,
-			isPaused: false,
-			progessMs: 0,
-			playedAt: null,
-			track: null
-		};
-		const playing = await api.getMyCurrentPlayingTrack();
+					const lastItem = lastPlayed.body?.items[0];
+					if (lastItem?.track) {
+						result.track =
+							lastItem.track as SpotifyApi.TrackObjectFull;
+						result.playedAt = lastItem.played_at ?? null;
+					}
+				}
 
-		if (playing.body?.item && "album" in playing.body.item) {
-			response.isPlayingNow = true;
-			response.track = playing.body.item;
-			response.isPaused = !playing.body.is_playing;
-			response.progessMs = playing.body.progress_ms ?? 0;
-		} else {
-			const lastPlayed = await api.getMyRecentlyPlayedTracks({
-				limit: 1
-			});
-
-			const lastItem = lastPlayed.body?.items[0];
-			if (lastItem?.track) {
-				response.track = lastItem.track as SpotifyApi.TrackObjectFull;
-				response.playedAt = lastItem.played_at ?? null;
+				return result;
 			}
-		}
+		);
 
 		cached = response;
 		cachedTime = Date.now() + CACHE_MS;
@@ -91,6 +90,11 @@ export default async function handler(
 		);
 		res.status(200).json(response);
 	} catch (err) {
-		res.status(500).json({ error: (err as any)?.message });
+		const message = err instanceof Error ? err.message : "Unknown error";
+		console.error(`Unable to load now-playing data: ${message}`);
+		res.setHeader("Cache-Control", "no-store");
+		res.status(503).json({
+			error: "Now-playing data is temporarily unavailable."
+		});
 	}
 }

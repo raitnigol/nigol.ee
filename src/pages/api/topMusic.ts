@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Spotify from "spotify-web-api-node";
+
+import { withSpotifyUserClient } from "../../lib/spotifyUserServer";
 
 export type TopMusicResponseSuccess = {
 	short: SpotifyApi.UsersTopTracksResponse;
@@ -14,15 +15,9 @@ export type TopMusicResponseSuccess = {
 		long: SpotifyApi.UsersTopArtistsResponse;
 	};
 };
-export type TopMusicResponseError = { error: unknown };
+export type TopMusicResponseError = { error: string };
 export type TopMusicResponse = TopMusicResponseSuccess | TopMusicResponseError;
 
-const api = new Spotify({
-	clientId: process.env.SPOTIFY_CLIENT_ID,
-	clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-	refreshToken: process.env.SPOTIFY_REFRESH_TOKEN
-});
-let expirationTime = 0;
 let cachedTime = 0;
 let cached: TopMusicResponseSuccess | undefined;
 
@@ -31,19 +26,13 @@ export default async function handler(
 	res: NextApiResponse<TopMusicResponse>
 ) {
 	if (req.method !== "GET") {
+		res.setHeader("Allow", "GET");
 		res.status(405).json({ error: "Method not allowed." });
 		return;
 	}
 
 	try {
 		if (!cached || Date.now() > cachedTime) {
-			if (Date.now() > expirationTime) {
-				const response = await api.refreshAccessToken();
-				api.setAccessToken(response.body.access_token);
-
-				expirationTime = Date.now() + response.body.expires_in * 1000;
-			}
-
 			const [
 				short,
 				medium,
@@ -51,14 +40,25 @@ export default async function handler(
 				artistsShort,
 				artistsMedium,
 				artistsLong
-			] = await Promise.all([
-				api.getMyTopTracks({ limit: 24, time_range: "short_term" }),
-				api.getMyTopTracks({ limit: 24, time_range: "medium_term" }),
-				api.getMyTopTracks({ limit: 24, time_range: "long_term" }),
-				api.getMyTopArtists({ limit: 24, time_range: "short_term" }),
-				api.getMyTopArtists({ limit: 24, time_range: "medium_term" }),
-				api.getMyTopArtists({ limit: 24, time_range: "long_term" })
-			]);
+			] = await withSpotifyUserClient(api =>
+				Promise.all([
+					api.getMyTopTracks({ limit: 24, time_range: "short_term" }),
+					api.getMyTopTracks({
+						limit: 24,
+						time_range: "medium_term"
+					}),
+					api.getMyTopTracks({ limit: 24, time_range: "long_term" }),
+					api.getMyTopArtists({
+						limit: 24,
+						time_range: "short_term"
+					}),
+					api.getMyTopArtists({
+						limit: 24,
+						time_range: "medium_term"
+					}),
+					api.getMyTopArtists({ limit: 24, time_range: "long_term" })
+				])
+			);
 
 			cached = {
 				short: short.body,
@@ -81,6 +81,11 @@ export default async function handler(
 		);
 		res.status(200).json(cached);
 	} catch (err) {
-		res.status(500).json({ error: (err as any)?.message });
+		const message = err instanceof Error ? err.message : "Unknown error";
+		console.error(`Unable to load Spotify listening data: ${message}`);
+		res.setHeader("Cache-Control", "no-store");
+		res.status(503).json({
+			error: "Spotify listening data is temporarily unavailable."
+		});
 	}
 }

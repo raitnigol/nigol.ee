@@ -1,11 +1,8 @@
-import {
-	MenuIcon,
-	XIcon
-} from "@heroicons/react/solid";
+import { MenuIcon, XIcon } from "@heroicons/react/solid";
 import TransitionLink from "./TransitionLink";
 import { useRouter } from "next/router";
 import { createPortal } from "preact/compat";
-import { useCallback, useEffect, useState } from "preact/hooks";
+import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 
 import ActiveLink from "./ActiveLink";
 
@@ -28,7 +25,7 @@ const pages: PageData[] = [
 	},
 	{
 		href: "/physical-media",
-		title: "CD Collection",
+		title: "Media Collection",
 		color: "text-emerald-400"
 	},
 	{
@@ -57,7 +54,9 @@ function NavItems({
 					href={href}
 					key={href}
 					activeClass={
-						isMobile ? "site-nav__link--active-mobile" : "after:inset-x-0"
+						isMobile
+							? "site-nav__link--active-mobile"
+							: "after:inset-x-0"
 					}
 					nonActiveClass={
 						isMobile
@@ -83,8 +82,16 @@ export default function SiteHeader() {
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [portalReady, setPortalReady] = useState(false);
+	const menuButtonRef = useRef<HTMLButtonElement>(null);
+	const mobileNavRef = useRef<HTMLElement>(null);
 
-	const closeMenu = useCallback(() => setMenuOpen(false), []);
+	const closeMenu = useCallback((restoreFocus = true) => {
+		setMenuOpen(false);
+		if (restoreFocus) {
+			requestAnimationFrame(() => menuButtonRef.current?.focus());
+		}
+	}, []);
+	const closeAfterNavigate = useCallback(() => closeMenu(false), [closeMenu]);
 
 	useEffect(() => setPortalReady(true), []);
 
@@ -97,13 +104,46 @@ export default function SiteHeader() {
 	useEffect(() => {
 		if (!menuOpen) return;
 
+		const previousOverflow = document.body.style.overflow;
+		document.body.style.overflow = "hidden";
+		const focusFrame = requestAnimationFrame(() => {
+			mobileNavRef.current
+				?.querySelector<HTMLAnchorElement>("a")
+				?.focus();
+		});
+
 		const onKeyDown = (event: KeyboardEvent) => {
-			if (event.key === "Escape") closeMenu();
+			if (event.key === "Escape") {
+				event.preventDefault();
+				closeMenu();
+				return;
+			}
+
+			if (event.key !== "Tab") return;
+
+			const links = Array.from(
+				mobileNavRef.current?.querySelectorAll<HTMLAnchorElement>(
+					"a"
+				) ?? []
+			);
+			const first = menuButtonRef.current;
+			const last = links.at(-1);
+			if (!first || !last) return;
+
+			if (event.shiftKey && document.activeElement === first) {
+				event.preventDefault();
+				last.focus();
+			} else if (!event.shiftKey && document.activeElement === last) {
+				event.preventDefault();
+				first.focus();
+			}
 		};
 
 		window.addEventListener("keydown", onKeyDown);
 
 		return () => {
+			cancelAnimationFrame(focusFrame);
+			document.body.style.overflow = previousOverflow;
 			window.removeEventListener("keydown", onKeyDown);
 		};
 	}, [menuOpen, closeMenu]);
@@ -118,12 +158,13 @@ export default function SiteHeader() {
 				</TransitionLink>
 
 				<button
+					ref={menuButtonRef}
 					type="button"
 					className="site-nav__toggle focus-ring lg:hidden"
 					aria-expanded={menuOpen}
-					aria-controls="site-mobile-nav"
+					aria-controls={menuOpen ? "site-mobile-nav" : undefined}
 					aria-label={menuOpen ? "Close menu" : "Open menu"}
-					onClick={() => setMenuOpen(open => !open)}
+					onClick={() => (menuOpen ? closeMenu() : setMenuOpen(true))}
 				>
 					{menuOpen ? (
 						<XIcon className="h-6 w-6" aria-hidden />
@@ -132,7 +173,10 @@ export default function SiteHeader() {
 					)}
 				</button>
 
-				<nav className="site-nav site-nav--desktop" aria-label="Primary">
+				<nav
+					className="site-nav site-nav--desktop"
+					aria-label="Primary"
+				>
 					<NavItems variant="desktop" />
 				</nav>
 			</div>
@@ -143,15 +187,19 @@ export default function SiteHeader() {
 							<div className="site-shell">
 								<nav
 									id="site-mobile-nav"
+									ref={mobileNavRef}
 									className="site-nav site-nav--mobile"
 									aria-label="Primary"
 								>
-									<NavItems variant="mobile" onNavigate={closeMenu} />
+									<NavItems
+										variant="mobile"
+										onNavigate={closeAfterNavigate}
+									/>
 								</nav>
 							</div>
 						</div>,
 						document.body
-					)
+				  )
 				: null}
 		</header>
 	);

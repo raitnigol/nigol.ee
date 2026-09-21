@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 
 import { ArtistList } from "./ArtistList";
+import { PhysicalMediaSectionHeader } from "./PhysicalMediaSectionHeader";
 import { TrackList } from "./TrackList";
-import type { TopMusicResponseSuccess } from "../pages/api/topMusic";
+import type {
+	TopMusicResponse,
+	TopMusicResponseSuccess
+} from "../pages/api/topMusic";
 
 const trackSections = [
 	{
@@ -29,9 +33,6 @@ const trackSections = [
 ];
 
 const ARTISTS_SECTION_INDEX = trackSections.length;
-
-const chapterHeadingClass =
-	"scroll-anchor mb-8 font-heading text-3xl font-extrabold uppercase tracking-[0.06em] text-white md:mb-10 md:text-4xl md:tracking-[0.08em] lg:text-5xl";
 
 const statHeadingClass =
 	"mb-4 font-heading text-xl font-bold tracking-tight transition-colors duration-300 md:text-2xl";
@@ -83,7 +84,7 @@ function TopGenresLine({
 	if (genres.length === 0) return null;
 
 	return (
-		<p className="mb-8 max-w-3xl text-base leading-relaxed text-secondary md:text-lg">
+		<p className="physical-media-section__description">
 			{genreIntro(label)}{" "}
 			<span className="text-white">{formatGenreList(genres)}</span>.
 		</p>
@@ -97,6 +98,7 @@ export function SpotifyListeningSection() {
 	);
 	const [activeCarousel, setActiveCarousel] = useState(0);
 	const [shouldFetch, setShouldFetch] = useState(false);
+	const [loadFailed, setLoadFailed] = useState(false);
 
 	useEffect(() => {
 		const element = rootRef.current;
@@ -118,19 +120,30 @@ export function SpotifyListeningSection() {
 	useEffect(() => {
 		if (!shouldFetch) return;
 
-		let cancelled = false;
+		const controller = new AbortController();
 
-		fetch("/api/topMusic")
-			.then(res => res.json())
+		fetch("/api/topMusic", { signal: controller.signal })
+			.then(async response => {
+				const info = (await response.json()) as TopMusicResponse;
+				if (!response.ok || "error" in info) {
+					throw new Error("Spotify listening data request failed");
+				}
+				return info;
+			})
 			.then(info => {
-				if (cancelled || info.error) return;
 				setTopMusic(info);
 			})
-			.catch(console.error);
+			.catch(error => {
+				if (
+					error instanceof DOMException &&
+					error.name === "AbortError"
+				) {
+					return;
+				}
+				setLoadFailed(true);
+			});
 
-		return () => {
-			cancelled = true;
-		};
+		return () => controller.abort();
 	}, [shouldFetch]);
 
 	const genreRangeKey =
@@ -153,54 +166,94 @@ export function SpotifyListeningSection() {
 
 	const genres = useMemo(() => rankGenres(genreArtists), [genreArtists]);
 
-	return (
-		<div ref={rootRef} className="mt-16 md:mt-20">
-			<h2 id="spotify-listening" className={chapterHeadingClass}>
-				On Spotify
-				<span
-					className="mt-3 block h-px w-14 bg-violet-400/75 md:mt-4 md:w-16"
+	if (!shouldFetch) {
+		return (
+			<>
+				<PhysicalMediaSectionHeader
+					id="spotify-listening-heading"
+					title="My Spotify listening"
+				/>
+				<div
+					ref={rootRef}
+					className="physical-media-spotify physical-media-spotify--deferred"
 					aria-hidden
 				/>
-			</h2>
+			</>
+		);
+	}
 
-			{topMusic ? (
-				<TopGenresLine label={genreLabel} genres={genres} />
-			) : null}
+	return (
+		<>
+			<PhysicalMediaSectionHeader
+				id="spotify-listening-heading"
+				title="My Spotify listening"
+				description={
+					topMusic ? (
+						<TopGenresLine label={genreLabel} genres={genres} />
+					) : undefined
+				}
+			/>
 
-			{trackSections.map((section, index) => (
-				<section key={section.id} className="mb-4 min-w-0 overflow-hidden">
-					<h3
-						className={`${statHeadingClass} ${
-							activeCarousel === index ? "text-white" : "text-subtle"
-						}`}
+			<div
+				ref={rootRef}
+				className="physical-media-spotify"
+				aria-busy={!topMusic && !loadFailed}
+			>
+				{loadFailed ? (
+					<p
+						role="status"
+						className="text-base text-secondary md:text-lg"
 					>
-						{section.title}
-					</h3>
-					<TrackList
-						tracks={topMusic?.[section.tracksKey].items}
-						priority={index === 0}
-						isActive={activeCarousel === index}
-						onActivate={() => setActiveCarousel(index)}
-					/>
-				</section>
-			))}
+						Spotify listening data is temporarily unavailable.
+					</p>
+				) : (
+					<>
+						{trackSections.map((section, index) => (
+							<section
+								key={section.id}
+								className="mb-4 min-w-0 overflow-hidden"
+							>
+								<h3
+									className={`${statHeadingClass} ${
+										activeCarousel === index
+											? "text-white"
+											: "text-subtle"
+									}`}
+								>
+									{section.title}
+								</h3>
+								<TrackList
+									tracks={topMusic?.[section.tracksKey].items}
+									priority={index === 0}
+									isActive={activeCarousel === index}
+									onActivate={() => setActiveCarousel(index)}
+								/>
+							</section>
+						))}
 
-			<section className="mb-4 min-w-0 overflow-hidden">
-				<h3
-					className={`${statHeadingClass} ${
-						activeCarousel === ARTISTS_SECTION_INDEX
-							? "text-white"
-							: "text-subtle"
-					}`}
-				>
-					{"Top artists I've listened to of all time"}
-				</h3>
-				<ArtistList
-					artists={topMusic?.artists.items}
-					isActive={activeCarousel === ARTISTS_SECTION_INDEX}
-					onActivate={() => setActiveCarousel(ARTISTS_SECTION_INDEX)}
-				/>
-			</section>
-		</div>
+						<section className="mb-4 min-w-0 overflow-hidden">
+							<h3
+								className={`${statHeadingClass} ${
+									activeCarousel === ARTISTS_SECTION_INDEX
+										? "text-white"
+										: "text-subtle"
+								}`}
+							>
+								{"Top artists I've listened to of all time"}
+							</h3>
+							<ArtistList
+								artists={topMusic?.artists.items}
+								isActive={
+									activeCarousel === ARTISTS_SECTION_INDEX
+								}
+								onActivate={() =>
+									setActiveCarousel(ARTISTS_SECTION_INDEX)
+								}
+							/>
+						</section>
+					</>
+				)}
+			</div>
+		</>
 	);
 }

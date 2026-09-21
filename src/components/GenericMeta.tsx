@@ -17,8 +17,7 @@ export default function GenericMeta({
 }: GenericMetaProps) {
 	const canonicalPath = path.startsWith("/") ? path : `/${path}`;
 	const url = `${SITE_URL}${canonicalPath === "/" ? "" : canonicalPath}`;
-	const pageTitle =
-		canonicalPath === "/" ? title : `${title} · ${SITE_NAME}`;
+	const pageTitle = canonicalPath === "/" ? title : `${title} · ${SITE_NAME}`;
 
 	return (
 		<Head>
@@ -31,6 +30,7 @@ export default function GenericMeta({
 			<meta property="og:description" content={description} />
 			<meta property="og:url" content={url} />
 			<meta property="og:image" content={image} />
+			<meta property="og:image:alt" content={`${pageTitle} preview`} />
 			<meta property="og:image:width" content="1200" />
 			<meta property="og:image:height" content="630" />
 			<meta property="og:locale" content="en_US" />
@@ -38,6 +38,7 @@ export default function GenericMeta({
 			<meta name="twitter:title" content={pageTitle} />
 			<meta name="twitter:description" content={description} />
 			<meta name="twitter:image" content={image} />
+			<meta name="twitter:image:alt" content={`${pageTitle} preview`} />
 		</Head>
 	);
 }

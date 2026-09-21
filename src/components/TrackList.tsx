@@ -185,6 +185,7 @@ function Track({ track, rank, priority }: TrackProps) {
 						alt={track.name}
 						width={512}
 						height={512}
+						sizes="(min-width: 1024px) 10.5rem, (min-width: 768px) 10rem, (min-width: 480px) 9rem, 8.25rem"
 						priority={priority}
 						className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
 					/>

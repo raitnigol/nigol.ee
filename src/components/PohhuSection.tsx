@@ -42,10 +42,10 @@ function formatFollowers(count: number) {
 
 function PohhuChapter({ id, title }: { id: string; title: string }) {
 	return (
-		<h3 id={id} className="pohhu-chapter scroll-anchor">
+		<h2 id={id} className="pohhu-chapter scroll-anchor">
 			<FormattedText text={title} />
 			<span className="pohhu-chapter__rule" aria-hidden />
-		</h3>
+		</h2>
 	);
 }
 
@@ -57,9 +57,9 @@ function PohhuSubhead({
 	children: ComponentChildren;
 }) {
 	return (
-		<h4 id={id} className="pohhu-subhead scroll-anchor">
+		<h3 id={id} className="pohhu-subhead scroll-anchor">
 			{children}
-		</h4>
+		</h3>
 	);
 }
 
@@ -110,7 +110,9 @@ function LocalCoverImage({
 	if (failed) {
 		return (
 			<div
-				className={`flex h-full w-full items-center justify-center bg-slate-900 text-xs font-bold uppercase tracking-wider text-subtle ${className ?? ""}`}
+				className={`flex h-full w-full items-center justify-center bg-slate-900 text-xs font-bold uppercase tracking-wider text-subtle ${
+					className ?? ""
+				}`}
 			>
 				Cover
 			</div>
@@ -148,8 +150,8 @@ function InvestmentStatusMark({
 		status === "paid_in_full"
 			? "pohhu-status pohhu-status--paid"
 			: status === "partially_paid"
-				? "pohhu-status pohhu-status--partial"
-				: "pohhu-status pohhu-status--open";
+			? "pohhu-status pohhu-status--partial"
+			: "pohhu-status pohhu-status--open";
 
 	return <span className={tone}>{investmentStatusLabel(status)}</span>;
 }
@@ -160,10 +162,14 @@ function FundedReleaseBannerCard({ release }: { release: FundedRelease }) {
 			<article className="pohhu-release pohhu-release--banner">
 				<div className="pohhu-release__meta">
 					{release.subtitle ? (
-						<span className="pohhu-release__year">{release.subtitle}</span>
+						<span className="pohhu-release__year">
+							{release.subtitle}
+						</span>
 					) : null}
 					{release.investmentStatus ? (
-						<InvestmentStatusMark status={release.investmentStatus} />
+						<InvestmentStatusMark
+							status={release.investmentStatus}
+						/>
 					) : null}
 				</div>
 				<h4 className="pohhu-release__title pohhu-release__title--banner">
@@ -205,15 +211,21 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 				<div className="pohhu-release__body">
 					<div className="pohhu-release__meta">
 						{release.releaseYear ? (
-							<span className="pohhu-release__year">{release.releaseYear}</span>
+							<span className="pohhu-release__year">
+								{release.releaseYear}
+							</span>
 						) : null}
 						{release.investmentStatus ? (
-							<InvestmentStatusMark status={release.investmentStatus} />
+							<InvestmentStatusMark
+								status={release.investmentStatus}
+							/>
 						) : null}
 					</div>
 					<p className="pohhu-release__title">{release.title}</p>
 					{release.artists ? (
-						<p className="pohhu-release__artists">{release.artists}</p>
+						<p className="pohhu-release__artists">
+							{release.artists}
+						</p>
 					) : null}
 				</div>
 			</a>
@@ -235,7 +247,10 @@ function PohhuToc() {
 			<ul className="pohhu-toc__list">
 				{POHHU_TOC.map(item => (
 					<li key={item.href}>
-						<a href={item.href} className="pohhu-toc__link focus-ring">
+						<a
+							href={item.href}
+							className="pohhu-toc__link focus-ring"
+						>
 							{item.label}
 						</a>
 					</li>
@@ -367,7 +382,7 @@ function CertifiedArtistCard({
 			</div>
 
 			<div className="pohhu-artist__copy">
-				<h4 className="pohhu-artist__name">
+				<h3 className="pohhu-artist__name">
 					<a
 						href={spotifyUrl}
 						target="_blank"
@@ -376,11 +391,11 @@ function CertifiedArtistCard({
 					>
 						{artistName ?? "…"}
 					</a>
-				</h4>
+				</h3>
 				{artist ? (
 					<p className="pohhu-artist__meta">
-						<span>{formatFollowers(artist.followers)}</span> followers
-						on Spotify
+						<span>{formatFollowers(artist.followers)}</span>{" "}
+						followers on Spotify
 						{artist.genres.length > 0 ? (
 							<> · {artist.genres.slice(0, 3).join(", ")}</>
 						) : null}
@@ -430,7 +445,10 @@ function KevilniusMerchBlock() {
 	} = kevilniusMerch;
 
 	return (
-		<div id="pohhu-kevilnius-merch" className="scroll-anchor merch-pdp min-w-0">
+		<div
+			id="pohhu-kevilnius-merch"
+			className="scroll-anchor merch-pdp min-w-0"
+		>
 			<div className="merch-product-layout">
 				{gallery.length > 0 ? (
 					<figure className="photo-credit min-w-0">
@@ -468,7 +486,9 @@ function KevilniusMerchBlock() {
 						<div className="product-detail__eyebrow">
 							<p className="product-detail__vendor">{vendor}</p>
 							{saleLabel ? (
-								<span className="product-detail__badge">{saleLabel}</span>
+								<span className="product-detail__badge">
+									{saleLabel}
+								</span>
 							) : null}
 						</div>
 						<h3 className="product-detail__title">{title}</h3>
@@ -476,7 +496,9 @@ function KevilniusMerchBlock() {
 						<div className="product-detail__pricing">
 							{compareAtPrice ? (
 								<p className="product-detail__compare">
-									<span className="sr-only">Original price </span>
+									<span className="sr-only">
+										Original price{" "}
+									</span>
 									<s>
 										{compareAtPrice}
 										{currency}
@@ -486,11 +508,14 @@ function KevilniusMerchBlock() {
 							<p className="product-detail__price">
 								<span className="sr-only">Sale price </span>
 								{price}
-								<span className="product-detail__currency">{currency}</span>
+								<span className="product-detail__currency">
+									{currency}
+								</span>
 							</p>
 							{compareAtPrice ? (
 								<p className="product-detail__save">
-									Save {Number(compareAtPrice) - Number(price)}
+									Save{" "}
+									{Number(compareAtPrice) - Number(price)}
 									{currency}
 								</p>
 							) : null}
@@ -518,12 +543,21 @@ function KevilniusMerchBlock() {
 
 					{details.length > 0 ? (
 						<div className="product-detail__specs-wrap">
-							<p className="product-detail__specs-heading">Details</p>
+							<p className="product-detail__specs-heading">
+								Details
+							</p>
 							<dl className="product-detail__specs">
 								{details.map(({ label, value }) => (
-									<div key={label} className="product-detail__spec">
-										<dt className="product-detail__spec-label">{label}</dt>
-										<dd className="product-detail__spec-value">{value}</dd>
+									<div
+										key={label}
+										className="product-detail__spec"
+									>
+										<dt className="product-detail__spec-label">
+											{label}
+										</dt>
+										<dd className="product-detail__spec-value">
+											{value}
+										</dd>
 									</div>
 								))}
 							</dl>
@@ -533,7 +567,10 @@ function KevilniusMerchBlock() {
 					<div className="product-detail__description">
 						<p className="product-detail__specs-heading">About</p>
 						{description.map((paragraph, i) => (
-							<p key={i} className="product-detail__description-p">
+							<p
+								key={i}
+								className="product-detail__description-p"
+							>
 								<FormattedText text={paragraph} />
 							</p>
 						))}
@@ -552,36 +589,47 @@ export default function PohhuSection({
 	return (
 		<div className="pohhu-page" aria-labelledby="pohhu-heading">
 			<header className="pohhu-hero">
-				<h2 id="pohhu-heading" className="pohhu-hero__brand">
-					<span className="sr-only">$.pohhu¥</span>
-					<span className="block">
-						<PohhuLogoReveal />
-					</span>
+				<div className="pohhu-hero__identity">
+					<h1 id="pohhu-heading" className="pohhu-hero__brand">
+						<span className="sr-only">$.pohhu¥</span>
+						<span className="block">
+							<PohhuLogoReveal />
+						</span>
+					</h1>
 					<p className="pohhu-tagline-reveal pohhu-hero__tagline">
 						<span className="pohhu-tagline-reveal__text">
 							will take over the world
 						</span>
 					</p>
-				</h2>
+				</div>
 				<PohhuToc />
 			</header>
 
 			<PohhuBlock id="pohhu-manifesto" title="Manifesto">
 				<div className="pohhu-stack">
 					{pohhuManifestoBeforeCore.map((paragraph, i) => (
-						<ManifestoParagraph key={`before-${i}`} text={paragraph} />
+						<ManifestoParagraph
+							key={`before-${i}`}
+							text={paragraph}
+						/>
 					))}
 
 					<FoundingCoreStrip members={pohhuFoundingCore} />
 
 					{pohhuManifestoAfterCore.map((paragraph, i) => (
-						<ManifestoParagraph key={`after-${i}`} text={paragraph} />
+						<ManifestoParagraph
+							key={`after-${i}`}
+							text={paragraph}
+						/>
 					))}
 
 					<ManifestoPullquote text={pohhuManifestoPullquote} />
 
 					{pohhuManifestoClosing.map((paragraph, i) => (
-						<ManifestoParagraph key={`close-${i}`} text={paragraph} />
+						<ManifestoParagraph
+							key={`close-${i}`}
+							text={paragraph}
+						/>
 					))}
 				</div>
 
@@ -595,7 +643,9 @@ export default function PohhuSection({
 						</span>
 						{aleksandriPub.title}
 					</p>
-					<p className="pohhu-aside__kicker">{aleksandriPub.subtitle}</p>
+					<p className="pohhu-aside__kicker">
+						{aleksandriPub.subtitle}
+					</p>
 					<div className="pohhu-aside__body">
 						<ManifestoParagraph text={aleksandriPub.body} />
 						<p className="pohhu-aside__action">
@@ -612,23 +662,37 @@ export default function PohhuSection({
 				</aside>
 			</PohhuBlock>
 
-			<PohhuBlock id="pohhu-physical-media" title={pohhuPhysicalMediaDivider}>
+			<PohhuBlock
+				id="pohhu-physical-media"
+				title={pohhuPhysicalMediaDivider}
+			>
 				<div className="pohhu-stack">
 					{pohhuFundedReleasesIntro.map((paragraph, i) => (
-						<ManifestoParagraph key={`releases-intro-${i}`} text={paragraph} />
+						<ManifestoParagraph
+							key={`releases-intro-${i}`}
+							text={paragraph}
+						/>
 					))}
 					{pohhuFundingModel.map((paragraph, i) => (
-						<ManifestoParagraph key={`funding-model-${i}`} text={paragraph} />
+						<ManifestoParagraph
+							key={`funding-model-${i}`}
+							text={paragraph}
+						/>
 					))}
 				</div>
 
 				<div className="pohhu-panel">
 					<PohhuSubhead id="pohhu-963-records">
-						<FormattedText text={pohhuFundedReleasesSubsectionTitle} />
+						<FormattedText
+							text={pohhuFundedReleasesSubsectionTitle}
+						/>
 					</PohhuSubhead>
 					<ul className="pohhu-catalog">
 						{fundedReleases.map(release => (
-							<FundedReleaseCard key={release.title} release={release} />
+							<FundedReleaseCard
+								key={release.title}
+								release={release}
+							/>
 						))}
 					</ul>
 				</div>
@@ -648,7 +712,10 @@ export default function PohhuSection({
 					</PohhuSubhead>
 					<div className="pohhu-stack">
 						{kiviArtShow.paragraphs.map((paragraph, i) => (
-							<ManifestoParagraph key={`kivi-${i}`} text={paragraph} />
+							<ManifestoParagraph
+								key={`kivi-${i}`}
+								text={paragraph}
+							/>
 						))}
 					</div>
 					<div className="pohhu-gallery">
@@ -657,7 +724,9 @@ export default function PohhuSection({
 							dialogLabel="Kivi Baar art show gallery"
 							thumbnailVariant="bare"
 							bannerFooter={
-								<KiviBaarSocialLinks links={kiviArtShow.links} />
+								<KiviBaarSocialLinks
+									links={kiviArtShow.links}
+								/>
 							}
 							photosStartLabel={kiviArtShow.photosSectionLabel}
 						/>

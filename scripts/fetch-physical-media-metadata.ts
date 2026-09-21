@@ -4,7 +4,7 @@ import Spotify from "spotify-web-api-node";
 
 import {
 	isPhysicalMediaListed,
-	physicalMediaCollection
+	spotifyPhysicalMediaCollection
 } from "../src/data/physicalMedia";
 import {
 	mapAlbumMeta,
@@ -25,7 +25,7 @@ const REQUEST_GAP_MS = 400;
 const SEARCH_LIMIT = 5;
 const MARKET = "EE";
 
-type ListedItem = (typeof physicalMediaCollection)[number] & {
+type ListedItem = (typeof spotifyPhysicalMediaCollection)[number] & {
 	spotifyAlbumId?: string | null;
 	spotifyShowId?: string | null;
 };
@@ -39,7 +39,7 @@ type SpotifySearchShow = {
 	external_urls: { spotify: string };
 };
 
-const listedItems = physicalMediaCollection.filter(
+const listedItems = spotifyPhysicalMediaCollection.filter(
 	isPhysicalMediaListed
 ) as ListedItem[];
 

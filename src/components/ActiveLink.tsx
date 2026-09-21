@@ -32,14 +32,14 @@ export default function ActiveLink({
 	return (
 		<TransitionLink href={href} {...props}>
 			{cloneElement(children, {
-				className:
-					isActive
-						? children.props.className
-							? `${children.props.className} ${activeClass}`
-							: activeClass
-						: children.props.className
-						? `${children.props.className} ${nonActiveClass}`
-						: nonActiveClass
+				"aria-current": isActive ? "page" : undefined,
+				className: isActive
+					? children.props.className
+						? `${children.props.className} ${activeClass}`
+						: activeClass
+					: children.props.className
+					? `${children.props.className} ${nonActiveClass}`
+					: nonActiveClass
 			})}
 		</TransitionLink>
 	);

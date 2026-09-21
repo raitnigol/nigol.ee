@@ -3,19 +3,25 @@ import path from "path";
 
 import {
 	isPhysicalMediaListed,
-	physicalMediaCollection
+	spotifyPhysicalMediaCollection
 } from "../data/physicalMedia";
 import type {
 	PhysicalMediaAlbumMeta,
 	PhysicalMediaSpotifyMetaFile
 } from "./physicalMediaSpotifyMeta";
+import {
+	isAllowedSpotifyImageUrl,
+	isAllowedSpotifyLink
+} from "./spotifyUrlValidation";
 
 const META_FILE = path.join(
 	process.cwd(),
 	"data/generated/physicalMediaSpotifyMeta.json"
 );
 
-const listedTotal = physicalMediaCollection.filter(isPhysicalMediaListed).length;
+const listedTotal = spotifyPhysicalMediaCollection.filter(
+	isPhysicalMediaListed
+).length;
 
 function isValidAlbumMeta(value: unknown): value is PhysicalMediaAlbumMeta {
 	if (!value || typeof value !== "object") return false;
@@ -25,13 +31,16 @@ function isValidAlbumMeta(value: unknown): value is PhysicalMediaAlbumMeta {
 		typeof meta.collectionId === "string" &&
 		typeof meta.name === "string" &&
 		typeof meta.artists === "string" &&
-		(meta.coverImageUrl === null || typeof meta.coverImageUrl === "string") &&
+		(meta.coverImageUrl === null ||
+			(typeof meta.coverImageUrl === "string" &&
+				isAllowedSpotifyImageUrl(meta.coverImageUrl))) &&
 		(meta.releaseYear === null || typeof meta.releaseYear === "string") &&
 		typeof meta.releaseDate === "string" &&
 		(meta.label === null || typeof meta.label === "string") &&
 		typeof meta.totalTracks === "number" &&
 		typeof meta.albumType === "string" &&
 		typeof meta.spotifyUrl === "string" &&
+		isAllowedSpotifyLink(meta.spotifyUrl) &&
 		(meta.copyright === null || typeof meta.copyright === "string")
 	);
 }
@@ -53,7 +62,9 @@ export function loadPhysicalMediaMeta(): PhysicalMediaSpotifyMetaFile {
 
 	for (const [id, meta] of Object.entries(data.albums)) {
 		if (!isValidAlbumMeta(meta)) {
-			throw new Error(`Malformed album metadata for "${id}" in ${META_FILE}`);
+			throw new Error(
+				`Malformed album metadata for "${id}" in ${META_FILE}`
+			);
 		}
 	}
 
@@ -71,7 +82,9 @@ export function loadPhysicalMediaMeta(): PhysicalMediaSpotifyMetaFile {
 				: new Date(0).toISOString(),
 		source: typeof data.source === "string" ? data.source : "unknown",
 		failed: Array.isArray(data.failed)
-			? data.failed.filter((entry): entry is string => typeof entry === "string")
+			? data.failed.filter(
+					(entry): entry is string => typeof entry === "string"
+			  )
 			: []
 	};
 }

@@ -2,7 +2,7 @@
 	"name": "nigol.ee",
 	"license": "GPL-3.0",
 	"version": "0.1.0",
-	"private": false,
+	"private": true,
 	"engines": {
 		"node": "22.x"
 	},

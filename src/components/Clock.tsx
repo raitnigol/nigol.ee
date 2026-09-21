@@ -39,5 +39,12 @@ export function Clock() {
 		.replace(" at", " · ")
 		.replace(" 24:", " 00:");
 
-	return <>{displayTime}</>;
+	return (
+		<time
+			dateTime={new Date(now).toISOString()}
+			aria-label={`Current time in Tallinn: ${displayTime}`}
+		>
+			{displayTime}
+		</time>
+	);
 }

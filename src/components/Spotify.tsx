@@ -23,7 +23,7 @@ const formatDuration = (ms: number) => {
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
-const EMPTY_ALBUM_ART = "/images/emptysong.jpg";
+const EMPTY_ALBUM_ART = "/images/physical-media/covers/placeholder.jpg";
 const NOW_PLAYING_KEY = "/api/nowPlaying";
 const PLAYING_POLL_MS = 15_000;
 const IDLE_POLL_MS = 60_000;
@@ -36,7 +36,12 @@ type SpotifyProps = {
 function getAlbumArtUrl(track: SpotifyApi.TrackObjectFull | null | undefined) {
 	const images = track?.album?.images;
 	if (!images?.length) return EMPTY_ALBUM_ART;
-	return images[1]?.url ?? images[0]?.url ?? images.at(-1)?.url ?? EMPTY_ALBUM_ART;
+	return (
+		images[1]?.url ??
+		images[0]?.url ??
+		images.at(-1)?.url ??
+		EMPTY_ALBUM_ART
+	);
 }
 
 function useInViewport(rootRef: RefObject<HTMLElement>) {
@@ -79,16 +84,17 @@ function useNowPlaying(rootRef: RefObject<HTMLElement>) {
 			return;
 		}
 
-		setTime(data.progessMs ?? 0);
+		const startedProgress = data.progressMs ?? data.progessMs ?? 0;
+		setTime(startedProgress);
 
 		const started = Date.now();
 
 		const interval = setInterval(() => {
 			setTime(
 				data.isPaused
-					? data.progessMs ?? 0
+					? startedProgress
 					: Math.min(
-							(data.progessMs ?? 0) + Date.now() - started,
+							startedProgress + Date.now() - started,
 							data.track!.duration_ms
 					  )
 			);
@@ -157,11 +163,11 @@ function SpotifyTerminal({
 	} = nowPlaying;
 
 	const failed = Boolean(error || (data && "error" in data));
-	const track =
-		data && !("error" in data) && data.track ? data.track : null;
-	const isPlayingNow = Boolean(track && data && !("error" in data) && data.isPlayingNow);
-	const playedAt =
-		data && !("error" in data) ? data.playedAt : undefined;
+	const track = data && !("error" in data) && data.track ? data.track : null;
+	const isPlayingNow = Boolean(
+		track && data && !("error" in data) && data.isPlayingNow
+	);
+	const playedAt = data && !("error" in data) ? data.playedAt : undefined;
 	const artistNames = track
 		? track.artists.map(artist => artist.name).join(", ")
 		: null;
@@ -210,15 +216,27 @@ function SpotifyTerminal({
 					<TerminalRow label="Status">{statusText}</TerminalRow>
 					<TerminalRow label="Track">
 						{track?.name ??
-							(isLoading ? <TerminalSkeleton width="9rem" /> : "—")}
+							(isLoading ? (
+								<TerminalSkeleton width="9rem" />
+							) : (
+								"—"
+							))}
 					</TerminalRow>
 					<TerminalRow label="Artist">
 						{artistNames ??
-							(isLoading ? <TerminalSkeleton width="7rem" /> : "—")}
+							(isLoading ? (
+								<TerminalSkeleton width="7rem" />
+							) : (
+								"—"
+							))}
 					</TerminalRow>
 					<TerminalRow label="Album">
 						{track?.album.name ??
-							(isLoading ? <TerminalSkeleton width="8rem" /> : "—")}
+							(isLoading ? (
+								<TerminalSkeleton width="8rem" />
+							) : (
+								"—"
+							))}
 					</TerminalRow>
 					{ownedPhysicalMedia ? (
 						<TerminalRow label="Shelf">
@@ -230,7 +248,11 @@ function SpotifyTerminal({
 						</TerminalRow>
 					) : (
 						<TerminalRow label="Shelf">
-							{isLoading ? <TerminalSkeleton width="3rem" /> : "—"}
+							{isLoading ? (
+								<TerminalSkeleton width="3rem" />
+							) : (
+								"—"
+							)}
 						</TerminalRow>
 					)}
 					{isPlayingNow && track ? (
@@ -239,7 +261,10 @@ function SpotifyTerminal({
 								{formatDuration(progressMs)} /{" "}
 								{formatDuration(track.duration_ms)}
 							</span>
-							<span className="spotify-terminal__playback-icon" aria-hidden>
+							<span
+								className="spotify-terminal__playback-icon"
+								aria-hidden
+							>
 								{data && !("error" in data) && data.isPaused ? (
 									<PlayIcon className="h-3 w-3" />
 								) : (
@@ -249,15 +274,19 @@ function SpotifyTerminal({
 						</TerminalRow>
 					) : (
 						<TerminalRow label="Played">
-							{failed
-								? "unable to fetch"
-								: track
-									? playedAt
-										? formatPlayedAt(playedAt)
-										: "recently on Spotify"
-									: isLoading
-										? <TerminalSkeleton width="6.5rem" />
-										: "no recent activity"}
+							{failed ? (
+								"unable to fetch"
+							) : track ? (
+								playedAt ? (
+									formatPlayedAt(playedAt)
+								) : (
+									"recently on Spotify"
+								)
+							) : isLoading ? (
+								<TerminalSkeleton width="6.5rem" />
+							) : (
+								"no recent activity"
+							)}
 						</TerminalRow>
 					)}
 				</div>
@@ -272,7 +301,10 @@ export default function Spotify({ showArtwork = true }: SpotifyProps) {
 
 	return (
 		<div ref={rootRef} className="spotify-root">
-			<SpotifyTerminal showArtwork={showArtwork} nowPlaying={nowPlaying} />
+			<SpotifyTerminal
+				showArtwork={showArtwork}
+				nowPlaying={nowPlaying}
+			/>
 		</div>
 	);
 }
