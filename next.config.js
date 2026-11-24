@@ -1,10 +1,3 @@
-// @ts-check
-
-const withPreact = require("next-plugin-preact");
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-	enabled: process.env.ANALYZE === "true"
-});
-
 const securityHeaders = [
 	{
 		key: "Content-Security-Policy",
@@ -26,16 +19,21 @@ const config = {
 	},
 	poweredByHeader: false,
 	reactStrictMode: true,
-	swcMinify: true,
-	i18n: { locales: ["en-US"], defaultLocale: "en-US" },
 	images: {
-		domains: ["i.scdn.co", "i.discogs.com"],
+		localPatterns: [
+			"/images/**",
+			"/collection-design/**",
+			"/_next/static/media/**"
+		].map(pathname => ({ pathname, search: "" })),
+		remotePatterns: ["i.scdn.co", "i.discogs.com"].map(hostname => ({
+			protocol: "https",
+			hostname,
+			port: "",
+			pathname: "/**"
+		})),
 		formats: ["image/webp"],
 		deviceSizes: [640, 750, 828, 1080, 1200, 1920],
 		imageSizes: [32, 48, 64, 96, 128, 160, 256]
-	},
-	experimental: {
-		esmExternals: false
 	},
 	async headers() {
 		return [
@@ -58,32 +56,7 @@ const config = {
 				permanent: true
 			}
 		];
-	},
-	webpack: config => {
-		config.resolve.alias = {
-			...config.resolve.alias,
-			"@fontsource/inter/latin-800.css": require.resolve(
-				"@fontsource/inter/latin-800.css"
-			),
-			"@fontsource/inter/latin-ext-800.css": require.resolve(
-				"@fontsource/inter/latin-ext-800.css"
-			),
-			"@fontsource/outfit/latin-500.css": require.resolve(
-				"@fontsource/outfit/latin-500.css"
-			),
-			"@fontsource/outfit/latin-ext-500.css": require.resolve(
-				"@fontsource/outfit/latin-ext-500.css"
-			),
-			"@fontsource/outfit/latin-700.css": require.resolve(
-				"@fontsource/outfit/latin-700.css"
-			),
-			"@fontsource/outfit/latin-ext-700.css": require.resolve(
-				"@fontsource/outfit/latin-ext-700.css"
-			)
-		};
-
-		return config;
 	}
 };
 
-module.exports = withBundleAnalyzer(withPreact(config));
+module.exports = config;

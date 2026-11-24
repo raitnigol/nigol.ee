@@ -2557,7 +2557,7 @@
 		content: "";
 		pointer-events: none;
 		position: absolute;
-		inset: -2rem -1.5rem auto;
+		inset: -2rem max(-1.5rem, calc(0px - var(--site-gutter))) auto;
 		height: 14rem;
 		z-index: -1;
 		background: radial-gradient(
@@ -2644,6 +2644,7 @@
 	}
 
 	&__filter {
+		min-height: 44px;
 		margin: 0;
 		padding: 0.35rem 0.75rem;
 		border: 1px solid rgb(255 255 255 / 12%);

@@ -1,16 +1,14 @@
-import TransitionLink from "./TransitionLink";
-import { PauseIcon, PlayIcon } from "@heroicons/react/solid";
-import Image from "next/future/image";
-import { useEffect, useRef, useState } from "preact/hooks";
-import type { RefObject } from "preact";
+"use client";
+
+import Link from "next/link";
+import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 import useSWR from "swr";
 
-import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
 import { formatPlayedAt } from "../lib/spotify";
-import type {
-	NowPlayingResponseError,
-	NowPlayingResponseSuccess
-} from "../pages/api/nowPlaying";
+import type { NowPlayingResponseSuccess } from "../lib/nowPlaying";
 
 const formatDuration = (ms: number) => {
 	const seconds = Math.floor((ms / 1000) % 60)
@@ -21,7 +19,11 @@ const formatDuration = (ms: number) => {
 	return `${minutes}:${seconds}`;
 };
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+async function fetcher(url: string): Promise<NowPlayingResponseSuccess> {
+	const response = await fetch(url);
+	if (!response.ok) throw new Error("Spotify is temporarily unavailable");
+	return response.json();
+}
 
 const EMPTY_ALBUM_ART = "/images/physical-media/covers/placeholder.jpg";
 const NOW_PLAYING_KEY = "/api/nowPlaying";
@@ -44,8 +46,8 @@ function getAlbumArtUrl(track: SpotifyApi.TrackObjectFull | null | undefined) {
 	);
 }
 
-function useInViewport(rootRef: RefObject<HTMLElement>) {
-	const [isVisible, setIsVisible] = useState(true);
+function useInViewport(rootRef: RefObject<HTMLElement | null>) {
+	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
 		const element = rootRef.current;
@@ -63,59 +65,58 @@ function useInViewport(rootRef: RefObject<HTMLElement>) {
 	return isVisible;
 }
 
-function useNowPlaying(rootRef: RefObject<HTMLElement>) {
+function useNowPlaying(rootRef: RefObject<HTMLElement | null>) {
 	const isVisible = useInViewport(rootRef);
-	const { data, error } = useSWR<
-		NowPlayingResponseSuccess,
-		NowPlayingResponseError
-	>(isVisible ? NOW_PLAYING_KEY : null, fetcher, {
-		refreshInterval: data => {
-			if (!data || "error" in data) return IDLE_POLL_MS;
-			return data.isPlayingNow ? PLAYING_POLL_MS : IDLE_POLL_MS;
+	const { data, error } = useSWR<NowPlayingResponseSuccess, Error>(
+		isVisible ? NOW_PLAYING_KEY : null,
+		fetcher,
+		{
+			keepPreviousData: true,
+			errorRetryCount: 2,
+			refreshInterval: data => {
+				if (!data) return IDLE_POLL_MS;
+				return data.isPlayingNow ? PLAYING_POLL_MS : IDLE_POLL_MS;
+			}
 		}
-	});
+	);
 
-	const isLoading = isVisible && !data && !error;
-	const [time, setTime] = useState(0);
+	const isLoading = !data && !error;
+	const [tick, setTick] = useState<{
+		source: NowPlayingResponseSuccess;
+		ms: number;
+	} | null>(null);
+	const initialProgress = data?.progressMs ?? data?.progessMs ?? 0;
 
 	useEffect(() => {
-		if (!data?.track || !data.isPlayingNow || !isVisible) {
-			setTime(0);
+		if (!data?.track || !data.isPlayingNow || data.isPaused || !isVisible)
 			return;
-		}
 
-		const startedProgress = data.progressMs ?? data.progessMs ?? 0;
-		setTime(startedProgress);
-
+		const duration = data.track.duration_ms;
 		const started = Date.now();
-
-		const interval = setInterval(() => {
-			setTime(
-				data.isPaused
-					? startedProgress
-					: Math.min(
-							startedProgress + Date.now() - started,
-							data.track!.duration_ms
-					  )
-			);
+		const interval = window.setInterval(() => {
+			if (!document.hidden) {
+				setTick({
+					source: data,
+					ms: Math.min(
+						initialProgress + Date.now() - started,
+						duration
+					)
+				});
+			}
 		}, PROGRESS_TICK_MS);
 
-		return () => clearInterval(interval);
-	}, [data, isVisible]);
+		return () => window.clearInterval(interval);
+	}, [data, isVisible, initialProgress]);
 
 	const albumArtUrl = data?.track ? getAlbumArtUrl(data.track) : null;
-	const showProgress = Boolean(data?.track);
-	const progressMs = data?.isPlayingNow ? time : 0;
-	const ownedPhysicalMedia = data?.track
-		? findOwnedPhysicalMedia(data.track.album.id)
-		: undefined;
+	const progressMs = tick && tick.source === data ? tick.ms : initialProgress;
+	const ownedPhysicalMedia = data?.ownedPhysicalMedia;
 
 	return {
 		data,
 		error,
 		isLoading,
 		albumArtUrl,
-		showProgress,
 		progressMs,
 		ownedPhysicalMedia
 	};
@@ -162,21 +163,24 @@ function SpotifyTerminal({
 		ownedPhysicalMedia
 	} = nowPlaying;
 
-	const failed = Boolean(error || (data && "error" in data));
-	const track = data && !("error" in data) && data.track ? data.track : null;
-	const isPlayingNow = Boolean(
-		track && data && !("error" in data) && data.isPlayingNow
-	);
-	const playedAt = data && !("error" in data) ? data.playedAt : undefined;
+	const track = data?.track;
+	const failed = Boolean(error && !track);
+	const isPlayingNow = Boolean(track && data?.isPlayingNow);
+	const playedAt = data?.playedAt;
 	const artistNames = track
 		? track.artists.map(artist => artist.name).join(", ")
 		: null;
 
 	let statusText: React.ReactNode = "loading…";
-	if (failed) statusText = "error";
+	if (failed) statusText = "temporarily unavailable";
 	else if (isLoading) statusText = <TerminalSkeleton width="7.5rem" />;
 	else if (!track) statusText = "offline";
-	else statusText = isPlayingNow ? "currently playing" : "last played";
+	else
+		statusText = isPlayingNow
+			? data?.isPaused
+				? "paused"
+				: "currently playing"
+			: "last played";
 
 	return (
 		<div
@@ -215,12 +219,18 @@ function SpotifyTerminal({
 				<div className="spotify-terminal__meta">
 					<TerminalRow label="Status">{statusText}</TerminalRow>
 					<TerminalRow label="Track">
-						{track?.name ??
-							(isLoading ? (
-								<TerminalSkeleton width="9rem" />
-							) : (
-								"—"
-							))}
+						{track ? (
+							<a
+								className="home__link home__link--pro focus-ring"
+								href={track.external_urls.spotify}
+							>
+								{track.name}
+							</a>
+						) : isLoading ? (
+							<TerminalSkeleton width="9rem" />
+						) : (
+							"—"
+						)}
 					</TerminalRow>
 					<TerminalRow label="Artist">
 						{artistNames ??
@@ -240,11 +250,12 @@ function SpotifyTerminal({
 					</TerminalRow>
 					{ownedPhysicalMedia ? (
 						<TerminalRow label="Shelf">
-							<TransitionLink href="/physical-media">
-								<a className="home__link home__link--pro focus-ring">
-									owned (physical copy)
-								</a>
-							</TransitionLink>
+							<Link
+								href="/physical-media"
+								className="home__link home__link--pro focus-ring"
+							>
+								owned (physical copy)
+							</Link>
 						</TerminalRow>
 					) : (
 						<TerminalRow label="Shelf">
@@ -265,10 +276,10 @@ function SpotifyTerminal({
 								className="spotify-terminal__playback-icon"
 								aria-hidden
 							>
-								{data && !("error" in data) && data.isPaused ? (
-									<PlayIcon className="h-3 w-3" />
-								) : (
+								{data?.isPaused ? (
 									<PauseIcon className="h-3 w-3" />
+								) : (
+									<PlayIcon className="h-3 w-3" />
 								)}
 							</span>
 						</TerminalRow>

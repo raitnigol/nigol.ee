@@ -1,10 +1,7 @@
-export const FALLBACK_VISITOR_IP = "203.0.113.42";
-
 export type TranscriptLine = {
 	prompt?: string;
 	text: string;
 	muted?: boolean;
-	delay?: number;
 };
 
 export const SSH_TRANSCRIPT_STATIC: TranscriptLine[] = [
@@ -37,7 +34,7 @@ export const SSH_TRANSCRIPT_STATIC: TranscriptLine[] = [
 ];
 
 /** OpenSSH-style `Last login` timestamp in the visitor's local timezone. */
-export function formatSshLastLogin(at: Date, ip: string): string {
+export function formatSshLastLogin(at: Date, ip?: string): string {
 	const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 	const weekday = at.toLocaleDateString("en-US", {
@@ -57,12 +54,7 @@ export function formatSshLastLogin(at: Date, ip: string): string {
 	});
 	const year = at.toLocaleDateString("en-US", { year: "numeric", timeZone });
 
-	return `Last login: ${weekday} ${month} ${day} ${time} ${year} from ${ip}`;
-}
-
-export function buildSshTranscript(lastLoginLine: string): TranscriptLine[] {
-	return [
-		...SSH_TRANSCRIPT_STATIC,
-		{ text: lastLoginLine, muted: true }
-	];
+	return `Last login: ${weekday} ${month} ${day} ${time} ${year} ${
+		ip ? `from ${ip}` : ""
+	}`.trimEnd();
 }

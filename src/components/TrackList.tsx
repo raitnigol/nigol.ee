@@ -1,6 +1,6 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import Image from "next/future/image";
-import { useCallback, useEffect, useRef, useState } from "preact/hooks";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { getReleaseYear } from "../lib/spotify";
 import { RankBadge } from "./RankBadge";
@@ -62,7 +62,10 @@ export function TrackList({
 				direction === "left"
 					? -el.clientWidth * 0.85
 					: el.clientWidth * 0.85,
-			behavior: "smooth"
+			behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+				.matches
+				? "instant"
+				: "smooth"
 		});
 	};
 
@@ -97,7 +100,7 @@ export function TrackList({
 									className="snap-start snap-always flex flex-col animate-pulse"
 								>
 									<div className="aspect-square w-full rounded-lg bg-slate-900" />
-									<div className="mt-2 hidden h-[4.75rem] flex-col gap-1.5 md:flex">
+									<div className="mt-2 flex min-h-[3.5rem] flex-col gap-1.5">
 										<div className="h-3.5 w-full rounded bg-slate-800" />
 										<div className="h-3 w-4/5 rounded bg-slate-800" />
 									</div>
@@ -186,24 +189,13 @@ function Track({ track, rank, priority }: TrackProps) {
 						width={512}
 						height={512}
 						sizes="(min-width: 1024px) 10.5rem, (min-width: 768px) 10rem, (min-width: 480px) 9rem, 8.25rem"
-						priority={priority}
+						loading={priority ? "eager" : "lazy"}
 						className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
 					/>
 				) : null}
-
-				<div className="absolute inset-0 z-10 flex flex-col justify-end rounded-lg bg-black/0 p-2 transition duration-300 group-hover:bg-black/50 md:hidden">
-					<div className="translate-y-1 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-						<p className="font-bold text-base leading-tight line-clamp-2">
-							{track.name}
-						</p>
-						<p className="mt-0.5 text-xs leading-tight text-secondary line-clamp-2">
-							{artistLine}
-						</p>
-					</div>
-				</div>
 			</div>
 
-			<div className="mt-2 hidden h-[4.75rem] min-w-0 flex-col md:flex">
+			<div className="mt-2 flex min-h-[3.5rem] min-w-0 flex-col">
 				<p className="font-bold text-sm leading-snug text-white line-clamp-2 transition group-hover:text-violet-300">
 					{track.name}
 				</p>

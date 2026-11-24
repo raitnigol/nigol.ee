@@ -62,9 +62,9 @@ async function main() {
 
 	const forceRefresh = process.argv.includes("--force");
 	const existing = loadExistingMeta();
-	const artists: Record<string, SpotifyArtistMeta> = forceRefresh
-		? {}
-		: { ...(existing?.artists ?? {}) };
+	const artists: Record<string, SpotifyArtistMeta> = {
+		...(existing?.artists ?? {})
+	};
 
 	const profilesToFetch = forceRefresh
 		? certifiedArtists
@@ -96,8 +96,8 @@ async function main() {
 				artists[profile.spotifyId] = {
 					spotifyId: profile.spotifyId,
 					name: artist.name,
-					followers: artist.followers.total,
-					genres: artist.genres,
+					followers: artist.followers?.total ?? null,
+					genres: artist.genres ?? [],
 					imageUrl: pickSpotifyImageUrl(artist.images),
 					spotifyUrl: artist.external_urls.spotify
 				};
@@ -135,7 +135,9 @@ async function main() {
 	fs.mkdirSync(path.dirname(OUTPUT_PATH), { recursive: true });
 	fs.writeFileSync(OUTPUT_PATH, `${JSON.stringify(payload, null, 2)}\n`);
 
-	console.log(`\nWrote ${loaded}/${certifiedArtists.length} artists to ${OUTPUT_PATH}`);
+	console.log(
+		`\nWrote ${loaded}/${certifiedArtists.length} artists to ${OUTPUT_PATH}`
+	);
 
 	if (failed.length > 0) {
 		console.warn(`\n${failed.length} artist(s) still missing metadata:`);

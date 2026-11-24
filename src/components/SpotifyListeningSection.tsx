@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ArtistList } from "./ArtistList";
-import { PhysicalMediaSectionHeader } from "./PhysicalMediaSectionHeader";
 import { TrackList } from "./TrackList";
 import type {
 	TopMusicResponse,
@@ -169,10 +170,9 @@ export function SpotifyListeningSection() {
 	if (!shouldFetch) {
 		return (
 			<>
-				<PhysicalMediaSectionHeader
-					id="spotify-listening-heading"
-					title="My Spotify listening"
-				/>
+				<h2 id="spotify-listening-heading" className="rr-heading">
+					MY SPOTIFY LISTENING<span>.</span>
+				</h2>
 				<div
 					ref={rootRef}
 					className="physical-media-spotify physical-media-spotify--deferred"
@@ -184,15 +184,10 @@ export function SpotifyListeningSection() {
 
 	return (
 		<>
-			<PhysicalMediaSectionHeader
-				id="spotify-listening-heading"
-				title="My Spotify listening"
-				description={
-					topMusic ? (
-						<TopGenresLine label={genreLabel} genres={genres} />
-					) : undefined
-				}
-			/>
+			<h2 id="spotify-listening-heading" className="rr-heading">
+				MY SPOTIFY LISTENING<span>.</span>
+			</h2>
+			{topMusic && <TopGenresLine label={genreLabel} genres={genres} />}
 
 			<div
 				ref={rootRef}

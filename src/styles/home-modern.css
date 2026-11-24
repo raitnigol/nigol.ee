@@ -1,0 +1,81 @@
+.home__greeting,
+.home__verse {
+	font-size: clamp(0.9375rem, 0.9rem + 0.19vw, 1.0625rem);
+}
+
+.home__greeting {
+	opacity: 1;
+}
+
+.home__clock {
+	flex: 0 1 auto;
+	overflow-wrap: anywhere;
+}
+
+.home-terminal {
+	font-size: clamp(0.875rem, 0.83rem + 0.23vw, 1rem);
+}
+
+.home-terminal__title,
+.spotify-terminal__preview-label,
+.home__clock {
+	font-size: 0.8125rem;
+}
+
+.home-terminal__body {
+	padding: clamp(0.85rem, 2.5vw, 1.5rem);
+}
+
+.home-terminal .home__link--pohhu {
+	font-family: "League Spartan Variable", "League Spartan", sans-serif;
+	font-weight: 700;
+}
+
+.home-terminal__block {
+	max-width: 78ch;
+}
+
+.home-terminal__line,
+.home-terminal__text,
+.home__verse {
+	overflow-wrap: anywhere;
+}
+
+.home-terminal__ssh-transcript {
+	line-height: 1.5;
+	margin-bottom: 1rem;
+}
+
+.home-terminal__ssh-transcript p:last-child {
+	min-height: 1lh;
+}
+
+.home-terminal__cowsay pre {
+	font-size: clamp(0.8125rem, 0.77rem + 0.2vw, 0.9375rem);
+}
+
+.home__socials {
+	gap: 0.375rem 0.75rem;
+}
+
+.home__socials .social-icon-link {
+	justify-content: center;
+	min-width: 44px;
+	min-height: 44px;
+}
+
+.home__socials .social-icon-link__image {
+	width: clamp(1.75rem, 6vw, 3rem);
+	height: clamp(1.75rem, 6vw, 3rem);
+}
+
+.home-terminal__ssh-command {
+	display: inline-block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.spotify-terminal__skeleton,
+	.spotify-terminal__preview-image--skeleton {
+		animation: none;
+	}
+}

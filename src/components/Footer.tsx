@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const SITE_SOURCE_URL = "https://github.com/raitnigol/nigol.ee";
 
 function BuildBadge() {
@@ -30,7 +32,7 @@ export default function Footer() {
 		<footer className="site-footer">
 			<p className="site-footer__copy">
 				© 2026 · Nigol Enterprises /{" "}
-				<span className="text-violet-400">$.pohhu¥</span>
+				<span className="signature text-violet-400">$.pohhu¥</span>
 				<span className="site-footer__sep" aria-hidden>
 					·
 				</span>
@@ -46,7 +48,8 @@ export default function Footer() {
 			</p>
 
 			<div className="site-footer__badges">
-				<img
+				<Image
+					unoptimized
 					src="/images/badges/free-palestine.gif"
 					alt="Free Palestine"
 					width={88}
@@ -54,7 +57,8 @@ export default function Footer() {
 					className="site-footer__badge"
 					decoding="async"
 				/>
-				<img
+				<Image
+					unoptimized
 					src="/images/badges/slava-ukraini.gif"
 					alt="Slava Ukraini"
 					width={88}

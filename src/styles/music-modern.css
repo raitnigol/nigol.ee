@@ -1,0 +1,144 @@
+.pohhu-page .pohhu-wordmark {
+	font-family: "League Spartan", sans-serif;
+}
+
+.pohhu-page .pohhu-toc__link,
+.pohhu-gallery .social-icon-link {
+	min-height: 44px;
+	min-width: 44px;
+}
+
+.pohhu-merch-track {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	overscroll-behavior-x: contain;
+	scrollbar-width: none;
+}
+
+.pohhu-merch-track > a {
+	flex: 0 0 100%;
+	scroll-snap-align: start;
+}
+
+.pohhu-merch-controls,
+.pohhu-photo-dialog__controls {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.75rem;
+	font-size: 0.875rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.pohhu-merch-controls button,
+.pohhu-photo-dialog button {
+	min-width: 44px;
+	min-height: 44px;
+	padding: 0.25rem 0.75rem;
+	border: 1px solid #ffffff30;
+	color: #fff;
+	background: #0a0a0a;
+	cursor: pointer;
+}
+
+.pohhu-merch-controls {
+	margin-top: 0.5rem;
+}
+
+.pohhu-event-photos {
+	display: grid;
+	gap: 1rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.pohhu-event-photos__link {
+	display: block;
+	position: relative;
+	aspect-ratio: 1;
+	cursor: zoom-in;
+}
+
+.pohhu-event-photos__link img {
+	object-fit: cover;
+}
+
+.pohhu-event-photos__banner,
+.pohhu-event-photos__heading {
+	grid-column: 1 / -1;
+}
+
+.pohhu-event-photos__banner > a {
+	aspect-ratio: 1600 / 838;
+}
+
+.pohhu-event-photos__heading {
+	margin-top: 1rem;
+	color: var(--text-secondary);
+	font-weight: 600;
+}
+
+@media (min-width: 48rem) {
+	.pohhu-event-photos {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+html:has(.pohhu-photo-dialog[open]) {
+	overflow: hidden;
+}
+
+.pohhu-photo-dialog {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	max-height: none;
+	padding: max(0.75rem, env(safe-area-inset-top))
+		max(0.75rem, env(safe-area-inset-right))
+		max(0.75rem, env(safe-area-inset-bottom))
+		max(0.75rem, env(safe-area-inset-left));
+	margin: 0;
+	border: 0;
+	background: transparent;
+	color: #fff;
+}
+
+.pohhu-photo-dialog::backdrop {
+	background: rgb(0 0 0 / 96%);
+}
+
+.pohhu-photo-dialog__content {
+	display: grid;
+	grid-template-rows: auto minmax(0, 1fr) auto;
+	gap: 0.5rem;
+	width: min(100%, 72rem);
+	height: 100%;
+	margin: 0 auto;
+}
+
+.pohhu-photo-dialog__close {
+	justify-self: end;
+}
+
+.pohhu-photo-dialog__image {
+	position: relative;
+	min-height: 0;
+	touch-action: pan-y pinch-zoom;
+}
+
+.pohhu-photo-dialog__image img {
+	object-fit: contain;
+}
+
+.pohhu-photo-dialog__controls p {
+	margin: 0;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	text-align: center;
+}

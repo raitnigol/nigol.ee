@@ -43,7 +43,7 @@ export function SocialIconLink({
 				aria-hidden
 			/>
 			{caption ? (
-				<span className="text-[10px] font-medium text-subtle transition group-hover:text-muted">
+				<span className="text-xs font-medium text-subtle transition group-hover:text-muted">
 					{caption}
 				</span>
 			) : null}

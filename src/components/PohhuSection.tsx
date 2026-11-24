@@ -1,6 +1,4 @@
-import Image from "next/future/image";
-import type { ComponentChildren } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import type { ReactNode } from "react";
 
 import {
 	aleksandriPub,
@@ -28,7 +26,8 @@ import {
 import { socialPlatformIcons } from "../data/socials";
 import { FormattedText } from "./FormattedText";
 import { ImageLightboxGallery } from "./ImageLightboxGallery";
-import { MerchProductCarouselLazy } from "./MerchProductCarouselLazy";
+import { MerchProductCarousel } from "./MerchProductCarousel";
+import { PohhuImage } from "./PohhuImage";
 import { PohhuLogoReveal } from "./PohhuLogoReveal";
 import { SocialIconLink } from "./SocialIconLink";
 import type {
@@ -45,13 +44,7 @@ function PohhuChapter({ id, title }: { id: string; title: string }) {
 	);
 }
 
-function PohhuSubhead({
-	id,
-	children
-}: {
-	id: string;
-	children: ComponentChildren;
-}) {
+function PohhuSubhead({ id, children }: { id: string; children: ReactNode }) {
 	return (
 		<h3 id={id} className="pohhu-subhead scroll-anchor">
 			{children}
@@ -66,7 +59,7 @@ function PohhuBlock({
 }: {
 	id: string;
 	title: string;
-	children: ComponentChildren;
+	children: ReactNode;
 }) {
 	return (
 		<section className="pohhu-block" aria-labelledby={id}>
@@ -89,43 +82,6 @@ function ManifestoPullquote({ text }: { text: string }) {
 		<p className="pohhu-pullquote">
 			<FormattedText text={text} />
 		</p>
-	);
-}
-
-function LocalCoverImage({
-	src,
-	alt,
-	className
-}: {
-	src: string;
-	alt: string;
-	className?: string;
-}) {
-	const [failed, setFailed] = useState(false);
-
-	if (failed) {
-		return (
-			<div
-				className={`flex h-full w-full items-center justify-center bg-slate-900 text-xs font-bold uppercase tracking-wider text-subtle ${
-					className ?? ""
-				}`}
-			>
-				Cover
-			</div>
-		);
-	}
-
-	return (
-		<Image
-			src={src}
-			alt={alt}
-			width={400}
-			height={400}
-			sizes="(min-width: 768px) 50vw, 100vw"
-			loading="lazy"
-			className={className}
-			onError={() => setFailed(true)}
-		/>
 	);
 }
 
@@ -186,7 +142,7 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 		return <FundedReleaseBannerCard release={release} />;
 	}
 
-	const coverImage = release.coverImage ?? "";
+	const coverImage = release.coverImage;
 	const spotifyUrl = release.spotifyUrl ?? "#";
 
 	return (
@@ -198,8 +154,9 @@ function FundedReleaseCard({ release }: { release: FundedRelease }) {
 				className="pohhu-release focus-ring group block h-full"
 			>
 				<div className="pohhu-release__cover aspect-square w-full overflow-hidden bg-slate-900">
-					<LocalCoverImage
+					<PohhuImage
 						src={coverImage}
+						sizes="(min-width: 1280px) 38rem, (min-width: 768px) 45vw, 90vw"
 						alt={`${release.title} cover art`}
 						className="h-full w-full object-cover"
 					/>
@@ -339,41 +296,19 @@ function CertifiedArtistCard({
 		artist?.spotifyUrl ??
 		`https://open.spotify.com/artist/${profile.spotifyId}`;
 	const spotifyImageUrl = artist?.imageUrl ?? null;
-	const [photoSrc, setPhotoSrc] = useState(profile.profileImage);
-
-	useEffect(() => {
-		setPhotoSrc(profile.profileImage);
-	}, [profile.profileImage]);
-
-	const handlePhotoError = () => {
-		if (photoSrc === profile.profileImage && spotifyImageUrl) {
-			setPhotoSrc(spotifyImageUrl);
-		}
-	};
-
-	const imageSrc = photoSrc || spotifyImageUrl;
 	const artistName = artist?.name;
 
 	return (
 		<div className="pohhu-artist">
 			<div className="pohhu-artist__media">
 				<div className="relative aspect-square w-full overflow-hidden bg-slate-900 md:max-w-none">
-					{imageSrc ? (
-						<Image
-							src={imageSrc}
-							alt={artistName ?? "Artist"}
-							width={300}
-							height={300}
-							sizes="(min-width: 640px) 24rem, 100vw"
-							loading="lazy"
-							className="h-full w-full object-cover"
-							onError={handlePhotoError}
-						/>
-					) : (
-						<div className="flex h-full w-full items-center justify-center animate-pulse bg-slate-900 text-subtle">
-							·
-						</div>
-					)}
+					<PohhuImage
+						src={profile.profileImage}
+						fallback={spotifyImageUrl}
+						alt={artistName ?? "Artist"}
+						sizes="(min-width: 768px) 20rem, 90vw"
+						className="h-full w-full object-cover"
+					/>
 				</div>
 			</div>
 
@@ -444,7 +379,7 @@ function KevilniusMerchBlock() {
 			<div className="merch-product-layout">
 				{gallery.length > 0 ? (
 					<figure className="photo-credit min-w-0">
-						<MerchProductCarouselLazy
+						<MerchProductCarousel
 							items={gallery}
 							dialogLabel="Kevilnius merch photos"
 						/>
@@ -717,7 +652,6 @@ export default function PohhuSection({
 						<ImageLightboxGallery
 							items={kiviArtShow.gallery}
 							dialogLabel="Kivi Baar art show gallery"
-							thumbnailVariant="bare"
 							bannerFooter={
 								<KiviBaarSocialLinks
 									links={kiviArtShow.links}

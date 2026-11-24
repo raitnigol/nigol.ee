@@ -1,6 +1,6 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import Image from "next/future/image";
-import { useCallback, useEffect, useRef, useState } from "preact/hooks";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { getArtistImageUrl } from "../lib/spotify";
 import { RankBadge } from "./RankBadge";
@@ -62,7 +62,10 @@ export function ArtistList({
 				direction === "left"
 					? -el.clientWidth * 0.85
 					: el.clientWidth * 0.85,
-			behavior: "smooth"
+			behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+				.matches
+				? "instant"
+				: "smooth"
 		});
 	};
 
@@ -181,7 +184,7 @@ function ArtistCard({ artist, rank, priority }: ArtistCardProps) {
 						width={320}
 						height={320}
 						sizes="(min-width: 1024px) 10.5rem, (min-width: 768px) 10rem, (min-width: 480px) 9rem, 8.25rem"
-						priority={priority}
+						loading={priority ? "eager" : "lazy"}
 						className="h-full w-full object-cover rounded-lg transition duration-300 group-hover:scale-[1.02]"
 					/>
 				) : (
