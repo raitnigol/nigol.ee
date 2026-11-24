@@ -5,7 +5,11 @@ import { usePathname } from "next/navigation";
 
 const pages = [
 	{ href: "/", title: "Home", color: "text-orange-400" },
-	{ href: "/music", title: "$.pohhu¥", color: "text-violet-300 signature" },
+	{
+		href: "/music",
+		title: "$.pohhu¥",
+		color: "pohhu-wordmark pohhu-wordmark--inline"
+	},
 	{
 		href: "/physical-media",
 		title: "Media Collection",

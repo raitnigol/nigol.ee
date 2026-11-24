@@ -6,8 +6,20 @@
 	src: url("@fontsource-variable/league-spartan/files/league-spartan-latin-wght-normal.woff2")
 		format("woff2");
 }
-.signature {
+:root {
+	--pohhu-accent: #a78bfa;
+}
+.signature,
+.pohhu-wordmark {
 	font-family: "League Spartan", sans-serif;
+}
+.pohhu-wordmark {
+	color: var(--pohhu-accent);
+	white-space: nowrap;
+}
+.pohhu-wordmark--inline {
+	/* Match Outfit’s lowercase height while keeping the surrounding text size and baseline. */
+	font-size-adjust: 0.48;
 }
 .primary-nav {
 	display: flex;

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { FormattedText } from "./FormattedText";
 
 export interface Photo {
 	image: string;
@@ -102,7 +103,8 @@ export function PohhuPhotoDialog({
 						</button>
 					)}
 					<p aria-live="polite" aria-atomic="true">
-						{index + 1} / {items.length} · {current.alt}
+						{index + 1} / {items.length} ·{" "}
+						<FormattedText text={current.alt} />
 					</p>
 					{items.length > 1 && (
 						<button

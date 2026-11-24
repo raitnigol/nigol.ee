@@ -165,7 +165,6 @@
 
 	.pohhu-page {
 		--pohhu-rule: rgb(255 255 255 / 10%);
-		--pohhu-accent: #a78bfa;
 		--pohhu-accent-soft: #c4b5fd;
 		--pohhu-section-pad: clamp(2.75rem, 5.5vw, 4.25rem);
 		--pohhu-stack-gap: 1.1rem;
@@ -481,25 +480,6 @@
 
 		&__name {
 			min-width: 0;
-		}
-	}
-
-	.pohhu-status {
-		font-size: 0.625rem;
-		font-weight: 700;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-
-		&--paid {
-			color: var(--pohhu-accent-soft);
-		}
-
-		&--partial {
-			color: #d4d4d8;
-		}
-
-		&--open {
-			color: #71717a;
 		}
 	}
 
@@ -2094,7 +2074,7 @@
 		}
 
 		&--pohhu {
-			color: #c4b5fd;
+			color: var(--pohhu-accent);
 			text-decoration-color: rgb(196 181 253 / 35%);
 
 			&:hover {

@@ -84,7 +84,7 @@ export function HomeIntroTerminal() {
 								Founder of{" "}
 								<Link
 									href="/music"
-									className="home__link home__link--pohhu signature focus-ring"
+									className="home__link home__link--pohhu pohhu-wordmark pohhu-wordmark--inline focus-ring"
 								>
 									$.pohhu¥
 								</Link>

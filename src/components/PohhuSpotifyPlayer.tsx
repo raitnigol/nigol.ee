@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { FormattedText } from "./FormattedText";
 
 interface PohhuSpotifyPlayerProps {
 	playlistId: string;
@@ -17,7 +18,9 @@ export function PohhuSpotifyPlayer({
 
 	return (
 		<div className="pohhu-spotify-player">
-			<p className="pohhu-spotify-player__title">{title}</p>
+			<p className="pohhu-spotify-player__title">
+				<FormattedText text={title} />
+			</p>
 			<div className="pohhu-spotify-player__actions">
 				<button
 					type="button"

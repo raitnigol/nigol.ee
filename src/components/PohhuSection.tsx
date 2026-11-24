@@ -19,23 +19,15 @@ import {
 	pohhuManifestoPullquote,
 	pohhuMerchDivider,
 	pohhuPhysicalMediaDivider,
-	pohhuLineupDivider,
-	type FundedRelease
+	pohhuLineupDivider
 } from "../data/pohhu";
 import type { SpotifyArtistsMetaFile } from "../lib/spotifyArtistMeta";
 import { FormattedText } from "./FormattedText";
 import { ImageLightboxGallery } from "./ImageLightboxGallery";
 import { MerchProductCarousel } from "./MerchProductCarousel";
+import MusicChapterNav from "./MusicChapterNav";
 import { PohhuImage } from "./PohhuImage";
 import { PohhuSpotifyPlayer } from "./PohhuSpotifyPlayer";
-
-const chapters = [
-	{ id: "pohhu-manifesto", label: "Manifesto" },
-	{ id: "pohhu-physical-media", label: "Physical media" },
-	{ id: "pohhu-merch", label: "Merch" },
-	{ id: "pohhu-exhibitions-events", label: "Events" },
-	{ id: "pohhu-lineup", label: "Lineup" }
-];
 
 function Paragraphs({ lines }: { lines: string[] }) {
 	return lines.map(line => (
@@ -114,21 +106,6 @@ function Manifesto() {
 	);
 }
 
-function Repayment({ status }: { status: FundedRelease["investmentStatus"] }) {
-	if (!status) return null;
-	const text = {
-		paid_in_full: "Paid",
-		partially_paid: "Partial",
-		not_repaid: "Open"
-	}[status];
-	return (
-		<span>
-			<span className="sr-only">Investment status: </span>
-			{text}
-		</span>
-	);
-}
-
 function PhysicalReleases() {
 	return (
 		<Chapter id="pohhu-physical-media" title={pohhuPhysicalMediaDivider}>
@@ -147,10 +124,7 @@ function PhysicalReleases() {
 							key={release.title}
 							className="collective-release-note"
 						>
-							<p className="collective-meta">
-								{release.subtitle} ·{" "}
-								<Repayment status={release.investmentStatus} />
-							</p>
+							<p className="collective-meta">{release.subtitle}</p>
 							<h4>{release.title}</h4>
 							{release.description && (
 								<p>
@@ -181,9 +155,7 @@ function PhysicalReleases() {
 							<p className="collective-meta">
 								{[release.releaseYear, release.pressRun]
 									.filter(Boolean)
-									.join(" · ")}{" "}
-								·{" "}
-								<Repayment status={release.investmentStatus} />
+									.join(" · ")}
 							</p>
 						</li>
 					)
@@ -380,19 +352,7 @@ export default function PohhuSection({
 				</figure>
 			</header>
 			<div className="collective-layout">
-				<nav
-					id="pohhu-contents"
-					className="collective-index"
-					aria-label="Music contents"
-				>
-					<ul>
-						{chapters.map(chapter => (
-							<li key={chapter.id}>
-								<a href={`#${chapter.id}`}>{chapter.label}</a>
-							</li>
-						))}
-					</ul>
-				</nav>
+				<MusicChapterNav />
 				<div className="collective-chapters">
 					<Manifesto />
 					<PhysicalReleases />

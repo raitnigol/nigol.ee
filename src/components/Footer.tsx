@@ -32,7 +32,9 @@ export default function Footer() {
 		<footer className="site-footer">
 			<p className="site-footer__copy">
 				© 2026 · Nigol Enterprises /{" "}
-				<span className="signature text-violet-400">$.pohhu¥</span>
+				<span className="pohhu-wordmark pohhu-wordmark--inline">
+					$.pohhu¥
+				</span>
 				<span className="site-footer__sep" aria-hidden>
 					·
 				</span>

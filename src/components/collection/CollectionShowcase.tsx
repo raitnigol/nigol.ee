@@ -228,7 +228,7 @@ export function CollectionShowcase({
 				<div className="rr-hero-main">
 					<div>
 						<h1 id="rr-title">
-							<span className="rr-signature">$.pohhu¥</span> Media
+							<span className="rr-signature pohhu-wordmark">$.pohhu¥</span> Media
 							collection
 						</h1>
 						<p className="rr-inventory">

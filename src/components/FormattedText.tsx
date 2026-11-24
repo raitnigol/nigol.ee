@@ -7,7 +7,7 @@ function parseEmphasis(
 	accentClass: string,
 	dangerClass: string
 ): ReactNode[] {
-	const pattern = /\{\{(.+?)\}\}|\[\[(.+?)\]\]|\*(.+?)\*/g;
+	const pattern = /\{\{(.+?)\}\}|\[\[(.+?)\]\]|\*(.+?)\*|(\$\.pohhu¥)/g;
 	const nodes: ReactNode[] = [];
 	let lastIndex = 0;
 	let match: RegExpExecArray | null;
@@ -20,17 +20,18 @@ function parseEmphasis(
 
 		const key = `${keyPrefix}-${i++}`;
 
-		if (match[1]) {
+		const accent = match[1] ?? match[4];
+		if (accent) {
 			nodes.push(
 				<span
 					key={key}
 					className={
-						match[1] === "$.pohhu¥"
-							? `pohhu-wordmark ${accentClass}`
+						accent === "$.pohhu¥"
+							? "pohhu-wordmark pohhu-wordmark--inline"
 							: accentClass
 					}
 				>
-					{match[1]}
+					{accent}
 				</span>
 			);
 		} else if (match[2]) {

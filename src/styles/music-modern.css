@@ -7,9 +7,8 @@
 	color: var(--music-paper);
 	overflow-wrap: break-word;
 }
-.collective .pohhu-wordmark {
-	font-family: "League Spartan", sans-serif;
-	color: inherit;
+:is(.collective h2, .collective h3) .pohhu-wordmark--inline {
+	font-size-adjust: 0.51;
 }
 .collective [id] {
 	scroll-margin-top: calc(var(--site-header-bar-height) + 1.25rem);
@@ -125,6 +124,13 @@
 .collective-index a {
 	font-size: 0.97rem;
 	color: var(--music-ink);
+}
+.collective-index a[aria-current="location"] {
+	color: var(--music-paper);
+	text-decoration: underline;
+	text-decoration-color: var(--pohhu-accent);
+	text-decoration-thickness: 2px;
+	text-underline-offset: 0.32em;
 }
 .collective-chapters {
 	min-width: 0;

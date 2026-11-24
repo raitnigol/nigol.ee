@@ -13,8 +13,6 @@ export interface FundedRelease {
 	/** Banner cards: longer body copy. Supports **bold** via plain text or use description as string. */
 	description?: string;
 	subtitle?: string;
-	/** Payment status for outstanding debt; use paid_in_full to celebrate repayment. */
-	investmentStatus?: "not_repaid" | "partially_paid" | "paid_in_full";
 }
 
 export interface CertifiedArtistPlaylist {
@@ -33,7 +31,7 @@ export interface CertifiedArtistProfile {
 
 /** Inline markup: **bold** · *italic* · {{violet highlight}} */
 export const pohhuManifestoBeforeCore: string[] = [
-	"{{$.pohhu¥}} is a creative collective from **Tartu, Estonia**, built around artists, makers, friends, and people who kept making things even when there was no clear reason to expect money, attention, or permission.",
+	"{{$.pohhu¥}} is a small independent creative collective from **Tartu, Estonia**, built around friends who keep making things even when there is no clear reason to expect money, attention, or permission.",
 	"Founded in **late 2022**, {{$.pohhu¥}} started as a one-man army. In the beginning it was barely a collective at all. It was a name, an instinct, and a stubborn excuse to keep making things. Tracks, covers, visuals, files, discs, ideas, inside jokes, half-serious plans, and small pieces of culture that felt worth saving before anyone else had decided they mattered.",
 	"The point was never to wait for the industry to notice. The point was to **act like the scene was already worth documenting**.",
 	"In practice, {{$.pohhu¥}} operates on a **fuck around and find out** basis — try the idea, see what happens, and deal with the consequences after.",
@@ -79,8 +77,7 @@ export const pohhuMerchDivider = "Merch";
 /** How funding / repayment works for the releases below. */
 export const pohhuFundingModel: string[] = [
 	"How we currently work: {{$.pohhu¥}} invests the **up-front cost** of everything tied to releasing a project, and we only expect that sum back — **without taking a cut**. There is a running joke that we are the first in the industry to run a **10/90 split**. That line is funny because it is basically true on paper, but we do not treat it as an expectation. If the artists decide we did enough that a little should come back to keep the \"non-profit\" machine running, that is their call.",
-	"{{$.pohhu¥}} has currently funded **one CD release** — *12 LIITRIT* by **Benakanister** and **mehkel** (who produced the tracks) — and another release that also brings **SKIZØ** into the picture: the **PÄRNU–TARTU MIXTAPE**.",
-	"Below, each project carries a payment status for whether the **initial investment** has come back yet or not."
+	"{{$.pohhu¥}} has currently funded **one CD release** — *12 LIITRIT* by **Benakanister** and **mehkel** (who produced the tracks) — and another release that also brings **SKIZØ** into the picture: the **PÄRNU–TARTU MIXTAPE**."
 ];
 
 /** Physical media, funded releases, and artifacts — shown under the releases block. */
@@ -255,8 +252,7 @@ export const fundedReleases: FundedRelease[] = [
 		spotifyUrl:
 			"https://open.spotify.com/album/4nAQMGAxq1RzdnYUUbtN3J",
 		coverImage: "/images/pohhu/releases/12-liitrit.jpg",
-		pressRun: "100 CDs",
-		investmentStatus: "paid_in_full"
+		pressRun: "100 CDs"
 	},
 	{
 		artists: "SKIZØ, Benakanister",
@@ -266,16 +262,14 @@ export const fundedReleases: FundedRelease[] = [
 		spotifyUrl:
 			"https://open.spotify.com/track/77cu8RLW53G43WYXdFLm78",
 		coverImage: "/images/pohhu/releases/parnu-tartu-mixtape.jpg",
-		pressRun: "50 cassettes",
-		investmentStatus: "not_repaid"
+		pressRun: "50 cassettes"
 	},
 	{
 		banner: true,
 		title: "963 Records — PÄRNU–TARTU mixtape release event",
 		subtitle: "Release event · artist payments",
 		description:
-			"{{$.pohhu¥}} funded artist payments for the PÄRNU–TARTU mixtape release event through 963 Records.",
-		investmentStatus: "not_repaid"
+			"{{$.pohhu¥}} funded artist payments for the PÄRNU–TARTU mixtape release event through 963 Records."
 	}
 ];
 
