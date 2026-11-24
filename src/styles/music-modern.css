@@ -1,13 +1,344 @@
-.pohhu-page .pohhu-wordmark {
+/* Music shares the site shell and reading font. Only the collective name uses its wordmark. */
+.collective {
+	--music-rule: #353535;
+	--music-paper: #f1efeb;
+	--music-ink: #d3d1cc;
+	--music-muted: #adaaa5;
+	color: var(--music-paper);
+	overflow-wrap: break-word;
+}
+.collective .pohhu-wordmark {
 	font-family: "League Spartan", sans-serif;
+	color: inherit;
+}
+.collective [id] {
+	scroll-margin-top: calc(var(--site-header-bar-height) + 1.25rem);
+}
+.collective :where(p, h1, h2, h3, h4, blockquote, figure, ul, dl, dd) {
+	margin: 0;
+}
+.collective :where(ul, dl) {
+	list-style: none;
+	padding: 0;
+}
+.collective h2,
+.collective h3,
+.collective h4 {
+	text-wrap: balance;
+}
+.collective h2,
+.collective h3 {
+	font-family: Inter, sans-serif;
+	font-weight: 800;
+}
+.collective img {
+	max-width: 100%;
 }
 
-.pohhu-page .pohhu-toc__link,
-.pohhu-gallery .social-icon-link {
+.collective-intro {
+	display: grid;
+	align-items: center;
+	gap: clamp(1.5rem, 5vw, 5.5rem);
+	margin-bottom: clamp(2rem, 5vw, 4.5rem);
+}
+.collective-intro__copy {
+	min-width: 0;
+}
+.collective h1 {
+	font-size: clamp(4.4rem, 10.5vw, 10rem);
+	font-weight: 800;
+	line-height: 0.89;
+	letter-spacing: -0.07em;
+}
+.collective-motto {
+	color: var(--music-muted);
+	font-size: clamp(1.125rem, 2vw, 1.6rem);
+	line-height: 1.15;
+}
+.collective .collective-lede {
+	max-width: 38ch;
+	margin-top: clamp(1.5rem, 3.3vw, 3rem);
+	color: var(--music-ink);
+	font-size: clamp(1.12rem, 1.9vw, 1.55rem);
+	line-height: 1.45;
+}
+.collective-opening-photo {
+	min-width: 0;
+}
+.collective-opening-photo > div {
+	position: relative;
+	aspect-ratio: 1.48;
+	overflow: hidden;
+	background: #171615;
+}
+.collective-opening-photo img {
+	object-fit: cover;
+	object-position: 50% 67%;
+}
+.collective figcaption {
+	font-size: 0.87rem;
+	color: var(--music-muted);
+	line-height: 1.5;
+}
+.collective-opening-photo figcaption {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+.collective-opening-photo figcaption :is(a, time) {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+}
+.collective figcaption a,
+.collective-index a {
+	text-decoration: none;
+}
+.collective figcaption a:hover,
+.collective-index a:hover,
+.collective-release:hover h4 {
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+.collective-layout {
+	border-top: 1px solid var(--music-rule);
+}
+.collective-index ul {
+	display: flex;
+	flex-wrap: wrap;
+	column-gap: clamp(0.6rem, 3.4vw, 1.5rem);
+}
+.collective-index a,
+.collective-back,
+.collective-link,
+.collective-button,
+.pohhu-spotify-player button,
+.pohhu-spotify-player__link {
+	display: inline-flex;
+	align-items: center;
 	min-height: 44px;
 	min-width: 44px;
 }
-
+.collective-index {
+	padding-block: 0.45rem;
+}
+.collective-index a {
+	font-size: 0.97rem;
+	color: var(--music-ink);
+}
+.collective-chapters {
+	min-width: 0;
+}
+.collective-chapter {
+	padding-block: clamp(2rem, 5vw, 4.75rem);
+	border-top: 1px solid var(--music-rule);
+}
+.collective-chapter__heading {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.75rem;
+	margin-bottom: clamp(1.4rem, 3vw, 2rem);
+}
+.collective-chapter h2 {
+	font-size: clamp(2rem, 4vw, 3.6rem);
+	line-height: 1.02;
+	letter-spacing: -0.055em;
+}
+.collective-back {
+	justify-content: center;
+	min-width: 44px;
+	font-size: 1.25rem;
+	color: var(--music-muted);
+	text-decoration: none;
+}
+.collective-prose {
+	width: 100%;
+	max-width: 66ch;
+	color: var(--music-ink);
+	font-size: clamp(1.04rem, 1.4vw, 1.17rem);
+	line-height: 1.68;
+}
+.collective-prose > * + *,
+.collective-address .collective-prose {
+	margin-top: 1.1em;
+}
+.collective-prose .text-violet-400,
+.collective-subhead .text-violet-400,
+.collective-chapter h2 .text-violet-400 {
+	color: inherit;
+}
+.collective-prose blockquote {
+	margin-block: clamp(1.8rem, 4vw, 3rem);
+	font-size: clamp(1.55rem, 3vw, 2.6rem);
+	line-height: 1.16;
+	letter-spacing: -0.025em;
+	color: var(--music-paper);
+	max-width: 23ch;
+}
+.collective .collective-members {
+	margin-block: 1rem 1.75rem;
+	padding-left: 1.35em;
+	list-style: disc;
+}
+.collective-members li {
+	padding-block: 0.1em;
+}
+.collective-members li::marker {
+	color: #777;
+	font-size: 0.7em;
+}
+.collective-address {
+	max-width: 64ch;
+	margin-top: clamp(2rem, 4vw, 3rem);
+	padding-left: clamp(0.9rem, 2vw, 1.4rem);
+	border-left: 1px solid #777;
+}
+.collective-address h3 {
+	font-size: 1.35rem;
+	line-height: 1.15;
+	letter-spacing: -0.03em;
+}
+.collective-address > p,
+.collective-meta {
+	font-size: 0.9rem;
+	color: var(--music-muted);
+}
+.collective-link,
+.pohhu-spotify-player__link {
+	text-decoration: underline;
+	text-underline-offset: 0.22em;
+	text-decoration-color: #787674;
+	font-size: 0.96rem;
+}
+.collective-link:hover,
+.pohhu-spotify-player__link:hover {
+	text-decoration-color: currentColor;
+}
+.collective .collective-subhead {
+	max-width: 35ch;
+	font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+	line-height: 1.12;
+	letter-spacing: -0.04em;
+	margin-bottom: 1rem;
+}
+.collective-prose + .collective-subhead {
+	margin-top: clamp(2.5rem, 4vw, 4rem);
+}
+.collective-releases {
+	display: grid;
+	gap: 2rem clamp(1.1rem, 3vw, 2rem);
+}
+.collective-release {
+	display: block;
+	text-decoration: none;
+	color: inherit;
+}
+.collective-release img {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1;
+	object-fit: cover;
+}
+.collective-releases h4 {
+	font-weight: 700;
+	font-size: clamp(1.05rem, 2vw, 1.4rem);
+	line-height: 1.15;
+}
+.collective-release h4 {
+	margin-top: 0.8rem;
+}
+.collective-release h4 span {
+	color: var(--music-muted);
+	font-size: 0.85em;
+}
+.collective-release p {
+	font-size: 1rem;
+	margin-top: 0.3rem;
+}
+.collective-release + .collective-meta {
+	margin-top: 0.35rem;
+}
+.collective-release-note {
+	grid-column: 1 / -1;
+	max-width: 65ch;
+}
+.collective-release-note h4 {
+	margin: 0.35rem 0;
+}
+.collective-release-note > p:last-child {
+	color: var(--music-ink);
+}
+.collective-product,
+.collective-artist {
+	display: grid;
+	align-items: start;
+	gap: clamp(1.2rem, 3vw, 2.4rem);
+}
+.collective-product > *,
+.collective-artist > * {
+	min-width: 0;
+}
+.collective-product__title {
+	font-size: clamp(1.6rem, 3vw, 2.6rem);
+	line-height: 1.1;
+	letter-spacing: -0.04em;
+	overflow-wrap: anywhere;
+}
+.collective .collective-price {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.35rem 0.75rem;
+	margin: 0.85rem 0;
+}
+.collective-price strong {
+	font-size: 1.7rem;
+}
+.collective-price :is(s, span) {
+	font-size: 0.94rem;
+	color: var(--music-muted);
+}
+.collective-actions,
+.collective-event-links,
+.pohhu-spotify-player__actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.25rem 1rem;
+}
+.collective-button,
+.pohhu-spotify-player button {
+	background: var(--music-paper);
+	color: #111;
+	padding: 0.5rem 1rem;
+	text-decoration: none;
+	font-size: 0.96rem;
+	font-weight: 700;
+}
+.collective .collective-specs {
+	margin-block: 1.35rem;
+}
+.collective-specs > div {
+	display: grid;
+	grid-template-columns: minmax(4.5rem, 1fr) minmax(0, 3fr);
+	gap: 0.75rem;
+	padding-block: 0.55rem;
+	border-top: 1px solid var(--music-rule);
+	line-height: 1.4;
+	font-size: 0.97rem;
+}
+.collective-specs dt {
+	color: var(--music-muted);
+}
+.collective-specs + .collective-prose {
+	font-size: 1.04rem;
+}
+.collective-merch-stage {
+	aspect-ratio: 3 / 4;
+	background: #171615;
+}
 .pohhu-merch-track {
 	display: flex;
 	width: 100%;
@@ -17,77 +348,161 @@
 	overscroll-behavior-x: contain;
 	scrollbar-width: none;
 }
-
 .pohhu-merch-track > a {
+	display: block;
 	flex: 0 0 100%;
+	height: 100%;
 	scroll-snap-align: start;
+	cursor: zoom-in;
 }
-
+.collective-merch-slide:focus-visible {
+	outline-offset: -4px;
+}
+.collective-merch-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
 .pohhu-merch-controls,
 .pohhu-photo-dialog__controls {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	gap: 0.75rem;
-	font-size: 0.875rem;
+	font-size: 0.88rem;
 	font-variant-numeric: tabular-nums;
 }
-
 .pohhu-merch-controls button,
 .pohhu-photo-dialog button {
 	min-width: 44px;
 	min-height: 44px;
 	padding: 0.25rem 0.75rem;
-	border: 1px solid #ffffff30;
-	color: #fff;
-	background: #0a0a0a;
+	color: white;
+	background: transparent;
 	cursor: pointer;
 }
-
-.pohhu-merch-controls {
-	margin-top: 0.5rem;
+.pohhu-merch-controls button {
+	font-size: 1.4rem;
 }
-
-.pohhu-event-photos {
+.collective-product figcaption {
+	text-align: center;
+}
+.collective-product figcaption a {
+	display: inline-block;
+	padding-block: 0.65rem;
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+.collective .pohhu-event-photos {
 	display: grid;
-	gap: 1rem;
-	margin: 0;
-	padding: 0;
-	list-style: none;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.65rem;
+	margin-top: clamp(1.5rem, 3vw, 2.6rem);
 }
-
 .pohhu-event-photos__link {
 	display: block;
 	position: relative;
-	aspect-ratio: 1;
+	aspect-ratio: 3 / 4;
 	cursor: zoom-in;
 }
-
 .pohhu-event-photos__link img {
 	object-fit: cover;
 }
-
 .pohhu-event-photos__banner,
 .pohhu-event-photos__heading {
 	grid-column: 1 / -1;
 }
-
 .pohhu-event-photos__banner > a {
 	aspect-ratio: 1600 / 838;
 }
-
 .pohhu-event-photos__heading {
-	margin-top: 1rem;
-	color: var(--text-secondary);
-	font-weight: 600;
+	color: var(--music-muted);
+	font-size: 0.95rem;
 }
-
-@media (min-width: 48rem) {
-	.pohhu-event-photos {
+.collective-event-links {
+	margin-block: -0.6rem 0.7rem;
+}
+.collective-artist__portrait {
+	width: min(66%, 15rem);
+	aspect-ratio: 1;
+	height: auto;
+	object-fit: cover;
+}
+.collective-artist .collective-link {
+	margin-block: 0.3rem;
+}
+.pohhu-spotify-player {
+	margin-top: 1.3rem;
+	padding-block: 1rem;
+	border-top: 1px solid var(--music-rule);
+}
+.pohhu-spotify-player__title {
+	font-size: 1.2rem;
+	font-weight: 700;
+}
+.pohhu-spotify-player__actions,
+.pohhu-spotify-player__frame {
+	margin-top: 0.75rem;
+}
+.pohhu-spotify-player__frame {
+	display: block;
+	border: 0;
+	max-width: 100%;
+}
+@media (min-width: 38rem) {
+	.collective-releases {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
+	.collective-artist {
+		grid-template-columns: minmax(9rem, 1fr) minmax(0, 2.8fr);
+	}
+	.collective-artist__portrait {
+		width: 100%;
+	}
 }
-
+@media (min-width: 44rem) {
+	.collective-intro {
+		grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+	}
+	.collective-opening-photo > div {
+		aspect-ratio: 1.3;
+	}
+}
+@media (min-width: 46rem) {
+	.collective-product {
+		grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+	}
+	.collective .pohhu-event-photos {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+@media (min-width: 60rem) {
+	.collective-layout {
+		display: grid;
+		grid-template-columns: minmax(9rem, 1fr) minmax(0, 4fr);
+		gap: clamp(2rem, 5vw, 5rem);
+	}
+	.collective-index {
+		position: sticky;
+		top: calc(var(--site-header-bar-height) + 0.75rem);
+		align-self: start;
+		padding-top: clamp(2rem, 5vw, 4.75rem);
+	}
+	.collective-index ul {
+		display: block;
+	}
+	.collective-chapter:first-child {
+		border-top: 0;
+	}
+	.collective-back {
+		display: none;
+	}
+}
+@media (max-width: 42rem) {
+	.collective [id] {
+		scroll-margin-top: 0.75rem;
+	}
+}
 html:has(.pohhu-photo-dialog[open]) {
 	overflow: hidden;
 }

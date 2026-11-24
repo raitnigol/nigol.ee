@@ -9,9 +9,8 @@ const pages = [
 	{
 		href: "/physical-media",
 		title: "Media Collection",
-		color: "text-emerald-400"
-	},
-	{ href: "/poetic-justice", title: "Poetic Justice", color: "text-rose-300" }
+		color: "text-emerald-400 signature"
+	}
 ];
 
 export default function SiteHeader() {

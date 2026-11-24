@@ -14,7 +14,7 @@ export const metadata = pageMetadata(
 
 export default function Home() {
 	return (
-		<>
+		<div className="site-shell site-main">
 			<script
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{
@@ -103,6 +103,6 @@ export default function Home() {
 					</p>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

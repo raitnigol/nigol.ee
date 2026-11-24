@@ -61,8 +61,8 @@ export function ImageLightboxGallery({
 									fill
 									sizes={
 										item.banner
-											? "(min-width: 1280px) 80rem, 95vw"
-											: "(min-width: 1280px) 38rem, (min-width: 768px) 48vw, 95vw"
+											? "(min-width: 80rem) 59rem, (min-width: 60rem) 77vw, 94vw"
+											: "(min-width: 80rem) 14rem, (min-width: 46rem) 22vw, 45vw"
 									}
 								/>
 							</a>

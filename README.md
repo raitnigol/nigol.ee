@@ -1,6 +1,6 @@
 # nigol.ee
 
-Rait Nigol’s website, music, poetry and physical media collection. Built with Next.js App Router and hosted on Vercel.
+Rait Nigol’s website, music and physical media collection. Built with Next.js App Router and hosted on Vercel.
 
 ## Local development
 

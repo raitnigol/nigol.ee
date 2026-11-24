@@ -37,7 +37,7 @@
 .skip-link:focus {
 	transform: translateY(0);
 }
-.site-main:focus {
+#main-content:focus {
 	outline: none;
 }
 @media (max-width: 42rem) {

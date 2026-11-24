@@ -171,7 +171,7 @@ export function SpotifyListeningSection() {
 		return (
 			<>
 				<h2 id="spotify-listening-heading" className="rr-heading">
-					MY SPOTIFY LISTENING<span>.</span>
+					My Spotify listening
 				</h2>
 				<div
 					ref={rootRef}
@@ -185,7 +185,7 @@ export function SpotifyListeningSection() {
 	return (
 		<>
 			<h2 id="spotify-listening-heading" className="rr-heading">
-				MY SPOTIFY LISTENING<span>.</span>
+				My Spotify listening
 			</h2>
 			{topMusic && <TopGenresLine label={genreLabel} genres={genres} />}
 

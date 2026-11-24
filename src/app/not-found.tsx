@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
 	return (
-		<>
+		<div className="site-shell site-main">
 			<h1 className="mb-2 heading text-amber-400">
 				404 &ndash; page not found...
 			</h1>
@@ -22,6 +22,6 @@ export default function NotFound() {
 				</Link>
 				!
 			</p>
-		</>
+		</div>
 	);
 }

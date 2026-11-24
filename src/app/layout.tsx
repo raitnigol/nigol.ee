@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 					<main
 						id="main-content"
 						tabIndex={-1}
-						className="site-shell site-main min-w-0 text-lg"
+						className="min-w-0 text-lg"
 					>
 						{children}
 					</main>

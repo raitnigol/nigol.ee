@@ -16,6 +16,7 @@ const filterLabels = {
 	vinyl: "Vinyl",
 	mixed: "Mixed sets"
 };
+const formatAnchors = { cd: "cds", vinyl: "vinyl", mixed: "mixed" };
 const pageSize = 24;
 const collator = new Intl.Collator("en", {
 	sensitivity: "base",
@@ -32,7 +33,7 @@ function Sleeve({
 	onOpen: (record: PublishedRecord) => void;
 }) {
 	return (
-		<figure className="rr-sleeve">
+		<figure className="rr-sleeve" id={record.grail ? "grail" : undefined}>
 			<div
 				className={`rr-disc-art ${
 					record.format === "cd" ? "rr-compact-disc" : ""
@@ -49,9 +50,17 @@ function Sleeve({
 				<RecordArt record={record} priority={priority} />
 			</button>
 			<figcaption>
-				<strong>{record.title}</strong>
-				<br />
-				{record.artist} · {formatNames[record.format]}
+				{record.grail && (
+					<p className="rr-sleeve-note">
+						The one that means the most.
+					</p>
+				)}
+				<button type="button" onClick={() => onOpen(record)}>
+					<strong>{record.title}</strong>
+					<span>
+						{record.artist} · {formatNames[record.format]}
+					</span>
+				</button>
 			</figcaption>
 		</figure>
 	);
@@ -138,6 +147,12 @@ export function CollectionShowcase({
 		}
 		setSelected(undefined);
 	}, []);
+	const browseFormat = useCallback((value: Format) => {
+		setFormat(value);
+		setQuery("");
+		setLimit(pageSize);
+		document.getElementById("collection")?.scrollIntoView();
+	}, []);
 	useEffect(() => {
 		function readHash() {
 			const hash = location.hash;
@@ -156,20 +171,21 @@ export function CollectionShowcase({
 			}
 			setSelected(undefined);
 			const legacy =
-				hash === "#cds" ? "cd" : hash === "#vinyl" ? "vinyl" : null;
-			if (legacy) {
-				setFormat(legacy);
-				setQuery("");
-				setLimit(pageSize);
-				document.getElementById("collection")?.scrollIntoView();
-			}
+				hash === "#cds"
+					? "cd"
+					: hash === "#vinyl"
+					? "vinyl"
+					: hash === "#mixed"
+					? "mixed"
+					: null;
+			if (legacy) browseFormat(legacy);
 			if (hash === "#holy-grail")
 				document.getElementById("grail")?.scrollIntoView();
 		}
 		readHash();
 		window.addEventListener("hashchange", readHash);
 		return () => window.removeEventListener("hashchange", readHash);
-	}, [records]);
+	}, [records, browseFormat]);
 	useEffect(() => {
 		function shortcut(event: KeyboardEvent) {
 			if (
@@ -209,56 +225,64 @@ export function CollectionShowcase({
 	return (
 		<div className="rr-room" id="physical-media">
 			<section className="rr-hero rr-section" aria-labelledby="rr-title">
-				<p className="rr-wordmark">
-					<strong>$.pohhu¥</strong> media collection
-				</p>
 				<div className="rr-hero-main">
 					<div>
 						<h1 id="rr-title">
-							GOOD MUSIC.
-							<br />
-							PHYSICAL
-							<br />
-							<span>COPIES.</span>
+							<span className="rr-signature">$.pohhu¥</span> Media
+							collection
 						</h1>
-						<div className="rr-hero-actions">
-							<a
-								className="rr-button rr-acid-button"
-								href="#collection"
-							>
-								Browse the shelves
+						<p className="rr-inventory">
+							<a href="#cds" onClick={() => browseFormat("cd")}>
+								{counts.cd} {counts.cd === 1 ? "CD" : "CDs"}
 							</a>
-							{feature && (
-								<button
-									type="button"
-									className="rr-link-button"
-									onClick={() => pick(records)}
-								>
-									Pick one for me
-								</button>
+							<span aria-hidden="true"> · </span>
+							<a
+								href="#vinyl"
+								onClick={() => browseFormat("vinyl")}
+							>
+								{counts.vinyl}{" "}
+								{counts.vinyl === 1
+									? "vinyl record"
+									: "vinyl records"}
+							</a>
+							{counts.mixed > 0 && (
+								<>
+									<span aria-hidden="true"> · </span>
+									<a
+										href="#mixed"
+										onClick={() => browseFormat("mixed")}
+									>
+										{counts.mixed}{" "}
+										{counts.mixed === 1
+											? "mixed set"
+											: "mixed sets"}
+									</a>
+								</>
 							)}
-						</div>
+						</p>
+						<nav
+							aria-label="Collection sections"
+							className="rr-index"
+						>
+							<a href="#collection">Browse records</a>
+							{hasSpotify && (
+								<a href="#listening">Listening room</a>
+							)}
+							<a href="#spotify-listening">Listening history</a>
+						</nav>
 					</div>
 					{feature && (
 						<Sleeve record={feature} onOpen={openRecord} priority />
 					)}
 				</div>
-				<nav aria-label="Collection sections" className="rr-nav">
-					<a href="#collection">
-						The collection <span>{counts.all}</span>
-					</a>
-					{favorite && <a href="#grail">Favourite record</a>}
-					{hasSpotify && <a href="#listening">Listening room</a>}
-					<a href="#spotify-listening">My Spotify listening</a>
-				</nav>
 			</section>
 			<section
 				id="collection"
-				className="rr-section rr-paper"
+				className="rr-section"
 				aria-labelledby="rr-catalogue-title"
 			>
 				<h2 id="rr-catalogue-title" className="rr-heading">
-					THE COLLECTION<span>.</span>
+					The shelves
 				</h2>
 				<div className="rr-tools">
 					<div
@@ -272,6 +296,11 @@ export function CollectionShowcase({
 								<button
 									type="button"
 									key={key}
+									id={
+										key !== "all"
+											? formatAnchors[key]
+											: undefined
+									}
 									aria-pressed={format === key}
 									onClick={() => {
 										setFormat(key);
@@ -434,55 +463,6 @@ export function CollectionShowcase({
 					</div>
 				)}
 			</section>
-			{favorite && (
-				<section
-					id="grail"
-					className="rr-section rr-favourite"
-					aria-labelledby="rr-favourite-title"
-				>
-					<Sleeve record={favorite} onOpen={openRecord} />
-					<div>
-						<h2 className="rr-heading" id="rr-favourite-title">
-							THE ONE
-							<br />
-							THAT MEANS
-							<br />
-							<span>THE MOST.</span>
-						</h2>
-						<h3>{favorite.title}</h3>
-						<p>{favorite.artist}</p>
-						<dl className="rr-facts">
-							<div>
-								<dt>Format</dt>
-								<dd>
-									{favorite.mediaCount &&
-										`${favorite.mediaCount} × `}
-									{formatNames[favorite.format]}
-								</dd>
-							</div>
-							{favorite.editionDate && (
-								<div>
-									<dt>Edition date</dt>
-									<dd>{favorite.editionDate}</dd>
-								</div>
-							)}
-							{favorite.catalogNumber && (
-								<div>
-									<dt>Catalogue</dt>
-									<dd>{favorite.catalogNumber}</dd>
-								</div>
-							)}
-						</dl>
-						<button
-							type="button"
-							className="rr-button rr-acid-button"
-							onClick={() => openRecord(favorite)}
-						>
-							Take a closer look
-						</button>
-					</div>
-				</section>
-			)}
 			<ListeningRoom records={records} />
 			<section
 				id="spotify-listening"
@@ -496,11 +476,9 @@ export function CollectionShowcase({
 				aria-labelledby="rr-manifesto-title"
 			>
 				<h2 id="rr-manifesto-title">
-					YOU WILL OWN
+					You will own <span>something.</span>
 					<br />
-					<span>SOMETHING.</span>
-					<br />
-					AND BE HAPPY.
+					And be happy.
 				</h2>
 				<a className="rr-button rr-dark-button" href="#collection">
 					Back to the shelves

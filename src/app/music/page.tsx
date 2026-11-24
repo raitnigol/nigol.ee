@@ -14,5 +14,9 @@ export default function MusicPage() {
 	if (!isSpotifyArtistsMetaFile(artistMetadata)) {
 		throw new Error("Invalid data/generated/spotifyArtistsMeta.json");
 	}
-	return <PohhuSection artistMeta={artistMetadata} />;
+	return (
+		<div className="site-shell site-main">
+			<PohhuSection artistMeta={artistMetadata} />
+		</div>
+	);
 }

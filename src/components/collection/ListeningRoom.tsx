@@ -47,11 +47,11 @@ export function ListeningRoom({ records }: { records: PublishedRecord[] }) {
 	return (
 		<section
 			id="listening"
-			className="rr-section rr-paper"
+			className="rr-section"
 			aria-labelledby="rr-listening-title"
 		>
 			<h2 id="rr-listening-title" className="rr-heading">
-				THE LISTENING ROOM<span>.</span>
+				Listening room
 			</h2>
 			<div className="rr-listening-layout">
 				<div>
