@@ -36,7 +36,7 @@ const trackSections = [
 const ARTISTS_SECTION_INDEX = trackSections.length;
 
 const statHeadingClass =
-	"mb-4 font-heading text-xl font-bold tracking-tight transition-colors duration-300 md:text-2xl";
+	"rr-subheading transition-colors duration-300";
 
 type GenreCount = { name: string; count: number };
 

@@ -6,7 +6,7 @@ import { isSpotifyArtistsMetaFile } from "../../lib/spotifyArtistMeta";
 
 export const metadata = pageMetadata(
 	"$.pohhu¥",
-	"$.pohhu¥ — creative collective from Tartu. Manifesto, funded physical releases in Estonia, Kivi Baar art show, and certified artists.",
+	"Music, physical releases and art shows from $.pohhu¥, a small independent creative collective in Tartu, Estonia.",
 	"/music"
 );
 

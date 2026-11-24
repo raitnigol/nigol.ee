@@ -1,10 +1,18 @@
 .home__greeting,
 .home__verse {
-	font-size: clamp(0.9375rem, 0.9rem + 0.19vw, 1.0625rem);
+	font-size: var(--site-type-body);
+	line-height: var(--site-leading-prose);
+	letter-spacing: normal;
 }
 
 .home__greeting {
 	opacity: 1;
+	max-width: var(--site-prose-measure);
+	margin-bottom: var(--site-heading-gap);
+}
+
+.home-terminals {
+	margin-bottom: var(--site-section-space);
 }
 
 .home__clock {
@@ -13,13 +21,15 @@
 }
 
 .home-terminal {
-	font-size: clamp(0.875rem, 0.83rem + 0.23vw, 1rem);
+	font-size: 1rem;
+	line-height: var(--site-leading-prose);
 }
 
+.home__greeting footer,
 .home-terminal__title,
 .spotify-terminal__preview-label,
 .home__clock {
-	font-size: 0.8125rem;
+	font-size: var(--site-type-caption);
 }
 
 .home-terminal__body {
@@ -27,7 +37,7 @@
 }
 
 .home-terminal .home__link--pohhu {
-	font-family: "League Spartan", sans-serif;
+	font-family: var(--site-font-heading);
 	font-weight: 700;
 }
 

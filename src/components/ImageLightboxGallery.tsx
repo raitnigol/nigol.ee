@@ -1,77 +1,73 @@
 "use client";
 
 import Image from "next/image";
-import { Fragment, useState, type ReactNode } from "react";
+import { useState } from "react";
 
 import { PohhuPhotoDialog, type Photo } from "./PohhuPhotoDialog";
 
+interface GalleryPhoto extends Photo {
+	banner?: boolean;
+}
+
 interface ImageLightboxGalleryProps {
-	items: (Photo & { banner?: boolean })[];
+	items: GalleryPhoto[];
 	dialogLabel: string;
-	bannerFooter?: ReactNode;
-	photosStartLabel?: string;
 }
 
 export function ImageLightboxGallery({
 	items,
-	dialogLabel,
-	bannerFooter,
-	photosStartLabel
+	dialogLabel
 }: ImageLightboxGalleryProps) {
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
-	const firstPhoto = items.findIndex(item => !item.banner);
+	const posterIndex = items.findIndex(item => item.banner);
+
+	function photoLink(item: GalleryPhoto, index: number) {
+		return (
+			<a
+				href={item.image}
+				className={
+					item.banner
+						? "pohhu-event-photos__link pohhu-event-poster focus-ring"
+						: "pohhu-event-photos__link focus-ring"
+				}
+				aria-label={`Enlarge ${item.alt}`}
+				aria-haspopup="dialog"
+				onClick={event => {
+					if (
+						event.metaKey ||
+						event.ctrlKey ||
+						event.shiftKey ||
+						event.altKey
+					)
+						return;
+					event.preventDefault();
+					setOpenIndex(index);
+				}}
+			>
+				<Image
+					src={item.image}
+					alt={item.alt}
+					fill
+					sizes={
+						item.banner
+							? "(min-width: 80rem) 30rem, (min-width: 60rem) 40vw, (min-width: 46rem) 45vw, 94vw"
+							: "(min-width: 80rem) 15rem, (min-width: 60rem) 19vw, (min-width: 46rem) 23vw, 46vw"
+					}
+				/>
+			</a>
+		);
+	}
 
 	return (
 		<>
-			<ul className="pohhu-event-photos">
-				{items.map((item, index) => (
-					<Fragment key={item.image}>
-						{photosStartLabel && index === firstPhoto && (
-							<li className="pohhu-event-photos__heading">
-								{photosStartLabel}
-							</li>
-						)}
-						<li
-							className={
-								item.banner
-									? "pohhu-event-photos__banner"
-									: undefined
-							}
-						>
-							<a
-								href={item.image}
-								className="pohhu-event-photos__link focus-ring"
-								aria-label={`Enlarge ${item.alt}`}
-								aria-haspopup="dialog"
-								onClick={event => {
-									if (
-										event.metaKey ||
-										event.ctrlKey ||
-										event.shiftKey ||
-										event.altKey
-									)
-										return;
-									event.preventDefault();
-									setOpenIndex(index);
-								}}
-							>
-								<Image
-									src={item.image}
-									alt={item.alt}
-									fill
-									sizes={
-										item.banner
-											? "(min-width: 80rem) 59rem, (min-width: 60rem) 77vw, 94vw"
-											: "(min-width: 80rem) 14rem, (min-width: 46rem) 22vw, 45vw"
-									}
-								/>
-							</a>
-							{item.banner && bannerFooter && (
-								<div className="mt-3">{bannerFooter}</div>
-							)}
-						</li>
-					</Fragment>
-				))}
+			{posterIndex >= 0 && photoLink(items[posterIndex], posterIndex)}
+			<ul className="pohhu-event-photos" aria-label="Event photos">
+				{items.map(
+					(item, index) =>
+						index !== posterIndex && (
+							<li key={item.image}>{photoLink(item, index)}</li>
+						)
+				)}
 			</ul>
 			{openIndex !== null && (
 				<PohhuPhotoDialog

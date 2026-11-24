@@ -8,7 +8,7 @@
 	overflow-wrap: break-word;
 }
 :is(.collective h2, .collective h3) .pohhu-wordmark--inline {
-	font-size-adjust: 0.51;
+	font-size-adjust: none;
 }
 .collective [id] {
 	scroll-margin-top: calc(var(--site-header-bar-height) + 1.25rem);
@@ -27,7 +27,7 @@
 }
 .collective h2,
 .collective h3 {
-	font-family: Inter, sans-serif;
+	font-family: var(--site-font-heading);
 	font-weight: 800;
 }
 .collective img {
@@ -50,9 +50,37 @@
 	letter-spacing: -0.07em;
 }
 .collective-motto {
-	color: var(--music-muted);
+	color: #f6f1ff;
 	font-size: clamp(1.125rem, 2vw, 1.6rem);
 	line-height: 1.15;
+}
+@keyframes collective-wordmark-in {
+	from {
+		opacity: 0.62;
+		transform: translateY(0.12em);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+@keyframes collective-motto-in {
+	from {
+		opacity: 0.4;
+		transform: translateX(-0.5em);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+@media (prefers-reduced-motion: no-preference) {
+	.collective-intro h1 {
+		animation: collective-wordmark-in 620ms cubic-bezier(0.2, 0.75, 0.2, 1) backwards;
+	}
+	.collective-motto {
+		animation: collective-motto-in 500ms 110ms cubic-bezier(0.2, 0.75, 0.2, 1) backwards;
+	}
 }
 .collective .collective-lede {
 	max-width: 38ch;
@@ -75,7 +103,7 @@
 	object-position: 50% 67%;
 }
 .collective figcaption {
-	font-size: 0.87rem;
+	font-size: var(--site-type-caption);
 	color: var(--music-muted);
 	line-height: 1.5;
 }
@@ -92,6 +120,10 @@
 .collective figcaption a,
 .collective-index a {
 	text-decoration: none;
+}
+.collective-opening-photo figcaption a {
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
 }
 .collective figcaption a:hover,
 .collective-index a:hover,
@@ -134,9 +166,10 @@
 }
 .collective-chapters {
 	min-width: 0;
+	container: chapters / inline-size;
 }
 .collective-chapter {
-	padding-block: clamp(2rem, 5vw, 4.75rem);
+	padding-block: var(--site-section-space);
 	border-top: 1px solid var(--music-rule);
 }
 .collective-chapter__heading {
@@ -144,99 +177,123 @@
 	align-items: baseline;
 	justify-content: space-between;
 	gap: 0.75rem;
-	margin-bottom: clamp(1.4rem, 3vw, 2rem);
+	margin-bottom: var(--site-heading-gap);
 }
 .collective-chapter h2 {
-	font-size: clamp(2rem, 4vw, 3.6rem);
-	line-height: 1.02;
-	letter-spacing: -0.055em;
+	font-size: var(--site-type-section);
+	line-height: 1;
+	letter-spacing: -0.045em;
+}
+.collective-chapter h3 {
+	font-size: var(--site-type-subhead);
+	line-height: 1.08;
+	letter-spacing: -0.025em;
 }
 .collective-back {
 	justify-content: center;
-	min-width: 44px;
-	font-size: 1.25rem;
 	color: var(--music-muted);
 	text-decoration: none;
 }
 .collective-prose {
-	width: 100%;
-	max-width: 66ch;
+	max-width: var(--site-prose-measure);
 	color: var(--music-ink);
-	font-size: clamp(1.04rem, 1.4vw, 1.17rem);
-	line-height: 1.68;
+	font-size: var(--site-type-body);
+	line-height: var(--site-leading-prose);
 }
-.collective-prose > * + *,
-.collective-address .collective-prose {
-	margin-top: 1.1em;
+.collective-prose > p + p {
+	margin-top: 0.85em;
 }
-.collective-prose .text-violet-400,
-.collective-subhead .text-violet-400,
-.collective-chapter h2 .text-violet-400 {
-	color: inherit;
+.collective-meta,
+.collective-members span,
+.collective-specs,
+.collective-credits .collective-members {
+	font-size: var(--site-type-caption);
+	line-height: 1.5;
 }
-.collective-prose blockquote {
-	margin-block: clamp(1.8rem, 4vw, 3rem);
-	font-size: clamp(1.55rem, 3vw, 2.6rem);
-	line-height: 1.16;
-	letter-spacing: -0.025em;
-	color: var(--music-paper);
-	max-width: 23ch;
+.collective-meta,
+.collective-members span,
+.collective-specs dt {
+	color: var(--music-muted);
 }
-.collective .collective-members {
-	margin-block: 1rem 1.75rem;
-	padding-left: 1.35em;
-	list-style: disc;
+.collective-history,
+.collective-discography,
+.collective-product,
+.collective-artist,
+.collective-exhibition {
+	display: grid;
+	align-items: start;
+	gap: var(--site-heading-gap) clamp(1.5rem, 4vw, 4rem);
 }
-.collective-members li {
-	padding-block: 0.1em;
+.collective-history > *,
+.collective-discography > *,
+.collective-product > *,
+.collective-artist > *,
+.collective-exhibition > * {
+	min-width: 0;
 }
-.collective-members li::marker {
-	color: #777;
-	font-size: 0.7em;
+.collective-address,
+.collective-credits {
+	max-width: var(--site-prose-measure);
+	border-top: 1px solid var(--music-rule);
+	padding-top: 1rem;
 }
 .collective-address {
-	max-width: 64ch;
-	margin-top: clamp(2rem, 4vw, 3rem);
-	padding-left: clamp(0.9rem, 2vw, 1.4rem);
-	border-left: 1px solid #777;
+	margin-top: var(--site-heading-gap);
 }
-.collective-address h3 {
-	font-size: 1.35rem;
-	line-height: 1.15;
-	letter-spacing: -0.03em;
+.collective-address .collective-prose {
+	margin-top: 0.65rem;
 }
-.collective-address > p,
-.collective-meta {
-	font-size: 0.9rem;
-	color: var(--music-muted);
+.collective-credits h3,
+.collective-address h3,
+.collective-release-note h4,
+.collective-releases h4,
+.pohhu-spotify-player__title {
+	font-family: var(--site-font-heading);
+	font-size: clamp(1.2rem, 1.7vw, 1.5rem);
+	font-weight: 700;
+	line-height: 1.14;
+	letter-spacing: -0.015em;
+}
+.collective .collective-members {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.9rem), 1fr));
+	gap: 0.8rem 1rem;
+	margin-top: 1rem;
+}
+.collective-members strong,
+.collective-members span {
+	display: block;
+}
+.collective-members strong {
+	color: var(--music-paper);
+	font-size: var(--site-type-body);
+	font-weight: 700;
+	line-height: 1.35;
 }
 .collective-link,
 .pohhu-spotify-player__link {
+	color: var(--music-paper);
+	font-size: var(--site-type-body);
 	text-decoration: underline;
-	text-underline-offset: 0.22em;
-	text-decoration-color: #787674;
-	font-size: 0.96rem;
+	text-decoration-color: var(--music-muted);
+	text-underline-offset: 0.2em;
 }
 .collective-link:hover,
 .pohhu-spotify-player__link:hover {
 	text-decoration-color: currentColor;
 }
 .collective .collective-subhead {
-	max-width: 35ch;
-	font-size: clamp(1.5rem, 2.5vw, 2.1rem);
-	line-height: 1.12;
-	letter-spacing: -0.04em;
-	margin-bottom: 1rem;
-}
-.collective-prose + .collective-subhead {
-	margin-top: clamp(2.5rem, 4vw, 4rem);
+	margin-bottom: 0.75rem;
 }
 .collective-releases {
 	display: grid;
-	gap: 2rem clamp(1.1rem, 3vw, 2rem);
+	gap: 0.9rem 1.1rem;
 }
 .collective-release {
-	display: block;
+	display: grid;
+	grid-template-columns: minmax(0, 6.5rem) minmax(0, 1fr);
+	gap: 0.8rem 1rem;
+	align-items: center;
 	text-decoration: none;
 	color: inherit;
 }
@@ -247,64 +304,47 @@
 	aspect-ratio: 1;
 	object-fit: cover;
 }
-.collective-releases h4 {
-	font-weight: 700;
-	font-size: clamp(1.05rem, 2vw, 1.4rem);
-	line-height: 1.15;
-}
-.collective-release h4 {
-	margin-top: 0.8rem;
-}
-.collective-release h4 span {
-	color: var(--music-muted);
-	font-size: 0.85em;
-}
 .collective-release p {
-	font-size: 1rem;
-	margin-top: 0.3rem;
+	font-size: var(--site-type-body);
+	color: var(--music-ink);
+	line-height: 1.35;
+	margin-top: 0.25rem;
 }
-.collective-release + .collective-meta {
-	margin-top: 0.35rem;
+.collective-release .collective-meta {
+	color: var(--music-muted);
+	font-size: var(--site-type-caption);
+	margin-top: 0.4rem;
 }
 .collective-release-note {
 	grid-column: 1 / -1;
-	max-width: 65ch;
+	border-top: 1px solid var(--music-rule);
+	padding-top: 0.9rem;
 }
-.collective-release-note h4 {
-	margin: 0.35rem 0;
-}
-.collective-release-note > p:last-child {
+.collective-release-note p {
+	margin-top: 0.35rem;
+	font-size: var(--site-type-body);
+	line-height: var(--site-leading-prose);
 	color: var(--music-ink);
 }
-.collective-product,
-.collective-artist {
-	display: grid;
-	align-items: start;
-	gap: clamp(1.2rem, 3vw, 2.4rem);
-}
-.collective-product > *,
-.collective-artist > * {
-	min-width: 0;
-}
 .collective-product__title {
-	font-size: clamp(1.6rem, 3vw, 2.6rem);
-	line-height: 1.1;
-	letter-spacing: -0.04em;
 	overflow-wrap: anywhere;
 }
-.collective .collective-price {
+.collective-price {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: baseline;
-	gap: 0.35rem 0.75rem;
-	margin: 0.85rem 0;
+	gap: 0.65rem;
+}
+.collective .collective-price {
+	margin-block: 0.65rem 1rem;
 }
 .collective-price strong {
-	font-size: 1.7rem;
+	font-size: 1.35rem;
+	line-height: 1.2;
 }
-.collective-price :is(s, span) {
-	font-size: 0.94rem;
+.collective-price s {
 	color: var(--music-muted);
+	font-size: var(--site-type-body);
 }
 .collective-actions,
 .collective-event-links,
@@ -314,32 +354,25 @@
 	flex-wrap: wrap;
 	gap: 0.25rem 1rem;
 }
+.collective-actions {
+	margin-block: var(--site-heading-gap);
+}
 .collective-button,
 .pohhu-spotify-player button {
+	border-radius: 0.25rem;
 	background: var(--music-paper);
 	color: #111;
 	padding: 0.5rem 1rem;
 	text-decoration: none;
-	font-size: 0.96rem;
+	font-size: 1rem;
 	font-weight: 700;
-}
-.collective .collective-specs {
-	margin-block: 1.35rem;
 }
 .collective-specs > div {
 	display: grid;
 	grid-template-columns: minmax(4.5rem, 1fr) minmax(0, 3fr);
 	gap: 0.75rem;
-	padding-block: 0.55rem;
+	padding-block: 0.45rem;
 	border-top: 1px solid var(--music-rule);
-	line-height: 1.4;
-	font-size: 0.97rem;
-}
-.collective-specs dt {
-	color: var(--music-muted);
-}
-.collective-specs + .collective-prose {
-	font-size: 1.04rem;
 }
 .collective-merch-stage {
 	aspect-ratio: 3 / 4;
@@ -375,7 +408,7 @@
 	align-items: center;
 	justify-content: center;
 	gap: 0.75rem;
-	font-size: 0.88rem;
+	font-size: var(--site-type-caption);
 	font-variant-numeric: tabular-nums;
 }
 .pohhu-merch-controls button,
@@ -394,16 +427,11 @@
 	text-align: center;
 }
 .collective-product figcaption a {
-	display: inline-block;
-	padding-block: 0.65rem;
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
 	text-decoration: underline;
-	text-underline-offset: 0.15em;
-}
-.collective .pohhu-event-photos {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 0.65rem;
-	margin-top: clamp(1.5rem, 3vw, 2.6rem);
+	text-underline-offset: 0.2em;
 }
 .pohhu-event-photos__link {
 	display: block;
@@ -411,40 +439,35 @@
 	aspect-ratio: 3 / 4;
 	cursor: zoom-in;
 }
+.pohhu-event-poster {
+	width: 100%;
+	aspect-ratio: 1600 / 838;
+}
 .pohhu-event-photos__link img {
 	object-fit: cover;
 }
-.pohhu-event-photos__banner,
-.pohhu-event-photos__heading {
+.collective .pohhu-event-photos {
 	grid-column: 1 / -1;
-}
-.pohhu-event-photos__banner > a {
-	aspect-ratio: 1600 / 838;
-}
-.pohhu-event-photos__heading {
-	color: var(--music-muted);
-	font-size: 0.95rem;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: clamp(0.4rem, 1vw, 0.85rem);
 }
 .collective-event-links {
-	margin-block: -0.6rem 0.7rem;
+	margin-top: 0.5rem;
 }
 .collective-artist__portrait {
-	width: min(66%, 15rem);
+	width: min(70%, 17rem);
 	aspect-ratio: 1;
 	height: auto;
 	object-fit: cover;
 }
 .collective-artist .collective-link {
-	margin-block: 0.3rem;
+	margin-top: 0.35rem;
 }
 .pohhu-spotify-player {
-	margin-top: 1.3rem;
-	padding-block: 1rem;
+	margin-top: 1rem;
+	padding-top: 1rem;
 	border-top: 1px solid var(--music-rule);
-}
-.pohhu-spotify-player__title {
-	font-size: 1.2rem;
-	font-weight: 700;
 }
 .pohhu-spotify-player__actions,
 .pohhu-spotify-player__frame {
@@ -455,15 +478,47 @@
 	border: 0;
 	max-width: 100%;
 }
-@media (min-width: 38rem) {
+@container chapters (min-width: 29rem) {
 	.collective-releases {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
+	.collective-release {
+		display: block;
+	}
+	.collective-release > div {
+		margin-top: 0.8rem;
+	}
 	.collective-artist {
-		grid-template-columns: minmax(9rem, 1fr) minmax(0, 2.8fr);
+		grid-template-columns: minmax(8rem, 0.82fr) minmax(0, 1.85fr);
 	}
 	.collective-artist__portrait {
 		width: 100%;
+	}
+}
+@container chapters (min-width: 40rem) {
+	.collective-history {
+		grid-template-columns: minmax(0, 1.75fr) minmax(11rem, 0.9fr);
+	}
+	.collective-credits {
+		border-left: 1px solid var(--music-rule);
+		border-top: 0;
+		padding: 0 0 0 clamp(1rem, 2.2vw, 2rem);
+	}
+	.collective .collective-members {
+		grid-template-columns: 1fr;
+		gap: 0.8rem;
+	}
+	.collective-product,
+	.collective-exhibition {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	}
+	.collective .pohhu-event-photos {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+@container chapters (min-width: 47rem) {
+	.collective-discography {
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr);
 	}
 }
 @media (min-width: 44rem) {
@@ -472,14 +527,6 @@
 	}
 	.collective-opening-photo > div {
 		aspect-ratio: 1.3;
-	}
-}
-@media (min-width: 46rem) {
-	.collective-product {
-		grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
-	}
-	.collective .pohhu-event-photos {
-		grid-template-columns: repeat(4, minmax(0, 1fr));
 	}
 }
 @media (min-width: 60rem) {
@@ -492,7 +539,7 @@
 		position: sticky;
 		top: calc(var(--site-header-bar-height) + 0.75rem);
 		align-self: start;
-		padding-top: clamp(2rem, 5vw, 4.75rem);
+		padding-top: var(--site-section-space);
 	}
 	.collective-index ul {
 		display: block;

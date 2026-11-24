@@ -12,7 +12,6 @@ export interface FundedRelease {
 	banner?: boolean;
 	/** Banner cards: longer body copy. Supports **bold** via plain text or use description as string. */
 	description?: string;
-	subtitle?: string;
 }
 
 export interface CertifiedArtistPlaylist {
@@ -32,68 +31,39 @@ export interface CertifiedArtistProfile {
 /** Inline markup: **bold** · *italic* · {{violet highlight}} */
 export const pohhuManifestoBeforeCore: string[] = [
 	"{{$.pohhu¥}} is a small independent creative collective from **Tartu, Estonia**, built around friends who keep making things even when there is no clear reason to expect money, attention, or permission.",
-	"Founded in **late 2022**, {{$.pohhu¥}} started as a one-man army. In the beginning it was barely a collective at all. It was a name, an instinct, and a stubborn excuse to keep making things. Tracks, covers, visuals, files, discs, ideas, inside jokes, half-serious plans, and small pieces of culture that felt worth saving before anyone else had decided they mattered.",
-	"The point was never to wait for the industry to notice. The point was to **act like the scene was already worth documenting**.",
-	"In practice, {{$.pohhu¥}} operates on a **fuck around and find out** basis — try the idea, see what happens, and deal with the consequences after.",
-	"The first real expansion came when **Kevilnius** joined in **2023**. What started as one person carrying the name slowly became a wider circle of artists and collaborators. By the end of **2024**, Kevilnius became an official core member during the formation of **Dimensional Records Estonia OÜ**, a more formal label structure created by people already moving inside the {{$.pohhu¥}} world.",
-	"The easiest way to understand the structure is that {{$.pohhu¥}} is the **wider umbrella**. It is the collective, the attitude, the shared history, and the place where the different projects connect. Under that sit names like **Dimensional Records Estonia OÜ** and **’59 Records Mõisavahe**. Some parts are formal. Some parts started as jokes. Some parts became real because people actually put their time, money, work, equipment, files, covers, songs, videos, and sleep into them."
+	"Nigol started {{$.pohhu¥}} in late 2022. It was just him at first, making tracks, burning discs and putting together covers. Kevilnius joined in 2023.",
+	"We still work on a *fuck around and find out* basis. If a friend makes a tape we want on our shelf, we’ll help put it out. We want the people making the music to keep control of it.",
+	"By the end of 2024, Kevilnius had become a core member as Dimensional Records Estonia OÜ took shape. It’s one of the labels under {{$.pohhu¥}}, alongside ’59 Records Mõisavahe."
 ];
 
-export const pohhuFoundingCoreIntro =
-	"The **founding core** around this era included:";
+export const pohhuFoundingCoreIntro = "The early lineup";
 
-export const pohhuFoundingCore: string[] = [
-	"**Nigol** a.k.a. *DJ BRO*",
-	"**Kevilnius**",
-	"**Gustav Müürimägi** a.k.a. *Päkapikk Margus / D.J C.J*",
-	"**BENA** a.k.a. *Benakanister*",
-	"**Maxas Salovas** a.k.a. *DJ Jack Sandhill*",
-	"**Raza** a.k.a. *Razzadinka / Plue Buni$her*",
-	"**Annupannu** a.k.a. Valium B4rbie"
+export const pohhuFoundingCore = [
+	{ name: "Nigol", aliases: ["DJ BRO"] },
+	{ name: "Kevilnius", aliases: [] },
+	{ name: "Gustav Müürimägi", aliases: ["Päkapikk Margus", "D.J C.J"] },
+	{ name: "BENA", aliases: ["Benakanister"] },
+	{ name: "Maxas Salovas", aliases: ["DJ Jack Sandhill"] },
+	{ name: "Raza", aliases: ["Razzadinka", "Plue Buni$her"] },
+	{ name: "Annupannu", aliases: ["Valium B4rbie"] }
 ];
 
-/** Timeline and collective identity — stays in the main manifesto. */
 export const pohhuManifestoAfterCore: string[] = [
-	"Together, they turned {{$.pohhu¥}} from a name into something people could point at. It became a loose system of artists, aliases, releases, arguments, jokes, designs, plans, and physical objects. A **collective**, a **label family**, and a **friend group**.",
-	"On **11 July 2025**, **jo$er** a.k.a. **Andri J. Hook** joined {{$.pohhu¥}} and became part of the expanding collective.",
-	"As of **2026**, **Benakanister** and **Annupannu** have parted ways with {{$.pohhu¥}}. The rest of the core continues forward.",
-	"Modern digital media has made it normal for art to be measured by stream counts, playlist placement, retention curves, and algorithmic obedience. The machine rewards scale, repetition, and content churn. It does not care whether something meant anything to the people who made it.",
-	"One of the core beliefs behind {{$.pohhu¥}} is that **passion comes before money**.",
-	"Money can follow good work, but it should never be the reason the work exists. If something is made fully, honestly, and with real care behind it, it already has value before anyone pays for it, streams it, books it, or approves it.",
-	"That is also where {{$.pohhu¥}} separates itself from the mainstream machine. A lot of artists can make good money once they become part of that system, but the tradeoff is often **control**. The sound, image, pace, rollout, and even the reason for making things can slowly stop belonging fully to the artist.",
-	"{{$.pohhu¥}} is not against money. We are against **letting money decide what is worth making**."
+	"jo$er (Andri J. Hook) joined us on 11 July 2025. As of 2026, Benakanister and Annupannu have left the collective."
 ];
 
 export const pohhuPhysicalMediaDivider = "Physical media";
-
-export const pohhuLineupDivider = "{{$.pohhu¥}} LINEUP";
-
+export const pohhuLineupDivider = "Lineup";
 export const pohhuFundedReleasesSubsectionTitle = "{{$.pohhu¥}} × 963 Records";
-
 export const pohhuExhibitionsEventsDivider = "Exhibitions & events";
-
 export const pohhuMerchDivider = "Merch";
 
-/** How funding / repayment works for the releases below. */
-export const pohhuFundingModel: string[] = [
-	"How we currently work: {{$.pohhu¥}} invests the **up-front cost** of everything tied to releasing a project, and we only expect that sum back — **without taking a cut**. There is a running joke that we are the first in the industry to run a **10/90 split**. That line is funny because it is basically true on paper, but we do not treat it as an expectation. If the artists decide we did enough that a little should come back to keep the \"non-profit\" machine running, that is their call.",
-	"{{$.pohhu¥}} has currently funded **one CD release** — *12 LIITRIT* by **Benakanister** and **mehkel** (who produced the tracks) — and another release that also brings **SKIZØ** into the picture: the **PÄRNU–TARTU MIXTAPE**."
-];
-
-/** Physical media, funded releases, and artifacts — shown under the releases block. */
 export const pohhuFundedReleasesIntro: string[] = [
-	"{{$.pohhu¥}} operates across audio, video, design, visual culture, marketing, physical media, digital media, and whatever else needs to exist. We do not build — or approve of — work that has to cleanly fit one category. Sometimes the work is a single track. Sometimes it is a tape, a disc, a cover, a video, a campaign, a website, an archive, or something completely different: a **physical trace** that proves a moment happened.",
-	"We do more than release things. We **build artifacts**. Tapes, discs, videos, visuals, campaigns, archives, digital objects, and physical media that would otherwise get buried under the feed and forgotten by next week — we try to catch that stuff when we get the chance and when we recognize that it matters.",
-	"Our collective tries to put back into the **underground scene** before there is even money to put back. We do not operate on a profit basis, and that is what makes it beautiful — at least for us. You could call us a **\"non-profit\"**.",
-	"We believe **small artists** should still be able to leave a **large impact** when the skill is there. Not everything needs to be optimized, monetized, or reduced to a dashboard of statistics. **Physical releases**, independent support, and scene-first thinking are how we help artists leave something behind that feels real, lasts longer, and means more than another number on a streaming platform."
+	"Our first CD run was *12 LIITRIT* by Benakanister and mehkel, who produced the tracks. Then we helped SKIZØ and Benakanister put the *PÄRNU–TARTU* mixtape on cassette."
 ];
 
-/** Standalone pull line — avoids ** / * parser clashes. */
-export const pohhuManifestoPullquote =
-	"{{The work has to come from somewhere real first.}}";
-
-export const pohhuManifestoClosing: string[] = [
-	"Everything else comes after. {{$.pohhu¥}} exists because someone has to **care before the algorithm does**. Someone has to burn the discs, make the covers, upload the files, save the folders, fund the dumb idea, and treat the small artist like they are **already worth documenting**."
+export const pohhuFundingModel: string[] = [
+	"We cover the cost of a release up front and ask to get that much back. The artists keep the proceeds after costs. We joke about a 10/90 split, but if anyone wants to put something towards the next run, that’s up to them."
 ];
 
 export interface MerchGalleryImage {
@@ -118,7 +88,6 @@ export const kevilniusMerch = {
 	/** Original / compare-at price (shown struck through) */
 	compareAtPrice: "50",
 	currency: "€",
-	saleLabel: "Sale",
 	details: [
 		{ label: "Blank", value: "Stanley/Stella Blaster 2.0" },
 		{ label: "Fabric", value: "200 GSM · 100% cotton" },
@@ -126,13 +95,11 @@ export const kevilniusMerch = {
 		{ label: "Swag", value: "Infinite" }
 	] as MerchProductDetail[],
 	description: [
-		"**Kevilnius** presents a once-in-a-lifetime opportunity to buy his official merch — his **first drop**. The shirt features a box logo taken from the cover art of his single **\"watermelon lemonberry\"**. **Limited edition** — available until stock runs out.",
-		"The whole {{$.pohhu¥}} collective is very proud of him for this achievement.",
-		"Shoot him a DM on **Instagram** or fill out the order via **Google Forms**.",
-		"*NB! The sexy gentleman in the product photos is not included in the final sale.*"
+		"The box logo on Kevilnius’ first shirt comes from the cover of his single *watermelon lemonberry*. It’s a limited run.",
+		"Oliver doesn’t come with the shirt."
 	],
 	orderFormUrl: "https://forms.gle/v5saqsBvRHETZmMz9",
-	orderFormLabel: "Add to order",
+	orderFormLabel: "Order the shirt",
 	instagramUrl: "https://www.instagram.com/kevilnius/",
 	instagramLabel: "Message on Instagram",
 	modelCredit: {
@@ -143,30 +110,30 @@ export const kevilniusMerch = {
 	gallery: [
 		{
 			image: "/images/pohhu/merch/oll_smoking.jpg",
-			alt: "Friend wearing Kevilnius Artifact_01 shirt"
+			alt: "Oliver Ode sitting against a graffiti wall in the Artifact_01 shirt"
 		},
 		{
 			image: "/images/pohhu/merch/oll_h6lmadlahti.jpg",
-			alt: "Kevilnius shirt — H6lmadlahti"
+			alt: "Oliver Ode holding his jacket open to show the box logo"
 		},
 		{
 			image: "/images/pohhu/merch/oll_next_to_wall.jpg",
-			alt: "Kevilnius shirt — next to wall"
+			alt: "Oliver Ode with one arm raised beside green graffiti, wearing the box-logo shirt"
 		},
 		{
 			image: "/images/pohhu/merch/oll_liputaja.jpg",
-			alt: "Kevilnius shirt — liputaja"
+			alt: "Oliver Ode holding the sides of the shirt to show the print"
 		}
 	] as MerchGalleryImage[]
 };
 
 export const aleksandriPub = {
 	title: "Aleksandri 15",
-	subtitle: "Alexandri Pubi · city centre, Tartu",
+	subtitle: "Alexandri Pubi",
 	body:
-		"**Gustav Müürimägi** threw parties at **Aleksandri 15** in the city centre — his apartment, not a pub, but close enough in spirit. {{$.pohhu¥}} core and the wider orbit kept ending up in the same room.",
+		"The pub was Gustav Müürimägi’s apartment in central Tartu. Gustav threw the parties and the rest of us kept turning up.",
 	mapUrl: "https://share.google/Er2h9c2BqqFeoqCIL",
-	mapLinkLabel: "Maps"
+	mapLinkLabel: "View on map"
 };
 
 export type KiviSocialPlatform = "facebook" | "instagram";
@@ -190,11 +157,8 @@ export interface KiviArtShowGalleryImage {
 export const kiviArtShow = {
 	title: "Kivi Baar × {{$.pohhu¥}} Art Show",
 	paragraphs: [
-		"On **7 January 2026**, **Kivi Baar** let **Nigol** and **Kevilnius** display their digital art — this time printed out physically and hung across the venue.",
-		"The display consisted mainly of **Kevilnius**' art pieces, whereas **Nigol** brought out only two of his favourite pieces.",
-		"Most of the art displayed on the exhibition ended up being bought, while the rest was donated to friends and family.",
-		"None of this should have been possible without our friend **Tairi**, who managed the internal communication and forwarded it to us — the key that let it really happen.",
-		"The gallery was open from **7 January 2026, 21:00** until the **start of February 2026**."
+		"Our show at Kivi Baar opened at 21:00 on 7 January 2026 with prints of our digital work. Most were by Kevilnius. Nigol brought two of his favourites.",
+		"Our friend Tairi handled the back-and-forth with the bar. The prints stayed up until early February. Most sold, and we gave the rest to friends and family."
 	],
 	links: [
 		{
@@ -216,29 +180,27 @@ export const kiviArtShow = {
 			caption: "Instagram"
 		}
 	] as KiviArtShowLink[],
-	/** Subtle label before the photo grid (after banner + socials). */
-	photosSectionLabel: "Event photos",
 	gallery: [
 		{
 			image: "/images/pohhu/kivi-art-show/banner.jpg",
-			alt: "Kivi Baar × $.pohhu¥ art show banner",
+			alt: "Purple $.pohhu¥ poster for the 7 January art show at Kivi Baar",
 			banner: true
 		},
 		{
 			image: "/images/pohhu/kivi-art-show/01.jpg",
-			alt: "Art show at Kivi Baar — photo 1"
+			alt: "A $.pohhu¥ forearm tattoo beside a print at Kivi Baar"
 		},
 		{
 			image: "/images/pohhu/kivi-art-show/02.jpg",
-			alt: "Art show at Kivi Baar — photo 2"
+			alt: "A print lit purple on the wall at Kivi Baar"
 		},
 		{
 			image: "/images/pohhu/kivi-art-show/03.jpg",
-			alt: "Art show at Kivi Baar — photo 3"
+			alt: "A framed print on a pale brick wall at Kivi Baar"
 		},
 		{
 			image: "/images/pohhu/kivi-art-show/04.jpg",
-			alt: "Art show at Kivi Baar — photo 4"
+			alt: "A collage mounted on an exposed brick wall at Kivi Baar"
 		}
 	] as KiviArtShowGalleryImage[]
 };
@@ -262,14 +224,13 @@ export const fundedReleases: FundedRelease[] = [
 		spotifyUrl:
 			"https://open.spotify.com/track/77cu8RLW53G43WYXdFLm78",
 		coverImage: "/images/pohhu/releases/parnu-tartu-mixtape.jpg",
-		pressRun: "50 cassettes"
+		pressRun: "50 cassettes + stickers"
 	},
 	{
 		banner: true,
-		title: "963 Records — PÄRNU–TARTU mixtape release event",
-		subtitle: "Release event · artist payments",
+		title: "PÄRNU–TARTU mixtape release show",
 		description:
-			"{{$.pohhu¥}} funded artist payments for the PÄRNU–TARTU mixtape release event through 963 Records."
+			"We covered the artists’ fees for the show through 963 Records."
 	}
 ];
 
@@ -277,7 +238,7 @@ export const certifiedArtists: CertifiedArtistProfile[] = [
 	{
 		spotifyId: "1TP2IwbXVJvlH5acCxmPZL",
 		profileImage: "/images/pohhu/artists/kevilnius.jpg",
-		bio: "Based in Estonia, Kevilnius emerged onto the music scene in 2018. His artistic journey began as a cascade of daydreams, which has been an inspiration for his music. Fusing his passion for cloudy/dreamy melodies mixed with trap-style production, each of his tracks is a hypnotic journey through a cybernetic dreamscape, where crystalline beats interlace with vapor trails of melody, guiding listeners into a neverending bliss.",
+		bio: "Kevilnius has been making music in Estonia since 2018. He puts hazy melodies over trap drums. He joined us in 2023 and makes visual art too, including the pieces he showed at Kivi Baar.",
 		playlist: {
 			id: "1ppZiVsWl1qqWGUkg8HEcd",
 			title: "Kevilnius × $.pohhu¥"

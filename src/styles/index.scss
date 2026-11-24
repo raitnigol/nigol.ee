@@ -82,55 +82,6 @@
 			transition-delay: 0s !important;
 		}
 	}
-
-	@keyframes pohhu-logo-core-expand {
-		from {
-			max-width: 0;
-			opacity: 0;
-		}
-		to {
-			/* Upper bound only — final width follows "pohhu" at text-5xl/6xl. */
-			max-width: 12em;
-			opacity: 1;
-		}
-	}
-
-	@keyframes pohhu-logo-text-unfold {
-		from {
-			transform: scaleX(0.15);
-			letter-spacing: -0.12em;
-		}
-		to {
-			transform: scaleX(1);
-			letter-spacing: inherit;
-		}
-	}
-
-	@keyframes pohhu-tagline-in {
-		from {
-			opacity: 0;
-			transform: translateY(0.35rem);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	@keyframes pohhu-tagline-shine {
-		0% {
-			background-position: 150% center;
-		}
-
-		6% {
-			background-position: -50% center;
-		}
-
-		6.01%,
-		100% {
-			background-position: 150% center;
-		}
-	}
 }
 
 @layer components {
@@ -750,7 +701,7 @@
 	}
 
 	.site-main {
-		padding-block: clamp(2rem, 4vw, 3.5rem);
+		padding-block: var(--site-page-space);
 	}
 
 	.site-footer-wrap {
@@ -769,7 +720,7 @@
 
 	.site-footer__copy {
 		margin: 0;
-		font-size: 0.875rem;
+		font-size: var(--site-type-caption);
 		letter-spacing: 0.025em;
 		color: var(--text-subtle);
 	}
@@ -1206,70 +1157,6 @@
 			&--active {
 				background: rgb(255 255 255 / 72%);
 			}
-		}
-	}
-
-	.pohhu-logo-reveal__core {
-		display: inline-block;
-		overflow: hidden;
-		max-width: 0;
-		opacity: 0;
-		vertical-align: baseline;
-		white-space: nowrap;
-		animation: pohhu-logo-core-expand 0.85s cubic-bezier(0.22, 1, 0.36, 1)
-			0.4s forwards;
-	}
-
-	.pohhu-logo-reveal__text {
-		display: inline-block;
-		white-space: nowrap;
-		transform-origin: left center;
-		animation: pohhu-logo-text-unfold 0.85s cubic-bezier(0.22, 1, 0.36, 1)
-			0.4s forwards;
-	}
-
-	.pohhu-tagline-reveal {
-		opacity: 0;
-		animation: pohhu-tagline-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.05s
-			forwards;
-
-		&__text {
-			display: inline-block;
-			background-image: linear-gradient(
-				90deg,
-				var(--text-primary) 0%,
-				var(--text-primary) 38%,
-				#ddd6fe 46%,
-				#c4b5fd 50%,
-				#a78bfa 52%,
-				#ddd6fe 54%,
-				var(--text-primary) 62%,
-				var(--text-primary) 100%
-			);
-			background-size: 220% 100%;
-			background-clip: text;
-			-webkit-background-clip: text;
-			color: transparent;
-			animation: pohhu-tagline-shine 10s linear 1.65s infinite;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.pohhu-logo-reveal__core,
-		.pohhu-logo-reveal__text,
-		.pohhu-tagline-reveal {
-			animation: none;
-			opacity: 1;
-			max-width: none;
-			transform: none;
-			letter-spacing: inherit;
-		}
-
-		.pohhu-tagline-reveal__text {
-			background: none;
-			background-clip: unset;
-			-webkit-background-clip: unset;
-			color: var(--text-primary);
 		}
 	}
 }

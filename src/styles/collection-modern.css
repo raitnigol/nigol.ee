@@ -6,7 +6,6 @@
 	--rr-accent: #c4b5fd;
 	--rr-line: #303034;
 	color-scheme: dark;
-	--rr-type: "League Spartan", Arial, sans-serif;
 	--rr-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
 	color: var(--rr-text);
 	line-height: 1.45;
@@ -43,7 +42,10 @@
 	);
 	min-width: 0;
 	margin-inline: auto;
-	padding-block: clamp(2rem, 4vw, 3.75rem);
+	padding-block: var(--site-section-space);
+}
+.rr-room > .rr-hero {
+	padding-block-start: var(--site-page-space);
 }
 .rr-room > .rr-section + .rr-section {
 	border-top: 1px solid var(--rr-line);
@@ -56,7 +58,7 @@
 }
 .rr-hero h1,
 .rr-manifesto h2 {
-	font-family: var(--rr-type);
+	font-family: var(--site-font-heading);
 	font-weight: 720;
 	letter-spacing: -0.052em;
 	line-height: 1;
@@ -107,15 +109,15 @@
 	text-decoration-color: #6d6d77;
 }
 .rr-heading {
-	font-family: var(--rr-type);
+	font-family: var(--site-font-heading);
 	font-weight: 800;
-	font-size: clamp(1.65rem, 3vw, 2.65rem);
+	font-size: var(--site-type-section);
 	letter-spacing: -0.042em;
-	line-height: 1.12;
+	line-height: 1.04;
 	margin: 0;
 }
 .rr-section > .rr-heading {
-	margin-bottom: clamp(1rem, 2.2vw, 1.8rem);
+	margin-bottom: var(--site-heading-gap);
 }
 .rr-detail-actions {
 	display: flex;
@@ -199,12 +201,12 @@
 }
 .rr-sleeve figcaption {
 	margin-top: 0.8rem;
-	font-size: 0.95rem;
-	line-height: 1.3;
+	font-size: 1rem;
+	line-height: 1.35;
 }
 .rr-sleeve-note {
 	color: var(--rr-accent);
-	font-family: var(--rr-type);
+	font-family: var(--site-font-heading);
 	font-size: 1.05rem;
 	font-weight: 620;
 	margin-bottom: 0.25rem;
@@ -335,7 +337,7 @@
 }
 .rr-tab-group button span {
 	font-family: var(--rr-mono);
-	font-size: 0.72em;
+	font-size: 0.8125rem;
 	font-weight: 500;
 }
 .rr-tab-group button[aria-pressed="true"] {
@@ -360,7 +362,7 @@
 .rr-results p,
 .rr-credit,
 .rr-more small {
-	font-size: 0.78rem;
+	font-size: var(--site-type-caption);
 	color: var(--rr-muted);
 }
 .rr-lucky {
@@ -407,7 +409,7 @@
 	gap: 0.4em;
 	color: var(--rr-muted);
 	margin: 0.6rem 0 0.4rem;
-	font-size: 0.72rem;
+	font-size: 0.8125rem;
 }
 .rr-tag {
 	display: inline-block;
@@ -417,7 +419,7 @@
 	border-radius: 0.2rem;
 	font-family: var(--rr-mono);
 	text-transform: uppercase;
-	font-size: 0.67rem;
+	font-size: 0.8125rem;
 	line-height: 1;
 	letter-spacing: 0.05em;
 	padding: 0.24rem 0.36rem;
@@ -427,13 +429,13 @@
 	border-color: #76678e;
 }
 .rr-record strong {
-	font-size: clamp(1rem, 1.25vw, 1.18rem);
-	line-height: 1.2;
+	font-size: var(--site-type-body);
+	line-height: 1.25;
 }
 .rr-record-artist {
 	margin-top: 0.25rem;
 	color: var(--rr-muted);
-	font-size: 0.95rem;
+	font-size: 1rem;
 }
 .rr-list > li {
 	border-top: 1px solid var(--rr-line);
@@ -456,17 +458,20 @@
 .rr-list .rr-record-artist {
 	margin: 0;
 }
-.rr-list .rr-record strong {
-	font-size: 1.08rem;
-}
 .rr-empty {
 	margin: 2rem 0;
 }
 .rr-empty h3,
-.rr-deck h3 {
+.rr-deck h3,
+.rr-subheading {
+	font-family: var(--site-font-heading);
 	font-weight: 700;
-	font-size: 1.5rem;
-	line-height: 1.1;
+	font-size: var(--site-type-subhead);
+	letter-spacing: -0.025em;
+	line-height: 1.12;
+}
+.rr-subheading {
+	margin-bottom: 1rem;
 }
 .rr-more {
 	display: grid;
@@ -487,8 +492,7 @@
 	border-top: 1px solid var(--rr-line);
 }
 .rr-facts dt {
-	font-size: 0.72rem;
-	text-transform: uppercase;
+	font-size: var(--site-type-caption);
 	line-height: 1.6;
 }
 .rr-facts dd {
@@ -539,6 +543,7 @@
 }
 .rr-play-list small {
 	color: var(--rr-muted);
+	font-size: var(--site-type-caption);
 	margin-top: 0.18rem;
 }
 .rr-play-icon {
@@ -561,7 +566,7 @@
 	width: 100%;
 }
 .rr-kicker {
-	font-size: 0.72rem;
+	font-size: var(--site-type-caption);
 	color: var(--rr-muted);
 }
 .rr-deck h3 {
@@ -647,7 +652,7 @@ body:has(.rr-dialog[open]) {
 	padding: clamp(1rem, 3vw, 2.4rem);
 }
 .rr-detail-content h2 {
-	font-family: var(--rr-type);
+	font-family: var(--site-font-heading);
 	font-size: clamp(1.85rem, 3.4vw, 2.75rem);
 	letter-spacing: -0.035em;
 	font-weight: 750;
@@ -665,6 +670,8 @@ body:has(.rr-dialog[open]) {
 .rr-description {
 	white-space: pre-line;
 	margin-top: 0.9rem;
+	font-size: var(--site-type-body);
+	line-height: var(--site-leading-prose);
 }
 .rr-source-links {
 	display: flex;

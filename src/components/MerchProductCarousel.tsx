@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 
-import type { Photo } from "./PohhuPhotoDialog";
+import { PohhuPhotoDialog, type Photo } from "./PohhuPhotoDialog";
 
 interface MerchProductCarouselProps {
 	items: Photo[];
@@ -16,6 +16,7 @@ export function MerchProductCarousel({
 }: MerchProductCarouselProps) {
 	const track = useRef<HTMLDivElement>(null);
 	const [active, setActive] = useState(0);
+	const [openIndex, setOpenIndex] = useState<number | null>(null);
 
 	if (!items.length) return null;
 
@@ -39,6 +40,7 @@ export function MerchProductCarousel({
 			aria-label={label}
 			aria-roledescription="carousel"
 			onKeyDown={event => {
+				if (openIndex !== null) return;
 				if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
 					event.preventDefault();
 					showPhoto(active + (event.key === "ArrowLeft" ? -1 : 1));
@@ -67,6 +69,17 @@ export function MerchProductCarousel({
 							key={item.image}
 							href={item.image}
 							aria-label={`Enlarge ${item.alt}`}
+							aria-haspopup="dialog"
+							onClick={event => {
+								if (
+									event.metaKey ||
+									event.ctrlKey ||
+									event.shiftKey ||
+									event.altKey
+								) return;
+								event.preventDefault();
+								setOpenIndex(index);
+							}}
 							tabIndex={active === index ? 0 : -1}
 							className="focus-ring collective-merch-slide"
 						>
@@ -105,6 +118,14 @@ export function MerchProductCarousel({
 						→
 					</button>
 				</div>
+			)}
+			{openIndex !== null && (
+				<PohhuPhotoDialog
+					items={items}
+					initialIndex={openIndex}
+					label={label}
+					onClose={() => setOpenIndex(null)}
+				/>
 			)}
 		</div>
 	);
