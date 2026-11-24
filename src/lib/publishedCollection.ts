@@ -34,7 +34,7 @@ function requestOptions(token: string, accept: string): RequestInit {
 		},
 		cache: "no-store",
 		redirect: "error",
-		signal: AbortSignal.timeout(5000)
+		signal: AbortSignal.timeout(15_000)
 	};
 }
 
@@ -55,9 +55,20 @@ async function readLiveCollection() {
 	return parsePublishedRecords(await response.json(), artwork);
 }
 
+let inFlight: Promise<ReturnType<typeof parsePublishedRecords>> | undefined;
+function refreshCollection() {
+	inFlight ??= readLiveCollection().finally(() => {
+		inFlight = undefined;
+	});
+	return inFlight;
+}
+
 // Cache only projected, successfully parsed rows. An empty list is authoritative.
 const cachedLiveCollection = unstable_cache(
-	async () => ({ fetchedAt: Date.now(), rows: await readLiveCollection() }),
+	async () => {
+		const rows = await refreshCollection();
+		return { fetchedAt: Date.now(), rows };
+	},
 	["published-record-room-v1"],
 	{ revalidate: cacheSeconds }
 );
@@ -68,7 +79,7 @@ export async function getPublishedCollection() {
 	// Next revalidates stale entries in the background. On this request, verify
 	// expired rows synchronously as well so a long outage cannot restore old listings.
 	if (Date.now() - result.fetchedAt >= cacheSeconds * 1000)
-		return readLiveCollection();
+		return refreshCollection();
 	return result.rows;
 }
 
