@@ -45,123 +45,112 @@ export function ListeningRoom({ records }: { records: PublishedRecord[] }) {
 			value === "all" || available.some(record => record.format === value)
 	);
 	return (
-		<section
-			id="listening"
-			className="rr-section"
-			aria-labelledby="rr-listening-title"
-		>
-			<h2 id="rr-listening-title" className="rr-heading">
-				Listening room
-			</h2>
-			<div className="rr-listening-layout">
-				<div>
-					<div className="rr-listening-tools">
-						<div
-							className="rr-tab-group"
-							role="group"
-							aria-label="Listening format"
-						>
-							{formats.map(value => (
-								<button
-									type="button"
-									key={value}
-									aria-pressed={format === value}
-									onClick={() => {
-										setFormat(value);
-										setLimit(5);
-										setPlaying(undefined);
-									}}
-								>
-									{value === "all"
-										? "All"
-										: formatNames[value]}
-								</button>
-							))}
-						</div>
-						<label>
-							<span className="rr-sr">
-								Search Spotify releases in the collection
-							</span>
-							<input
-								type="search"
-								placeholder="Find a release…"
-								value={query}
-								onChange={event => {
-									setQuery(event.target.value);
-									setLimit(5);
-								}}
-							/>
-						</label>
-					</div>
-					{matches.length === 0 && (
-						<p role="status">No matching Spotify releases.</p>
-					)}
-					<ul className="rr-play-list">
-						{matches.slice(0, limit).map(record => (
-							<li key={record.copyId}>
-								<button
-									type="button"
-									aria-pressed={
-										record.copyId === selected?.copyId
-									}
-									onClick={() => {
-										setChosen(record.copyId);
-										setPlaying(record.copyId);
-									}}
-								>
-									<RecordArt record={record} slot="list" />
-									<span>
-										<strong>{record.title}</strong>
-										<small>{record.artist}</small>
-									</span>
-									<span
-										aria-hidden="true"
-										className="rr-play-icon"
-									>
-										▶
-									</span>
-								</button>
-							</li>
-						))}
-					</ul>
-					{limit < matches.length && (
-						<button
-							type="button"
-							className="rr-link-button"
-							onClick={() => setLimit(limit + 8)}
-						>
-							More releases
-						</button>
-					)}
-				</div>
-				{selected && (
-					<div className="rr-deck">
-						<div className="rr-deck-selection">
-							<RecordArt record={selected} slot="deck" />
-							<div>
-								<span className="rr-kicker">
-									{formatNames[selected.format]}
-									{selected.year && ` · ${selected.year}`}
-								</span>
-								<h3>{selected.title}</h3>
-								<p>{selected.artist}</p>
-							</div>
-						</div>
-						{playing === selected.copyId ? (
-							<SpotifyEmbed record={selected} />
-						) : (
+		<div className="rr-listening-layout">
+			<div>
+				<div className="rr-listening-tools">
+					<div
+						className="rr-tab-group"
+						role="group"
+						aria-label="Listening format"
+					>
+						{formats.map(value => (
 							<button
 								type="button"
-								className="rr-button rr-acid-button"
-								onClick={() => setPlaying(selected.copyId)}
+								key={value}
+								aria-pressed={format === value}
+								onClick={() => {
+									setFormat(value);
+									setLimit(5);
+									setPlaying(undefined);
+								}}
 							>
-								Load Spotify player
+								{value === "all" ? "All" : formatNames[value]}
 							</button>
-						)}
-						<SpotifyLink record={selected} />
+						))}
 					</div>
+					<label>
+						<span className="rr-sr">
+							Search Spotify releases in the collection
+						</span>
+						<input
+							type="search"
+							placeholder="Find a release…"
+							value={query}
+							onChange={event => {
+								setQuery(event.target.value);
+								setLimit(5);
+							}}
+						/>
+					</label>
+				</div>
+				{matches.length === 0 && (
+					<p role="status">No matching Spotify releases.</p>
+				)}
+				<ul className="rr-play-list">
+					{matches.slice(0, limit).map(record => (
+						<li key={record.copyId}>
+							<button
+								type="button"
+								aria-pressed={
+									record.copyId === selected?.copyId
+								}
+								onClick={() => {
+									setChosen(record.copyId);
+									setPlaying(record.copyId);
+								}}
+							>
+								<RecordArt record={record} slot="list" />
+								<span>
+									<strong>{record.title}</strong>
+									<small>{record.artist}</small>
+								</span>
+								<span
+									aria-hidden="true"
+									className="rr-play-icon"
+								>
+									▶
+								</span>
+							</button>
+						</li>
+					))}
+				</ul>
+				{limit < matches.length && (
+					<button
+						type="button"
+						className="rr-link-button"
+						onClick={() => setLimit(limit + 8)}
+					>
+						More releases
+					</button>
 				)}
 			</div>
-		</section>
+			{selected && (
+				<div className="rr-deck">
+					<div className="rr-deck-selection">
+						<RecordArt record={selected} slot="deck" />
+						<div>
+							<span className="rr-kicker">
+								{formatNames[selected.format]}
+								{selected.year && ` · ${selected.year}`}
+							</span>
+							<h3>{selected.title}</h3>
+							<p>{selected.artist}</p>
+						</div>
+					</div>
+					{playing === selected.copyId ? (
+						<SpotifyEmbed record={selected} />
+					) : (
+						<button
+							type="button"
+							className="rr-button rr-acid-button"
+							onClick={() => setPlaying(selected.copyId)}
+						>
+							Load Spotify player
+						</button>
+					)}
+					<SpotifyLink record={selected} />
+				</div>
+			)}
+		</div>
 	);
 }

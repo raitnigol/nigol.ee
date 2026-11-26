@@ -5,6 +5,7 @@ import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { Fragment, lazy, Suspense, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
+import { observe } from "react-intersection-observer";
 
 import type { PlaybackState } from "./SpotifyPlayback";
 import { formatNames } from "./collection/RecordArt";
@@ -54,18 +55,19 @@ function useInViewport(rootRef: RefObject<HTMLElement | null>) {
 			setIsVisible(visible);
 			if (visible) setHasAppeared(true);
 		};
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				inView = entry.isIntersecting;
+		const stopObserving = observe(
+			element,
+			visible => {
+				inView = visible;
 				update();
 			},
-			{ rootMargin: "48px" }
+			{ rootMargin: "48px" },
+			true
 		);
 
-		observer.observe(element);
 		document.addEventListener("visibilitychange", update);
 		return () => {
-			observer.disconnect();
+			stopObserving();
 			document.removeEventListener("visibilitychange", update);
 		};
 	}, [rootRef]);

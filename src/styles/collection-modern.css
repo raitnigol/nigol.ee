@@ -505,6 +505,15 @@
 	gap: clamp(1rem, 3.3vw, 3.5rem);
 	align-items: start;
 }
+/* Reserve the initial controls and five release rows while their code loads. */
+.rr-listening-content {
+	min-height: 29rem;
+}
+@media (max-width: 44rem) {
+	.rr-listening-content {
+		min-height: 48rem;
+	}
+}
 .rr-listening-tools {
 	margin-bottom: 0.8rem;
 }

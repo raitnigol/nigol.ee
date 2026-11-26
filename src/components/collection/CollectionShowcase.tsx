@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PublishedRecord } from "../../lib/publishedRecord";
 import { SpotifyListeningSection } from "../SpotifyListeningSection";
-import { ListeningRoom } from "./ListeningRoom";
+import { LazyListeningRoom } from "./LazyListeningRoom";
 import { formatNames, RecordArt } from "./RecordArt";
 
 const RecordDetail = dynamic(() =>
@@ -467,7 +467,7 @@ export function CollectionShowcase({
 					</div>
 				)}
 			</section>
-			<ListeningRoom records={records} />
+			{hasSpotify && <LazyListeningRoom records={records} />}
 			<section
 				id="spotify-listening"
 				className="rr-section rr-rankings"

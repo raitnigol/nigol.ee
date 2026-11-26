@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import type { ListeningHistory } from "../lib/listeningHistory";
 
 const ListeningHistoryCharts = dynamic(() =>
@@ -11,27 +12,13 @@ const ListeningHistoryCharts = dynamic(() =>
 );
 
 export function SpotifyListeningSection() {
-	const rootRef = useRef<HTMLDivElement>(null);
+	const { ref: rootRef, inView: shouldFetch } = useInView({
+		rootMargin: "320px 0px",
+		triggerOnce: true,
+		fallbackInView: true
+	});
 	const [topMusic, setTopMusic] = useState<ListeningHistory | null>(null);
-	const [shouldFetch, setShouldFetch] = useState(false);
 	const [loadFailed, setLoadFailed] = useState(false);
-
-	useEffect(() => {
-		const element = rootRef.current;
-		if (!element) return;
-
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (!entry?.isIntersecting) return;
-				setShouldFetch(true);
-				observer.disconnect();
-			},
-			{ rootMargin: "240px 0px" }
-		);
-
-		observer.observe(element);
-		return () => observer.disconnect();
-	}, []);
 
 	useEffect(() => {
 		if (!shouldFetch) return;
