@@ -185,6 +185,14 @@ export function CollectionShowcase({
 			if (legacy) browseFormat(legacy);
 			if (hash === "#holy-grail")
 				document.getElementById("grail")?.scrollIntoView();
+			// The section may arrive after the browser's initial fragment jump
+			// when the catalogue streams from the server.
+			if (
+				["#collection", "#listening", "#spotify-listening"].includes(
+					hash
+				)
+			)
+				document.getElementById(hash.slice(1))?.scrollIntoView();
 		}
 		readHash();
 		window.addEventListener("hashchange", readHash);
@@ -232,8 +240,10 @@ export function CollectionShowcase({
 				<div className="rr-hero-main">
 					<div>
 						<h1 id="rr-title">
-							<span className="rr-signature pohhu-wordmark">$.pohhu¥</span> Media
-							collection
+							<span className="rr-signature pohhu-wordmark">
+								$.pohhu¥
+							</span>{" "}
+							Media collection
 						</h1>
 						<p className="rr-inventory">
 							<a href="#cds" onClick={() => browseFormat("cd")}>
@@ -416,7 +426,10 @@ export function CollectionShowcase({
 									onClick={() => openRecord(record)}
 								>
 									<span className="rr-record-cover">
-										<RecordArt record={record} slot={view} />
+										<RecordArt
+											record={record}
+											slot={view}
+										/>
 									</span>
 									<span className="rr-record-meta">
 										<span
