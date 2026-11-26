@@ -6,13 +6,11 @@ import {
 	hasSeenHomeTerminalIntro,
 	markHomeTerminalIntroSeen
 } from "../lib/homeTerminal";
-import {
-	formatSshLastLogin,
-	SSH_TRANSCRIPT_STATIC
-} from "../lib/sshTranscript";
+import { formatSshLastLogin, SSH_LOGIN_BANNER } from "../lib/sshTranscript";
 
 export function SshTranscript() {
 	const command = useRef<HTMLSpanElement>(null);
+	const output = useRef<HTMLDivElement>(null);
 	const [lastLogin, setLastLogin] = useState("");
 
 	useEffect(() => {
@@ -54,52 +52,49 @@ export function SshTranscript() {
 			}
 		}
 
-		const idle = typeof window.requestIdleCallback === "function";
-		const task = idle
-			? window.requestIdleCallback(loadVisitor, { timeout: 5000 })
-			: window.setTimeout(loadVisitor, 2000);
-
+		const banner = output.current;
+		if (!banner) return;
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (!entry.isIntersecting) return;
+				observer.disconnect();
+				void loadVisitor();
+			},
+			{ rootMargin: "400px" }
+		);
+		observer.observe(banner);
 		return () => {
+			observer.disconnect();
 			controller.abort();
-			if (idle) window.cancelIdleCallback(task);
-			else window.clearTimeout(task);
 		};
 	}, []);
 
 	return (
 		<div className="home-terminal__ssh-transcript">
-			{SSH_TRANSCRIPT_STATIC.map(line => (
-				<p
-					key={line.text}
-					className={
-						line.muted
-							? "home-terminal__line home-terminal__line--muted"
-							: "home-terminal__line"
-					}
+			<p className="home-terminal__line">
+				<span
+					className="home-terminal__prompt home-terminal__prompt--local"
+					aria-hidden
 				>
-					{line.prompt && (
-						<span
-							className="home-terminal__prompt home-terminal__prompt--local"
-							aria-hidden
-						>
-							{line.prompt}{" "}
-						</span>
-					)}
-					<span
-						ref={line.prompt ? command : undefined}
-						className={
-							line.prompt
-								? "home-terminal__ssh-command"
-								: undefined
-						}
-					>
-						{line.text}
-					</span>
-				</p>
-			))}
-			<p className="home-terminal__line home-terminal__line--muted">
-				{lastLogin}
+					{"$ "}
+				</span>
+				<span ref={command} className="home-terminal__ssh-command">
+					ssh guest@nigol.ee
+				</span>
 			</p>
+			<div ref={output} className="home-terminal__ssh-output">
+				{SSH_LOGIN_BANNER.map(line => (
+					<p
+						key={line}
+						className="home-terminal__line home-terminal__line--muted"
+					>
+						{line}
+					</p>
+				))}
+				<p className="home-terminal__line home-terminal__line--muted">
+					{lastLogin}
+				</p>
+			</div>
 		</div>
 	);
 }

@@ -1,36 +1,11 @@
-export type TranscriptLine = {
-	prompt?: string;
-	text: string;
-	muted?: boolean;
-};
-
-export const SSH_TRANSCRIPT_STATIC: TranscriptLine[] = [
-	{ prompt: "$", text: "ssh guest@nigol.ee" },
-	{
-		text: "The authenticity of host 'nigol.ee' can't be established.",
-		muted: true
-	},
-	{
-		text: "ED25519 key fingerprint is SHA256:cR6d6V8xJzjE8zzv9Q8kK5fFq2sYw0lVx0m9Nq2vH1A",
-		muted: true
-	},
-	{
-		text: "Are you sure you want to continue connecting (yes/no/[fingerprint])? yes",
-		muted: true
-	},
-	{
-		text: "Warning: Permanently added 'nigol.ee' (ED25519) to the list of known hosts.",
-		muted: true
-	},
-	{
-		text: 'Authenticated to nigol.ee using "publickey".',
-		muted: true
-	},
-	{
-		text: "Linux nigol-ee 6.12.0-trixie-amd64 #1 SMP PREEMPT_DYNAMIC Debian 13 x86_64",
-		muted: true
-	},
-	{ text: "Debian GNU/Linux 13 (trixie)", muted: true }
+export const SSH_LOGIN_BANNER = [
+	"The authenticity of host 'nigol.ee' can't be established.",
+	"ED25519 key fingerprint is SHA256:cR6d6V8xJzjE8zzv9Q8kK5fFq2sYw0lVx0m9Nq2vH1A",
+	"Are you sure you want to continue connecting (yes/no/[fingerprint])? yes",
+	"Warning: Permanently added 'nigol.ee' (ED25519) to the list of known hosts.",
+	'Authenticated to nigol.ee using "publickey".',
+	"Linux nigol-ee 6.12.0-trixie-amd64 #1 SMP PREEMPT_DYNAMIC Debian 13 x86_64",
+	"Debian GNU/Linux 13 (trixie)"
 ];
 
 /** OpenSSH-style `Last login` timestamp in the visitor's local timezone. */

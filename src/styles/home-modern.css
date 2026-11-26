@@ -83,6 +83,19 @@
 	display: inline-block;
 }
 
+@media (width < 768px),
+	(max-height: 500px) and (pointer: coarse) and (orientation: landscape) {
+	.home-terminal__ssh-output,
+	.home-terminal:has(.home-terminal__cowsay) {
+		display: none;
+	}
+
+	.home-terminal__ssh-transcript {
+		min-height: 0;
+		margin-bottom: 0.35rem;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.spotify-terminal__skeleton,
 	.spotify-terminal__preview-image--skeleton {
