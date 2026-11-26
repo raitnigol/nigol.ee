@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import useSWR from "swr";
 
 import { formatPlayedAt } from "../lib/spotify";
 import type { NowPlayingResponseSuccess } from "../lib/nowPlaying";
+import { formatNames } from "./collection/RecordArt";
 
 const formatDuration = (ms: number) => {
 	const seconds = Math.floor((ms / 1000) % 60)
@@ -19,17 +20,57 @@ const formatDuration = (ms: number) => {
 	return `${minutes}:${seconds}`;
 };
 
-async function fetcher(url: string): Promise<NowPlayingResponseSuccess> {
-	const response = await fetch(url);
-	if (!response.ok) throw new Error("Spotify is temporarily unavailable");
-	return response.json();
-}
-
 const EMPTY_ALBUM_ART = "/images/physical-media/covers/placeholder.jpg";
 const NOW_PLAYING_KEY = "/api/nowPlaying";
-const PLAYING_POLL_MS = 15_000;
-const IDLE_POLL_MS = 60_000;
+const PLAYING_POLL_MS = 5_000;
+const IDLE_POLL_MS = 10_000;
 const PROGRESS_TICK_MS = 1_000;
+
+type PlaybackSample =
+	| { available: true; playback: NowPlayingResponseSuccess }
+	| { available: false };
+
+let retryAt = 0;
+
+async function fetchPlayback(url: string): Promise<PlaybackSample> {
+	if (Date.now() < retryAt) return { available: false };
+	let retryMs = IDLE_POLL_MS;
+	try {
+		const response = await fetch(url, {
+			cache: "no-store",
+			signal: AbortSignal.timeout(15_000)
+		});
+		if (response.ok) {
+			return { available: true, playback: await response.json() };
+		}
+		if (response.status === 429) {
+			const seconds = Number(response.headers.get("Retry-After"));
+			retryMs =
+				(Number.isFinite(seconds) && seconds > 0 ? seconds : 30) *
+				1_000;
+		}
+	} catch {
+		// A timed-out or offline request can recover on the next visible poll.
+	}
+	retryAt = Date.now() + retryMs;
+	return { available: false };
+}
+
+function refreshInterval(sample?: PlaybackSample) {
+	if (sample && !sample.available) {
+		return Math.max(
+			PROGRESS_TICK_MS,
+			Math.min(60_000, retryAt - Date.now())
+		);
+	}
+	if (!sample || (sample.playback.isPlayingNow && !sample.playback.isPaused))
+		return PLAYING_POLL_MS;
+	return IDLE_POLL_MS;
+}
+
+function copyHref(copyId: string) {
+	return `/physical-media#record=${encodeURIComponent(copyId)}`;
+}
 
 type SpotifyProps = {
 	showArtwork?: boolean;
@@ -53,13 +94,22 @@ function useInViewport(rootRef: RefObject<HTMLElement | null>) {
 		const element = rootRef.current;
 		if (!element) return;
 
+		let inView = false;
+		const update = () => setIsVisible(inView && !document.hidden);
 		const observer = new IntersectionObserver(
-			([entry]) => setIsVisible(entry.isIntersecting),
+			([entry]) => {
+				inView = entry.isIntersecting;
+				update();
+			},
 			{ rootMargin: "48px" }
 		);
 
 		observer.observe(element);
-		return () => observer.disconnect();
+		document.addEventListener("visibilitychange", update);
+		return () => {
+			observer.disconnect();
+			document.removeEventListener("visibilitychange", update);
+		};
 	}, [rootRef]);
 
 	return isVisible;
@@ -67,20 +117,13 @@ function useInViewport(rootRef: RefObject<HTMLElement | null>) {
 
 function useNowPlaying(rootRef: RefObject<HTMLElement | null>) {
 	const isVisible = useInViewport(rootRef);
-	const { data, error } = useSWR<NowPlayingResponseSuccess, Error>(
+	const { data: sample } = useSWR<PlaybackSample>(
 		isVisible ? NOW_PLAYING_KEY : null,
-		fetcher,
-		{
-			keepPreviousData: true,
-			errorRetryCount: 2,
-			refreshInterval: data => {
-				if (!data) return IDLE_POLL_MS;
-				return data.isPlayingNow ? PLAYING_POLL_MS : IDLE_POLL_MS;
-			}
-		}
+		fetchPlayback,
+		{ keepPreviousData: true, refreshInterval: isVisible ? refreshInterval : 0 }
 	);
 
-	const isLoading = !data && !error;
+	const data = sample?.available ? sample.playback : undefined;
 	const [tick, setTick] = useState<{
 		source: NowPlayingResponseSuccess;
 		ms: number;
@@ -94,15 +137,10 @@ function useNowPlaying(rootRef: RefObject<HTMLElement | null>) {
 		const duration = data.track.duration_ms;
 		const started = Date.now();
 		const interval = window.setInterval(() => {
-			if (!document.hidden) {
-				setTick({
-					source: data,
-					ms: Math.min(
-						initialProgress + Date.now() - started,
-						duration
-					)
-				});
-			}
+			setTick({
+				source: data,
+				ms: Math.min(initialProgress + Date.now() - started, duration)
+			});
 		}, PROGRESS_TICK_MS);
 
 		return () => window.clearInterval(interval);
@@ -110,15 +148,12 @@ function useNowPlaying(rootRef: RefObject<HTMLElement | null>) {
 
 	const albumArtUrl = data?.track ? getAlbumArtUrl(data.track) : null;
 	const progressMs = tick && tick.source === data ? tick.ms : initialProgress;
-	const ownedPhysicalMedia = data?.ownedPhysicalMedia;
-
 	return {
 		data,
-		error,
-		isLoading,
+		failed: sample?.available === false,
+		isLoading: !sample,
 		albumArtUrl,
-		progressMs,
-		ownedPhysicalMedia
+		progressMs
 	};
 }
 
@@ -154,17 +189,11 @@ function SpotifyTerminal({
 	showArtwork?: boolean;
 	nowPlaying: ReturnType<typeof useNowPlaying>;
 }) {
-	const {
-		data,
-		error,
-		isLoading,
-		albumArtUrl,
-		progressMs,
-		ownedPhysicalMedia
-	} = nowPlaying;
+	const { data, failed, isLoading, albumArtUrl, progressMs } = nowPlaying;
 
 	const track = data?.track;
-	const failed = Boolean(error && !track);
+	const copies = data?.shelfRecords;
+	const singleCopy = copies?.length === 1 ? copies[0] : undefined;
 	const isPlayingNow = Boolean(track && data?.isPlayingNow);
 	const playedAt = data?.playedAt;
 	const artistNames = track
@@ -241,31 +270,55 @@ function SpotifyTerminal({
 							))}
 					</TerminalRow>
 					<TerminalRow label="Album">
-						{track?.album.name ??
-							(isLoading ? (
-								<TerminalSkeleton width="8rem" />
-							) : (
-								"—"
-							))}
-					</TerminalRow>
-					{ownedPhysicalMedia ? (
-						<TerminalRow label="Shelf">
+						{track && singleCopy ? (
 							<Link
-								href="/physical-media"
 								className="home__link home__link--pro focus-ring"
+								href={copyHref(singleCopy.copyId)}
 							>
-								owned (physical copy)
+								{track.album.name}
 							</Link>
-						</TerminalRow>
-					) : (
-						<TerminalRow label="Shelf">
-							{isLoading ? (
-								<TerminalSkeleton width="3rem" />
-							) : (
-								"—"
-							)}
-						</TerminalRow>
-					)}
+						) : track ? (
+							track.album.name
+						) : isLoading ? (
+							<TerminalSkeleton width="8rem" />
+						) : (
+							"—"
+						)}
+					</TerminalRow>
+					<TerminalRow label="Shelf">
+						{copies?.length ? (
+							copies.map((copy, index) => {
+								const sameFormat = copies.filter(
+									record => record.format === copy.format
+								);
+								const format = formatNames[copy.format];
+								const label =
+									sameFormat.length > 1
+										? `${format} (copy ${
+												sameFormat.indexOf(copy) + 1
+										  })`
+										: format;
+								return (
+									<Fragment key={copy.copyId}>
+										{index > 0 ? ", " : ""}
+										<Link
+											href={copyHref(copy.copyId)}
+											className="home__link home__link--pro focus-ring"
+											aria-label={`${label} of ${copy.title} in the collection`}
+										>
+											{label}
+										</Link>
+									</Fragment>
+								);
+							})
+						) : isLoading ? (
+							<TerminalSkeleton width="3rem" />
+						) : track && !copies ? (
+							"unavailable"
+						) : (
+							"—"
+						)}
+					</TerminalRow>
 					{isPlayingNow && track ? (
 						<TerminalRow label="Time">
 							<span className="spotify-terminal__time">

@@ -1,3 +1,5 @@
+import type { ShelfRecord } from "./matchOwnedRecords";
+
 export interface NowPlayingResponseSuccess {
 	/**
 	 * Whether the track is from recently played or currently playing.
@@ -12,6 +14,8 @@ export interface NowPlayingResponseSuccess {
 	track: SpotifyApi.TrackObjectFull | null;
 	/** Present when the public shelf could be checked for this Spotify album. */
 	ownedPhysicalMedia?: boolean;
+	/** Undefined when unavailable. An empty array is a verified miss. */
+	shelfRecords?: ShelfRecord[];
 }
 export type NowPlayingResponseError = { error: string };
 export type NowPlayingResponse =

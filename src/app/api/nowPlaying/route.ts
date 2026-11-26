@@ -1,31 +1,30 @@
-import { connection } from "next/server";
+import { after, connection } from "next/server";
 
+import { matchOwnedRecords } from "../../../lib/matchOwnedRecords";
+import { createPlaybackResponder } from "../../../lib/playbackResponse";
 import type { NowPlayingResponseSuccess } from "../../../lib/nowPlaying";
 import { getPublishedCollection } from "../../../lib/publishedCollection";
 import { withSpotifyUserClient } from "../../../lib/spotifyUserServer";
 
-const CACHE_MS = 12_000;
-const SHELF_DEADLINE_MS = 750;
-let cached: { until: number; data: NowPlayingResponseSuccess } | undefined;
-let pending: Promise<NowPlayingResponseSuccess> | undefined;
-
-async function findOwnedAlbum(albumId: string): Promise<boolean | undefined> {
+// Give a cold catalogue read time to finish after the response. Its cached
+// result can then supply the link on the next poll without delaying playback.
+async function findShelfRecords(track: SpotifyApi.TrackObjectFull) {
+	const lookup = getPublishedCollection()
+		.then(records => matchOwnedRecords(records, track))
+		.catch(() => undefined);
+	const timeout = Symbol("shelf-timeout");
 	let timer: ReturnType<typeof setTimeout> | undefined;
 	try {
-		return await Promise.race([
-			getPublishedCollection().then(records =>
-				records.some(
-					record =>
-						record.spotifyType === "album" &&
-						record.spotifyId === albumId
-				)
-			),
-			new Promise<undefined>(resolve => {
-				timer = setTimeout(() => resolve(undefined), SHELF_DEADLINE_MS);
+		const result = await Promise.race([
+			lookup,
+			new Promise<typeof timeout>(resolve => {
+				timer = setTimeout(() => resolve(timeout), 1500);
 			})
 		]);
-	} catch {
-		return undefined;
+		if (result !== timeout) return result;
+		after(async () => {
+			await lookup;
+		});
 	} finally {
 		clearTimeout(timer);
 	}
@@ -61,32 +60,19 @@ async function loadPlayback(): Promise<NowPlayingResponseSuccess> {
 			return state;
 		}
 	);
-	if (result.track?.album.id) {
-		result.ownedPhysicalMedia = await findOwnedAlbum(result.track.album.id);
+	if (result.track) {
+		const records = await findShelfRecords(result.track);
+		if (records !== undefined) {
+			result.shelfRecords = records;
+			result.ownedPhysicalMedia = records.length > 0;
+		}
 	}
 	return result;
 }
 
+const playbackResponse = createPlaybackResponder(loadPlayback);
+
 export async function GET() {
 	await connection();
-	try {
-		if (!cached || cached.until <= Date.now()) {
-			pending ??= loadPlayback().finally(() => {
-				pending = undefined;
-			});
-			const data = await pending;
-			cached = { data, until: Date.now() + CACHE_MS };
-		}
-		return Response.json(cached.data, {
-			headers: {
-				"Cache-Control":
-					"public, max-age=0, s-maxage=15, stale-while-revalidate=60"
-			}
-		});
-	} catch {
-		return Response.json(
-			{ error: "Now-playing data is temporarily unavailable." },
-			{ status: 503, headers: { "Cache-Control": "no-store" } }
-		);
-	}
+	return playbackResponse();
 }
