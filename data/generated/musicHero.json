@@ -1,0 +1,41 @@
+{
+	"avif": [
+		{
+			"src": "/images/pohhu/opening/384.b64c7f971bb3635d.avif",
+			"width": 384,
+			"height": 295
+		},
+		{
+			"src": "/images/pohhu/opening/576.b5165f0befdb6e50.avif",
+			"width": 576,
+			"height": 443
+		},
+		{
+			"src": "/images/pohhu/opening/768.81ccb1ee57981cfb.avif",
+			"width": 768,
+			"height": 591
+		},
+		{
+			"src": "/images/pohhu/opening/1080.8bbd6d1d206c1fe4.avif",
+			"width": 1080,
+			"height": 831
+		},
+		{
+			"src": "/images/pohhu/opening/1536.60ac8cb66f2caf80.avif",
+			"width": 1536,
+			"height": 1181
+		}
+	],
+	"webp": [
+		{
+			"src": "/images/pohhu/opening/384.bdd977232a491eef.webp",
+			"width": 384,
+			"height": 295
+		},
+		{
+			"src": "/images/pohhu/opening/768.0b713786c3a8b1fb.webp",
+			"width": 768,
+			"height": 591
+		}
+	]
+}

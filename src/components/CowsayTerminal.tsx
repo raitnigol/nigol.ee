@@ -1,119 +1,65 @@
-import { useLayoutEffect, useRef, useState } from "preact/hooks";
-import type { Ref } from "preact";
+"use client";
 
-import { copypastas } from "../data/copypastas";
+import { useEffect, useRef, useState } from "react";
+
 import { COPYPASTA_LAST_ID_KEY, pickCopypasta } from "../lib/copypasta";
 import { cowsay, getCowsayMaxWidth } from "../lib/cowsay";
 
-const SSR_COPYPASTA = copypastas[0];
-const SESSION_PROMPT = "guest@nigol.ee:~$";
+export function CowsayTerminal({ initial }: { initial: string[] }) {
+	const artRef = useRef<HTMLPreElement>(null);
+	const [paragraphs, setParagraphs] = useState(initial);
+	const [width, setWidth] = useState(32);
 
-function TerminalWindow({
-	title,
-	ariaLabel,
-	bodyRef,
-	children
-}: {
-	title: string;
-	ariaLabel: string;
-	bodyRef?: Ref<HTMLDivElement>;
-	children: React.ReactNode;
-}) {
-	return (
-		<section className="home-terminal" aria-label={ariaLabel}>
-			<div className="home-terminal__chrome">
-				<div className="home-terminal__dots" aria-hidden>
-					<span />
-					<span />
-					<span />
-				</div>
-				<p className="home-terminal__title">{title}</p>
-			</div>
-			<div ref={bodyRef} className="home-terminal__body">
-				{children}
-			</div>
-		</section>
-	);
-}
+	useEffect(() => {
+		const pre = artRef.current;
+		if (!pre) return;
 
-function TerminalCommand({
-	command,
-	children
-}: {
-	command: string;
-	children?: React.ReactNode;
-}) {
-	return (
-		<div className="home-terminal__block">
-			<p className="home-terminal__line">
-				<span className="home-terminal__prompt" aria-hidden>
-					{SESSION_PROMPT}
-				</span>{" "}
-				<span className="home-terminal__cmd">{command}</span>
-			</p>
-			{children ? (
-				<div className="home-terminal__output">{children}</div>
-			) : null}
-		</div>
-	);
-}
+		const resize = () => setWidth(getCowsayMaxWidth(pre));
+		resize();
+		const observer = new ResizeObserver(resize);
+		observer.observe(pre);
+		let active = true;
 
-function IdlePrompt() {
-	return (
-		<p className="home-terminal__line home-terminal__line--idle">
-			<span className="home-terminal__prompt" aria-hidden>
-				{SESSION_PROMPT}
-			</span>{" "}
-			<span className="home-terminal__cursor" aria-hidden />
-		</p>
-	);
-}
+		async function randomize() {
+			const { copypastas } = await import("../data/copypastas");
+			if (!active) return;
+			let lastId: string | null = null;
+			try {
+				lastId = window.sessionStorage.getItem(COPYPASTA_LAST_ID_KEY);
+			} catch {
+				// Storage is optional in private browsing.
+			}
+			const picked = pickCopypasta(copypastas, lastId);
+			setParagraphs(picked.paragraphs);
+			try {
+				window.sessionStorage.setItem(COPYPASTA_LAST_ID_KEY, picked.id);
+			} catch {}
+		}
 
-export function CowsayTerminal() {
-	const bodyRef = useRef<HTMLDivElement>(null);
-	const [copypastaParagraphs, setCopypastaParagraphs] = useState(
-		() => SSR_COPYPASTA.paragraphs
-	);
-	const [cowsayWidth, setCowsayWidth] = useState(40);
-
-	useLayoutEffect(() => {
-		const body = bodyRef.current;
-		if (!body) return;
-
-		const lastId = sessionStorage.getItem(COPYPASTA_LAST_ID_KEY);
-		const picked = pickCopypasta(copypastas, lastId);
-		sessionStorage.setItem(COPYPASTA_LAST_ID_KEY, picked.id);
-
-		setCopypastaParagraphs(picked.paragraphs);
-		setCowsayWidth(getCowsayMaxWidth(body));
-
-		const observer = new ResizeObserver(() => {
-			setCowsayWidth(getCowsayMaxWidth(body));
-		});
-		observer.observe(body);
-
-		return () => observer.disconnect();
+		const nearViewport = new IntersectionObserver(
+			entries => {
+				if (entries.some(entry => entry.isIntersecting)) {
+					nearViewport.disconnect();
+					// Keep the server-rendered entry if the additional entries fail to load.
+					void randomize().catch(() => {});
+				}
+			},
+			{ rootMargin: "400px" }
+		);
+		nearViewport.observe(pre);
+		return () => {
+			active = false;
+			observer.disconnect();
+			nearViewport.disconnect();
+		};
 	}, []);
 
-	const cowsayArt = cowsay(copypastaParagraphs.join("\n\n"), cowsayWidth);
-
 	return (
-		<TerminalWindow
-			title="guest@nigol.ee — cowsay"
-			ariaLabel="Cowsay"
-			bodyRef={bodyRef}
-		>
-			<TerminalCommand command="cowsay < copypasta.txt">
-				<blockquote className="home-terminal__cowsay" cite="">
-					<pre aria-hidden suppressHydrationWarning>
-						{cowsayArt}
-					</pre>
-					<span className="sr-only">
-						{copypastaParagraphs.join("\n\n")}
-					</span>
-				</blockquote>
-			</TerminalCommand>
-			<IdlePrompt />
-		</TerminalWindow>
+		<blockquote className="home-terminal__cowsay">
+			<pre ref={artRef} aria-hidden>
+				{cowsay(paragraphs.join("\n\n"), width)}
+			</pre>
+			<span className="sr-only">{paragraphs.join("\n\n")}</span>
+		</blockquote>
 	);
 }

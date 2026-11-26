@@ -1,6 +1,8 @@
+export type SocialIcon = "github" | "facebook" | "spotify" | "reddit" | "steam" | "linkedin" | "youtube";
+
 export interface SocialInfo {
     name: string;
-    image: string;
+    icon: SocialIcon;
     url: string;
 }
 
@@ -12,37 +14,37 @@ export const socialPlatformIcons = {
 export const socials: SocialInfo[] = [
     {
         name: "GitHub",
-        image: "/images/logos/github.png",
+        icon: "github",
         url: "https://github.com/raitnigol"
     },
     {
         name: "Facebook",
-        image: "/images/logos/facebook.png",
+        icon: "facebook",
         url: "https://facebook.com/rait.nigol"
     },
     {
         name: "Spotify",
-        image: "/images/logos/spotify.svg",
+        icon: "spotify",
         url: "https://open.spotify.com/user/1190538422"
     },
     {
         name: "Reddit",
-        image: "/images/logos/reddit.png",
+        icon: "reddit",
         url: "https://www.reddit.com/user/xdNigol/"
     },
     {
         name: "Steam",
-        image: "/images/logos/steam.png",
+        icon: "steam",
         url: "https://steamcommunity.com/id/nigol_"
     },
     {
         name: "LinkedIn",
-        image: "/images/logos/linkedin.png",
+        icon: "linkedin",
         url: "https://www.linkedin.com/in/raitnigol/"
     },
     {
         name: "Youtube",
-        image: "/images/logos/youtube.png",
+        icon: "youtube",
         url: "https://www.youtube.com/@Nigol/featured"
     },
 ];

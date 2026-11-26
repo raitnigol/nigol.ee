@@ -1,4 +1,4 @@
-import type { ComponentChild } from "preact";
+import type { ReactNode } from "react";
 
 /** Parse {{accent}}, [[danger]], *italic* inside a plain segment (no **). */
 function parseEmphasis(
@@ -6,9 +6,9 @@ function parseEmphasis(
 	keyPrefix: string,
 	accentClass: string,
 	dangerClass: string
-): ComponentChild[] {
-	const pattern = /\{\{(.+?)\}\}|\[\[(.+?)\]\]|\*(.+?)\*/g;
-	const nodes: ComponentChild[] = [];
+): ReactNode[] {
+	const pattern = /\{\{(.+?)\}\}|\[\[(.+?)\]\]|\*(.+?)\*|(\$\.pohhu¥)/g;
+	const nodes: ReactNode[] = [];
 	let lastIndex = 0;
 	let match: RegExpExecArray | null;
 	let i = 0;
@@ -20,10 +20,18 @@ function parseEmphasis(
 
 		const key = `${keyPrefix}-${i++}`;
 
-		if (match[1]) {
+		const accent = match[1] ?? match[4];
+		if (accent) {
 			nodes.push(
-				<span key={key} className={accentClass}>
-					{match[1]}
+				<span
+					key={key}
+					className={
+						accent === "$.pohhu¥"
+							? "pohhu-wordmark pohhu-wordmark--inline"
+							: accentClass
+					}
+				>
+					{accent}
 				</span>
 			);
 		} else if (match[2]) {
@@ -59,7 +67,7 @@ export function FormattedText({
 	accentClass?: string;
 	dangerClass?: string;
 }) {
-	const nodes: ComponentChild[] = [];
+	const nodes: ReactNode[] = [];
 	const boldPattern = /\*\*(.+?)\*\*/g;
 	let lastIndex = 0;
 	let match: RegExpExecArray | null;
@@ -89,7 +97,12 @@ export function FormattedText({
 
 	if (lastIndex < text.length) {
 		nodes.push(
-			...parseEmphasis(text.slice(lastIndex), `e${key}`, accentClass, dangerClass)
+			...parseEmphasis(
+				text.slice(lastIndex),
+				`e${key}`,
+				accentClass,
+				dangerClass
+			)
 		);
 	}
 

@@ -1,14 +1,5 @@
-/**
- * Mint a Spotify refresh token for /api/topMusic + /api/nowPlaying.
- *
- * 1. In Spotify Developer Dashboard → your app → Redirect URIs, add BOTH:
- *      http://127.0.0.1:53682/callback
- *      http://localhost:53682/callback
- * 2. Stop yarn dev (free the terminal), then run:
- *      yarn spotify:auth
- * 3. Approve in the browser. Token is written into .env.local automatically.
- * 4. Restart yarn dev.
- */
+/** Mint the Spotify owner refresh token with npm run spotify:auth. */
+import { randomBytes } from "node:crypto";
 import { exec } from "child_process";
 
 import fs from "fs";
@@ -16,7 +7,7 @@ import http from "http";
 import path from "path";
 import readline from "readline";
 import { URL } from "url";
-import Spotify from "spotify-web-api-node";
+import { requestSpotifyToken } from "../src/lib/spotifyHttp";
 
 const PORT = 53682;
 const REDIRECT_URI = `http://127.0.0.1:${PORT}/callback`;
@@ -112,19 +103,39 @@ if (!clientId || !clientSecret) {
 	);
 }
 
-const api = new Spotify({
-	clientId,
-	clientSecret,
-	redirectUri: REDIRECT_URI
-});
+const credentials = { clientId, clientSecret };
+const state = randomBytes(24).toString("base64url");
+const authorize = new URL("https://accounts.spotify.com/authorize");
+authorize.search = new URLSearchParams({
+	client_id: clientId,
+	response_type: "code",
+	redirect_uri: REDIRECT_URI,
+	scope: SCOPES.join(" "),
+	state,
+	show_dialog: "true"
+}).toString();
+const authorizeURL = authorize.href;
 
-// showDialog=true forces Spotify to re-consent so a refresh_token is returned.
-const authorizeURL = api.createAuthorizeURL(SCOPES, "nigol-ee", true);
+function validateCallback(url: URL) {
+	if (
+		url.origin + url.pathname !== REDIRECT_URI ||
+		url.searchParams.get("state") !== state
+	) {
+		throw new Error(
+			"Spotify callback did not match this authorization request"
+		);
+	}
+}
 
 async function finishWithCode(code: string) {
-	const tokenResponse = await api.authorizationCodeGrant(code);
-	const refreshToken = tokenResponse.body.refresh_token;
-
+	const { refresh_token: refreshToken } = await requestSpotifyToken(
+		credentials,
+		{
+			grant_type: "authorization_code",
+			redirect_uri: REDIRECT_URI,
+			code
+		}
+	);
 	if (!refreshToken) {
 		throw new Error(
 			"Spotify did not return a refresh_token. Re-run and approve again (show dialog)."
@@ -136,16 +147,15 @@ async function finishWithCode(code: string) {
 	upsertEnvValue(envLocal, "SPOTIFY_REFRESH_TOKEN", refreshToken);
 
 	console.log("\n✓ Wrote SPOTIFY_REFRESH_TOKEN to .env.local");
-	console.log("\nRestart yarn dev, then reload /music.\n");
+	console.log("\nRestart npm run dev, then reload the site.\n");
 }
 
 async function main() {
 	console.log("\nSpotify auth helper\n");
 	console.log(
-		"Add BOTH redirect URIs in the Spotify Dashboard → your app → Settings:"
+		"Add this redirect URI in the Spotify Dashboard → your app → Settings:"
 	);
 	console.log(`  http://127.0.0.1:${PORT}/callback`);
-	console.log(`  http://localhost:${PORT}/callback`);
 	console.log("\nOpening browser…\n");
 	console.log(authorizeURL);
 	console.log("");
@@ -161,6 +171,7 @@ async function main() {
 				return;
 			}
 
+			validateCallback(url);
 			const code = url.searchParams.get("code");
 			const error = url.searchParams.get("error");
 
@@ -202,6 +213,7 @@ async function main() {
 		const pasted = await ask("Paste redirect URL here: ");
 		try {
 			const url = new URL(pasted);
+			validateCallback(url);
 			const code = url.searchParams.get("code");
 			if (!code) throw new Error("No ?code= in that URL");
 			await finishWithCode(code);
@@ -217,7 +229,7 @@ async function main() {
 		console.log(
 			"(If the browser shows INVALID_CLIENT or redirect_uri mismatch,"
 		);
-		console.log(" the URIs above are missing/wrong in the Dashboard.)\n");
+		console.log(" check the redirect URI in the Dashboard.)\n");
 	});
 }
 

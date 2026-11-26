@@ -1,16 +1,16 @@
-import TransitionLink from "./TransitionLink";
-import { PauseIcon, PlayIcon } from "@heroicons/react/solid";
-import Image from "next/future/image";
-import { useEffect, useRef, useState } from "preact/hooks";
-import type { RefObject } from "preact";
-import useSWR from "swr";
+"use client";
 
-import { findOwnedPhysicalMedia } from "../lib/physicalMediaMatch";
-import { formatPlayedAt } from "../lib/spotify";
-import type {
-	NowPlayingResponseError,
-	NowPlayingResponseSuccess
-} from "../pages/api/nowPlaying";
+import { IntentLink } from "./IntentLink";
+import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+import { Fragment, lazy, Suspense, useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
+import { observe } from "react-intersection-observer";
+
+import type { PlaybackState } from "./SpotifyPlayback";
+import { formatNames } from "./collection/RecordArt";
+
+const SpotifyPlayback = lazy(() => import("./SpotifyPlayback"));
 
 const formatDuration = (ms: number) => {
 	const seconds = Math.floor((ms / 1000) % 60)
@@ -21,13 +21,10 @@ const formatDuration = (ms: number) => {
 	return `${minutes}:${seconds}`;
 };
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
-
 const EMPTY_ALBUM_ART = "/images/physical-media/covers/placeholder.jpg";
-const NOW_PLAYING_KEY = "/api/nowPlaying";
-const PLAYING_POLL_MS = 15_000;
-const IDLE_POLL_MS = 60_000;
-const PROGRESS_TICK_MS = 1_000;
+function copyHref(copyId: string) {
+	return `/physical-media#record=${encodeURIComponent(copyId)}`;
+}
 
 type SpotifyProps = {
 	showArtwork?: boolean;
@@ -44,81 +41,38 @@ function getAlbumArtUrl(track: SpotifyApi.TrackObjectFull | null | undefined) {
 	);
 }
 
-function useInViewport(rootRef: RefObject<HTMLElement>) {
-	const [isVisible, setIsVisible] = useState(true);
+function useInViewport(rootRef: RefObject<HTMLElement | null>) {
+	const [isVisible, setIsVisible] = useState(false);
+	const [hasAppeared, setHasAppeared] = useState(false);
 
 	useEffect(() => {
 		const element = rootRef.current;
 		if (!element) return;
 
-		const observer = new IntersectionObserver(
-			([entry]) => setIsVisible(entry.isIntersecting),
-			{ rootMargin: "48px" }
+		let inView = false;
+		const update = () => {
+			const visible = inView && !document.hidden;
+			setIsVisible(visible);
+			if (visible) setHasAppeared(true);
+		};
+		const stopObserving = observe(
+			element,
+			visible => {
+				inView = visible;
+				update();
+			},
+			{ rootMargin: "48px" },
+			true
 		);
 
-		observer.observe(element);
-		return () => observer.disconnect();
+		document.addEventListener("visibilitychange", update);
+		return () => {
+			stopObserving();
+			document.removeEventListener("visibilitychange", update);
+		};
 	}, [rootRef]);
 
-	return isVisible;
-}
-
-function useNowPlaying(rootRef: RefObject<HTMLElement>) {
-	const isVisible = useInViewport(rootRef);
-	const { data, error } = useSWR<
-		NowPlayingResponseSuccess,
-		NowPlayingResponseError
-	>(isVisible ? NOW_PLAYING_KEY : null, fetcher, {
-		refreshInterval: data => {
-			if (!data || "error" in data) return IDLE_POLL_MS;
-			return data.isPlayingNow ? PLAYING_POLL_MS : IDLE_POLL_MS;
-		}
-	});
-
-	const isLoading = isVisible && !data && !error;
-	const [time, setTime] = useState(0);
-
-	useEffect(() => {
-		if (!data?.track || !data.isPlayingNow || !isVisible) {
-			setTime(0);
-			return;
-		}
-
-		const startedProgress = data.progressMs ?? data.progessMs ?? 0;
-		setTime(startedProgress);
-
-		const started = Date.now();
-
-		const interval = setInterval(() => {
-			setTime(
-				data.isPaused
-					? startedProgress
-					: Math.min(
-							startedProgress + Date.now() - started,
-							data.track!.duration_ms
-					  )
-			);
-		}, PROGRESS_TICK_MS);
-
-		return () => clearInterval(interval);
-	}, [data, isVisible]);
-
-	const albumArtUrl = data?.track ? getAlbumArtUrl(data.track) : null;
-	const showProgress = Boolean(data?.track);
-	const progressMs = data?.isPlayingNow ? time : 0;
-	const ownedPhysicalMedia = data?.track
-		? findOwnedPhysicalMedia(data.track.album.id)
-		: undefined;
-
-	return {
-		data,
-		error,
-		isLoading,
-		albumArtUrl,
-		showProgress,
-		progressMs,
-		ownedPhysicalMedia
-	};
+	return { hasAppeared, isVisible };
 }
 
 function TerminalRow({
@@ -151,32 +105,35 @@ function SpotifyTerminal({
 	nowPlaying
 }: {
 	showArtwork?: boolean;
-	nowPlaying: ReturnType<typeof useNowPlaying>;
+	nowPlaying?: PlaybackState;
 }) {
 	const {
 		data,
-		error,
-		isLoading,
-		albumArtUrl,
-		progressMs,
-		ownedPhysicalMedia
-	} = nowPlaying;
+		failed,
+		isLoading = true,
+		playedAgo,
+		progressMs = 0
+	} = nowPlaying ?? {};
 
-	const failed = Boolean(error || (data && "error" in data));
-	const track = data && !("error" in data) && data.track ? data.track : null;
-	const isPlayingNow = Boolean(
-		track && data && !("error" in data) && data.isPlayingNow
-	);
-	const playedAt = data && !("error" in data) ? data.playedAt : undefined;
+	const track = data?.track;
+	const albumArtUrl = track ? getAlbumArtUrl(track) : null;
+	const copies = data?.shelfRecords;
+	const singleCopy = copies?.length === 1 ? copies[0] : undefined;
+	const isPlayingNow = Boolean(track && data?.isPlayingNow);
 	const artistNames = track
 		? track.artists.map(artist => artist.name).join(", ")
 		: null;
 
 	let statusText: React.ReactNode = "loading…";
-	if (failed) statusText = "error";
+	if (failed) statusText = "temporarily unavailable";
 	else if (isLoading) statusText = <TerminalSkeleton width="7.5rem" />;
 	else if (!track) statusText = "offline";
-	else statusText = isPlayingNow ? "currently playing" : "last played";
+	else
+		statusText = isPlayingNow
+			? data?.isPaused
+				? "paused"
+				: "currently playing"
+			: "last played";
 
 	return (
 		<div
@@ -215,12 +172,18 @@ function SpotifyTerminal({
 				<div className="spotify-terminal__meta">
 					<TerminalRow label="Status">{statusText}</TerminalRow>
 					<TerminalRow label="Track">
-						{track?.name ??
-							(isLoading ? (
-								<TerminalSkeleton width="9rem" />
-							) : (
-								"—"
-							))}
+						{track ? (
+							<a
+								className="home__link home__link--pro focus-ring"
+								href={track.external_urls.spotify}
+							>
+								{track.name}
+							</a>
+						) : isLoading ? (
+							<TerminalSkeleton width="9rem" />
+						) : (
+							"—"
+						)}
 					</TerminalRow>
 					<TerminalRow label="Artist">
 						{artistNames ??
@@ -231,30 +194,55 @@ function SpotifyTerminal({
 							))}
 					</TerminalRow>
 					<TerminalRow label="Album">
-						{track?.album.name ??
-							(isLoading ? (
-								<TerminalSkeleton width="8rem" />
-							) : (
-								"—"
-							))}
+						{track && singleCopy ? (
+							<IntentLink
+								className="home__link home__link--pro focus-ring"
+								href={copyHref(singleCopy.copyId)}
+							>
+								{track.album.name}
+							</IntentLink>
+						) : track ? (
+							track.album.name
+						) : isLoading ? (
+							<TerminalSkeleton width="8rem" />
+						) : (
+							"—"
+						)}
 					</TerminalRow>
-					{ownedPhysicalMedia ? (
-						<TerminalRow label="Shelf">
-							<TransitionLink href="/physical-media">
-								<a className="home__link home__link--pro focus-ring">
-									owned (physical copy)
-								</a>
-							</TransitionLink>
-						</TerminalRow>
-					) : (
-						<TerminalRow label="Shelf">
-							{isLoading ? (
-								<TerminalSkeleton width="3rem" />
-							) : (
-								"—"
-							)}
-						</TerminalRow>
-					)}
+					<TerminalRow label="Shelf">
+						{copies?.length ? (
+							copies.map((copy, index) => {
+								const sameFormat = copies.filter(
+									record => record.format === copy.format
+								);
+								const format = formatNames[copy.format];
+								const label =
+									sameFormat.length > 1
+										? `${format} (copy ${
+												sameFormat.indexOf(copy) + 1
+										  })`
+										: format;
+								return (
+									<Fragment key={copy.copyId}>
+										{index > 0 ? ", " : ""}
+										<IntentLink
+											href={copyHref(copy.copyId)}
+											className="home__link home__link--pro focus-ring"
+											aria-label={`${label} of ${copy.title} in the collection`}
+										>
+											{label}
+										</IntentLink>
+									</Fragment>
+								);
+							})
+						) : isLoading ? (
+							<TerminalSkeleton width="3rem" />
+						) : track && !copies ? (
+							"unavailable"
+						) : (
+							"—"
+						)}
+					</TerminalRow>
 					{isPlayingNow && track ? (
 						<TerminalRow label="Time">
 							<span className="spotify-terminal__time">
@@ -265,10 +253,10 @@ function SpotifyTerminal({
 								className="spotify-terminal__playback-icon"
 								aria-hidden
 							>
-								{data && !("error" in data) && data.isPaused ? (
-									<PlayIcon className="h-3 w-3" />
-								) : (
+								{data?.isPaused ? (
 									<PauseIcon className="h-3 w-3" />
+								) : (
+									<PlayIcon className="h-3 w-3" />
 								)}
 							</span>
 						</TerminalRow>
@@ -277,11 +265,7 @@ function SpotifyTerminal({
 							{failed ? (
 								"unable to fetch"
 							) : track ? (
-								playedAt ? (
-									formatPlayedAt(playedAt)
-								) : (
-									"recently on Spotify"
-								)
+								playedAgo ?? "recently on Spotify"
 							) : isLoading ? (
 								<TerminalSkeleton width="6.5rem" />
 							) : (
@@ -297,14 +281,25 @@ function SpotifyTerminal({
 
 export default function Spotify({ showArtwork = true }: SpotifyProps) {
 	const rootRef = useRef<HTMLDivElement>(null);
-	const nowPlaying = useNowPlaying(rootRef);
+	const { hasAppeared, isVisible } = useInViewport(rootRef);
+	const loading = <SpotifyTerminal showArtwork={showArtwork} />;
 
 	return (
 		<div ref={rootRef} className="spotify-root">
-			<SpotifyTerminal
-				showArtwork={showArtwork}
-				nowPlaying={nowPlaying}
-			/>
+			{hasAppeared ? (
+				<Suspense fallback={loading}>
+					<SpotifyPlayback isVisible={isVisible}>
+						{nowPlaying => (
+							<SpotifyTerminal
+								showArtwork={showArtwork}
+								nowPlaying={nowPlaying}
+							/>
+						)}
+					</SpotifyPlayback>
+				</Suspense>
+			) : (
+				loading
+			)}
 		</div>
 	);
 }

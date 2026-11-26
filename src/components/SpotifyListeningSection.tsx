@@ -1,134 +1,36 @@
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+"use client";
 
-import { ArtistList } from "./ArtistList";
-import { PhysicalMediaSectionHeader } from "./PhysicalMediaSectionHeader";
-import { TrackList } from "./TrackList";
-import type {
-	TopMusicResponse,
-	TopMusicResponseSuccess
-} from "../pages/api/topMusic";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import type { ListeningHistory } from "../lib/listeningHistory";
 
-const trackSections = [
-	{
-		id: "short",
-		title: "Top tracks I've listened to in the past month",
-		tracksKey: "short" as const,
-		artistsKey: "short" as const,
-		genreLabel: "Past month"
-	},
-	{
-		id: "medium",
-		title: "Top tracks I've listened to in the past 6 months",
-		tracksKey: "medium" as const,
-		artistsKey: "medium" as const,
-		genreLabel: "Past 6 months"
-	},
-	{
-		id: "long",
-		title: "Top tracks I've listened to of all time",
-		tracksKey: "long" as const,
-		artistsKey: "long" as const,
-		genreLabel: "All time"
-	}
-];
-
-const ARTISTS_SECTION_INDEX = trackSections.length;
-
-const statHeadingClass =
-	"mb-4 font-heading text-xl font-bold tracking-tight transition-colors duration-300 md:text-2xl";
-
-type GenreCount = { name: string; count: number };
-
-function rankGenres(
-	artists: SpotifyApi.ArtistObjectFull[] | undefined,
-	limit = 8
-): GenreCount[] {
-	if (!artists?.length) return [];
-
-	const counts = new Map<string, number>();
-	for (const artist of artists) {
-		for (const genre of artist.genres ?? []) {
-			const key = genre.trim().toLowerCase();
-			if (!key) continue;
-			counts.set(key, (counts.get(key) ?? 0) + 1);
-		}
-	}
-
-	return Array.from(counts.entries())
-		.map(([name, count]) => ({ name, count }))
-		.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
-		.slice(0, limit);
-}
-
-function formatGenreList(genres: GenreCount[]): string {
-	const names = genres.map(genre => genre.name);
-	if (names.length === 0) return "";
-	if (names.length === 1) return names[0];
-	if (names.length === 2) return `${names[0]} and ${names[1]}`;
-	return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
-}
-
-function genreIntro(label: string): string {
-	if (label === "Past month") return "This month leans toward";
-	if (label === "Past 6 months") return "Over the past six months it's been";
-	return "Across everything, it keeps coming back to";
-}
-
-function TopGenresLine({
-	label,
-	genres
-}: {
-	label: string;
-	genres: GenreCount[];
-}) {
-	if (genres.length === 0) return null;
-
-	return (
-		<p className="physical-media-section__description">
-			{genreIntro(label)}{" "}
-			<span className="text-white">{formatGenreList(genres)}</span>.
-		</p>
-	);
-}
+const ListeningHistoryCharts = dynamic(() =>
+	import("./ListeningHistoryCharts").then(
+		module => module.ListeningHistoryCharts
+	)
+);
 
 export function SpotifyListeningSection() {
-	const rootRef = useRef<HTMLDivElement>(null);
-	const [topMusic, setTopMusic] = useState<TopMusicResponseSuccess | null>(
-		null
-	);
-	const [activeCarousel, setActiveCarousel] = useState(0);
-	const [shouldFetch, setShouldFetch] = useState(false);
+	const { ref: rootRef, inView: shouldFetch } = useInView({
+		rootMargin: "320px 0px",
+		triggerOnce: true,
+		fallbackInView: true
+	});
+	const [topMusic, setTopMusic] = useState<ListeningHistory | null>(null);
 	const [loadFailed, setLoadFailed] = useState(false);
-
-	useEffect(() => {
-		const element = rootRef.current;
-		if (!element) return;
-
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (!entry?.isIntersecting) return;
-				setShouldFetch(true);
-				observer.disconnect();
-			},
-			{ rootMargin: "240px 0px" }
-		);
-
-		observer.observe(element);
-		return () => observer.disconnect();
-	}, []);
 
 	useEffect(() => {
 		if (!shouldFetch) return;
 
 		const controller = new AbortController();
 
-		fetch("/api/topMusic", { signal: controller.signal })
+		fetch("/api/topMusic?view=history", { signal: controller.signal })
 			.then(async response => {
-				const info = (await response.json()) as TopMusicResponse;
-				if (!response.ok || "error" in info) {
+				if (!response.ok) {
 					throw new Error("Spotify listening data request failed");
 				}
-				return info;
+				return response.json() as Promise<ListeningHistory>;
 			})
 			.then(info => {
 				setTopMusic(info);
@@ -146,58 +48,19 @@ export function SpotifyListeningSection() {
 		return () => controller.abort();
 	}, [shouldFetch]);
 
-	const genreRangeKey =
-		activeCarousel >= ARTISTS_SECTION_INDEX
-			? "long"
-			: trackSections[activeCarousel]?.artistsKey ?? "long";
-
-	const genreLabel =
-		activeCarousel >= ARTISTS_SECTION_INDEX
-			? "All time"
-			: trackSections[activeCarousel]?.genreLabel ?? "All time";
-
-	const genreArtists = useMemo(() => {
-		if (!topMusic) return undefined;
-		return (
-			topMusic.artistsByRange?.[genreRangeKey]?.items ??
-			topMusic.artists?.items
-		);
-	}, [topMusic, genreRangeKey]);
-
-	const genres = useMemo(() => rankGenres(genreArtists), [genreArtists]);
-
-	if (!shouldFetch) {
-		return (
-			<>
-				<PhysicalMediaSectionHeader
-					id="spotify-listening-heading"
-					title="My Spotify listening"
-				/>
-				<div
-					ref={rootRef}
-					className="physical-media-spotify physical-media-spotify--deferred"
-					aria-hidden
-				/>
-			</>
-		);
-	}
-
 	return (
 		<>
-			<PhysicalMediaSectionHeader
-				id="spotify-listening-heading"
-				title="My Spotify listening"
-				description={
-					topMusic ? (
-						<TopGenresLine label={genreLabel} genres={genres} />
-					) : undefined
-				}
-			/>
-
+			<h2 id="spotify-listening-heading" className="rr-heading">
+				My Spotify listening
+			</h2>
 			<div
 				ref={rootRef}
-				className="physical-media-spotify"
-				aria-busy={!topMusic && !loadFailed}
+				className={
+					shouldFetch
+						? "physical-media-spotify"
+						: "physical-media-spotify physical-media-spotify--deferred"
+				}
+				aria-busy={shouldFetch && !topMusic && !loadFailed}
 			>
 				{loadFailed ? (
 					<p
@@ -207,51 +70,7 @@ export function SpotifyListeningSection() {
 						Spotify listening data is temporarily unavailable.
 					</p>
 				) : (
-					<>
-						{trackSections.map((section, index) => (
-							<section
-								key={section.id}
-								className="mb-4 min-w-0 overflow-hidden"
-							>
-								<h3
-									className={`${statHeadingClass} ${
-										activeCarousel === index
-											? "text-white"
-											: "text-subtle"
-									}`}
-								>
-									{section.title}
-								</h3>
-								<TrackList
-									tracks={topMusic?.[section.tracksKey].items}
-									priority={index === 0}
-									isActive={activeCarousel === index}
-									onActivate={() => setActiveCarousel(index)}
-								/>
-							</section>
-						))}
-
-						<section className="mb-4 min-w-0 overflow-hidden">
-							<h3
-								className={`${statHeadingClass} ${
-									activeCarousel === ARTISTS_SECTION_INDEX
-										? "text-white"
-										: "text-subtle"
-								}`}
-							>
-								{"Top artists I've listened to of all time"}
-							</h3>
-							<ArtistList
-								artists={topMusic?.artists.items}
-								isActive={
-									activeCarousel === ARTISTS_SECTION_INDEX
-								}
-								onActivate={() =>
-									setActiveCarousel(ARTISTS_SECTION_INDEX)
-								}
-							/>
-						</section>
-					</>
+					shouldFetch && <ListeningHistoryCharts history={topMusic} />
 				)}
 			</div>
 		</>

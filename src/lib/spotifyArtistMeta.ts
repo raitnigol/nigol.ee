@@ -6,7 +6,7 @@ import {
 export type SpotifyArtistMeta = {
 	spotifyId: string;
 	name: string;
-	followers: number;
+	followers: number | null;
 	genres: string[];
 	imageUrl: string | null;
 	spotifyUrl: string;
@@ -29,8 +29,9 @@ function isSpotifyArtistMeta(value: unknown): value is SpotifyArtistMeta {
 	return (
 		typeof artist.spotifyId === "string" &&
 		typeof artist.name === "string" &&
-		typeof artist.followers === "number" &&
-		Number.isFinite(artist.followers) &&
+		(artist.followers === null ||
+			(typeof artist.followers === "number" &&
+				Number.isFinite(artist.followers))) &&
 		Array.isArray(artist.genres) &&
 		artist.genres.every(genre => typeof genre === "string") &&
 		(artist.imageUrl === null ||
