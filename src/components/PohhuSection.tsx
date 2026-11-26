@@ -24,6 +24,7 @@ import { FormattedText } from "./FormattedText";
 import { ImageLightboxGallery } from "./ImageLightboxGallery";
 import { MerchProductCarousel } from "./MerchProductCarousel";
 import MusicChapterNav from "./MusicChapterNav";
+import { MusicOpeningPhoto } from "./MusicOpeningPhoto";
 import { PohhuImage } from "./PohhuImage";
 import { PohhuSpotifyPlayer } from "./PohhuSpotifyPlayer";
 
@@ -157,7 +158,7 @@ function PhysicalReleases() {
 												width={660}
 												height={660}
 												alt={`${release.title} cover art`}
-												sizes="(min-width: 80rem) 18rem, (min-width: 60rem) 26vw, (min-width: 43rem) 28vw, (min-width: 30rem) 44vw, 6.5rem"
+												sizes="auto, (min-width: 80rem) 18rem, (min-width: 60rem) 26vw, (min-width: 43rem) 28vw, (min-width: 30rem) 44vw, 6.5rem"
 											/>
 										)}
 										<div>
@@ -300,7 +301,7 @@ function Lineup({ artistMeta }: { artistMeta: SpotifyArtistsMetaFile }) {
 							src={profile.profileImage}
 							fallback={artist?.imageUrl}
 							alt={artist?.name ?? "Artist portrait"}
-							sizes="(min-width: 60rem) 16rem, (min-width: 40rem) 30vw, 66vw"
+							sizes="auto, (min-width: 60rem) 16rem, (min-width: 40rem) 30vw, 66vw"
 							className="collective-artist__portrait"
 						/>
 						<div>
@@ -351,13 +352,7 @@ export default function PohhuSection({
 				</div>
 				<figure className="collective-opening-photo">
 					<div>
-						<Image
-							src="/images/pohhu/kivi-art-show/01.jpg"
-							alt="A $.pohhu¥ tattoo in front of a print at Kivi Baar"
-							fill
-							preload
-							sizes="(min-width: 85rem) 33rem, (min-width: 44rem) 40vw, 94vw"
-						/>
+						<MusicOpeningPhoto />
 					</div>
 					<figcaption>
 						<a href="#pohhu-kivi-art-show">Kivi Baar, Tartu</a>

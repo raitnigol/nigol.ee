@@ -109,7 +109,7 @@ export function ListeningRoom({ records }: { records: PublishedRecord[] }) {
 										setPlaying(record.copyId);
 									}}
 								>
-									<RecordArt record={record} />
+									<RecordArt record={record} slot="list" />
 									<span>
 										<strong>{record.title}</strong>
 										<small>{record.artist}</small>
@@ -137,7 +137,7 @@ export function ListeningRoom({ records }: { records: PublishedRecord[] }) {
 				{selected && (
 					<div className="rr-deck">
 						<div className="rr-deck-selection">
-							<RecordArt record={selected} />
+							<RecordArt record={selected} slot="deck" />
 							<div>
 								<span className="rr-kicker">
 									{formatNames[selected.format]}

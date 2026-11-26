@@ -2,11 +2,11 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { getArtistImageUrl } from "../lib/spotify";
+import type { RankedArtist } from "../lib/listeningHistory";
 import { RankBadge } from "./RankBadge";
 
 interface ArtistListProps {
-	artists?: SpotifyApi.ArtistObjectFull[];
+	artists?: RankedArtist[];
 	priority?: boolean;
 	isActive?: boolean;
 	onActivate?: () => void;
@@ -160,17 +160,17 @@ function CarouselArrow({
 }
 
 interface ArtistCardProps {
-	artist: SpotifyApi.ArtistObjectFull;
+	artist: RankedArtist;
 	rank: number;
 	priority: boolean;
 }
 
 function ArtistCard({ artist, rank, priority }: ArtistCardProps) {
-	const imageUrl = getArtistImageUrl(artist);
+	const imageUrl = artist.image;
 
 	return (
 		<a
-			href={artist.external_urls.spotify}
+			href={artist.url}
 			target="_blank"
 			rel="noopener noreferrer"
 			className="group flex snap-start snap-always flex-col"

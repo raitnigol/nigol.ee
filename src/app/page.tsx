@@ -1,3 +1,4 @@
+import "../styles/home-terminal.scss";
 import "../styles/home-modern.css";
 import { Clock } from "../components/Clock";
 import { HomeIntroTerminal } from "../components/HomeIntroTerminal";
@@ -48,11 +49,11 @@ export default function Home() {
 							aria-label="Social profiles"
 							className="home__socials"
 						>
-							{socials.map(({ name, image, url }) => (
+							{socials.map(({ name, icon, url }) => (
 								<SocialIconLink
 									key={name}
 									href={url}
-									image={image}
+									icon={icon}
 									label={name}
 									size="lg"
 								/>

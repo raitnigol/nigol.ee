@@ -7,6 +7,7 @@ import { FormattedText } from "./FormattedText";
 export interface Photo {
 	image: string;
 	alt: string;
+	banner?: boolean;
 }
 
 interface PhotoDialogProps {
@@ -86,7 +87,11 @@ export function PohhuPhotoDialog({
 						src={current.image}
 						alt={current.alt}
 						fill
-						sizes="(min-width: 1280px) 72rem, 96vw"
+						sizes={
+							current.banner
+								? "min(72rem, 96vw)"
+								: "min(72rem, 96vw, 75vh)"
+						}
 						loading="eager"
 						draggable={false}
 					/>

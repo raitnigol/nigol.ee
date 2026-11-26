@@ -1,6 +1,8 @@
+import type { SocialIcon } from "../data/socials";
+
 interface SocialIconLinkProps {
 	href: string;
-	image: string;
+	icon: SocialIcon;
 	label: string;
 	caption?: string;
 	/** Bordered tile — pairs with adjacent merch / CTA buttons */
@@ -10,7 +12,7 @@ interface SocialIconLinkProps {
 
 export function SocialIconLink({
 	href,
-	image,
+	icon,
 	label,
 	caption,
 	boxed = false,
@@ -35,11 +37,7 @@ export function SocialIconLink({
 			}
 		>
 			<span
-				className={imageClassName}
-				style={{
-					WebkitMaskImage: `url(${image})`,
-					maskImage: `url(${image})`
-				}}
+				className={`${imageClassName} social-icon-link__image--${icon}`}
 				aria-hidden
 			/>
 			{caption ? (

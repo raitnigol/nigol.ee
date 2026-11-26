@@ -1,11 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PublishedRecord } from "../../lib/publishedRecord";
 import { SpotifyListeningSection } from "../SpotifyListeningSection";
 import { ListeningRoom } from "./ListeningRoom";
 import { formatNames, RecordArt } from "./RecordArt";
-import { RecordDetail } from "./RecordDetail";
+
+const RecordDetail = dynamic(() =>
+	import("./RecordDetail").then(module => module.RecordDetail)
+);
 
 type Format = "all" | PublishedRecord["format"];
 type Sort = "shelf" | "artist" | "title" | "new" | "old";
@@ -47,7 +51,7 @@ function Sleeve({
 				onClick={() => onOpen(record)}
 				aria-label={`Explore ${record.title} by ${record.artist}`}
 			>
-				<RecordArt record={record} priority={priority} />
+				<RecordArt record={record} slot="hero" priority={priority} />
 			</button>
 			<figcaption>
 				{record.grail && (
@@ -412,7 +416,7 @@ export function CollectionShowcase({
 									onClick={() => openRecord(record)}
 								>
 									<span className="rr-record-cover">
-										<RecordArt record={record} />
+										<RecordArt record={record} slot={view} />
 									</span>
 									<span className="rr-record-meta">
 										<span

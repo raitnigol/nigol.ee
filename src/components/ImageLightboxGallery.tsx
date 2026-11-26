@@ -1,16 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 
-import { PohhuPhotoDialog, type Photo } from "./PohhuPhotoDialog";
+import type { Photo } from "./PohhuPhotoDialog";
 
-interface GalleryPhoto extends Photo {
-	banner?: boolean;
-}
+const PohhuPhotoDialog = dynamic(() =>
+	import("./PohhuPhotoDialog").then(module => module.PohhuPhotoDialog)
+);
 
 interface ImageLightboxGalleryProps {
-	items: GalleryPhoto[];
+	items: Photo[];
 	dialogLabel: string;
 }
 
@@ -21,7 +22,7 @@ export function ImageLightboxGallery({
 	const [openIndex, setOpenIndex] = useState<number | null>(null);
 	const posterIndex = items.findIndex(item => item.banner);
 
-	function photoLink(item: GalleryPhoto, index: number) {
+	function photoLink(item: Photo, index: number) {
 		return (
 			<a
 				href={item.image}
@@ -50,8 +51,8 @@ export function ImageLightboxGallery({
 					fill
 					sizes={
 						item.banner
-							? "(min-width: 80rem) 30rem, (min-width: 60rem) 40vw, (min-width: 46rem) 45vw, 94vw"
-							: "(min-width: 80rem) 15rem, (min-width: 60rem) 19vw, (min-width: 46rem) 23vw, 46vw"
+							? "auto, (min-width: 80rem) 30rem, (min-width: 60rem) 40vw, (min-width: 46rem) 45vw, 94vw"
+							: "auto, (min-width: 80rem) 15rem, (min-width: 60rem) 19vw, (min-width: 46rem) 23vw, 46vw"
 					}
 				/>
 			</a>

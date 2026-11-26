@@ -1,4 +1,6 @@
 import Image from "next/image";
+import freePalestine from "../../public/images/badges/free-palestine.gif";
+import slavaUkraini from "../../public/images/badges/slava-ukraini.gif";
 
 const SITE_SOURCE_URL = "https://github.com/raitnigol/nigol.ee";
 
@@ -52,7 +54,7 @@ export default function Footer() {
 			<div className="site-footer__badges">
 				<Image
 					unoptimized
-					src="/images/badges/free-palestine.gif"
+					src={freePalestine}
 					alt="Free Palestine"
 					width={88}
 					height={31}
@@ -61,7 +63,7 @@ export default function Footer() {
 				/>
 				<Image
 					unoptimized
-					src="/images/badges/slava-ukraini.gif"
+					src={slavaUkraini}
 					alt="Slava Ukraini"
 					width={88}
 					height={31}

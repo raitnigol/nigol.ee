@@ -33,13 +33,39 @@ const config = {
 		})),
 		formats: ["image/webp"],
 		deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-		imageSizes: [32, 48, 64, 96, 128, 160, 256]
+		imageSizes: [32, 48, 64, 96, 128, 160, 256, 384, 480]
 	},
 	async headers() {
 		return [
 			{
 				source: "/(.*)",
 				headers: securityHeaders
+			},
+			// These public URLs can be replaced in place. Fingerprinted build
+			// assets already receive a year-long immutable policy from Next.
+			...[
+				"/images/:path*",
+				"/collection-design/:path*",
+				"/favicon.ico",
+				"/og.png"
+			].map(source => ({
+				source,
+				headers: [
+					{
+						key: "Cache-Control",
+						value: "public, max-age=3600, must-revalidate"
+					}
+				]
+			})),
+			{
+				// The preparation script puts a content hash in every filename here.
+				source: "/images/pohhu/opening/:path*",
+				headers: [
+					{
+						key: "Cache-Control",
+						value: "public, max-age=31536000, immutable"
+					}
+				]
 			}
 		];
 	},

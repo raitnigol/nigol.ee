@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
+import {
+	projectListeningHistory,
+	type ListeningHistory
+} from "../../lib/listeningHistory";
 import { withSpotifyUserClient } from "../../lib/spotifyUserServer";
 
 export type TopMusicResponseSuccess = {
@@ -19,11 +23,12 @@ export type TopMusicResponseError = { error: string };
 export type TopMusicResponse = TopMusicResponseSuccess | TopMusicResponseError;
 
 let cachedTime = 0;
+let cachedHistory: ListeningHistory | undefined;
 let cached: TopMusicResponseSuccess | undefined;
 
 export default async function handler(
 	req: NextApiRequest,
-	res: NextApiResponse<TopMusicResponse>
+	res: NextApiResponse<TopMusicResponse | ListeningHistory>
 ) {
 	if (req.method !== "GET") {
 		res.setHeader("Allow", "GET");
@@ -72,7 +77,17 @@ export default async function handler(
 				}
 			};
 
+			cachedHistory = projectListeningHistory(cached);
 			cachedTime = Date.now() + 24 * 60 * 60 * 1000;
+		}
+
+		if (req.query.view === "history" && cachedHistory) {
+			res.setHeader(
+				"Cache-Control",
+				"public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400"
+			);
+			res.status(200).json(cachedHistory);
+			return;
 		}
 
 		res.setHeader(

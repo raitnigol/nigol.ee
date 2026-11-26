@@ -1,9 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
 
-import { PohhuPhotoDialog, type Photo } from "./PohhuPhotoDialog";
+import type { Photo } from "./PohhuPhotoDialog";
+
+const PohhuPhotoDialog = dynamic(() =>
+	import("./PohhuPhotoDialog").then(module => module.PohhuPhotoDialog)
+);
 
 interface MerchProductCarouselProps {
 	items: Photo[];
@@ -88,7 +93,7 @@ export function MerchProductCarousel({
 								alt={item.alt}
 								width={1080}
 								height={1440}
-								sizes="(min-width: 80rem) 28rem, (min-width: 46rem) 40vw, 94vw"
+								sizes="auto, (min-width: 80rem) 28rem, (min-width: 46rem) 40vw, 94vw"
 								className="collective-merch-image"
 								draggable={false}
 							/>

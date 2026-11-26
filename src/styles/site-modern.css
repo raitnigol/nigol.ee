@@ -1,11 +1,3 @@
-@font-face {
-	font-family: "League Spartan";
-	font-style: normal;
-	font-weight: 100 900;
-	font-display: swap;
-	src: url("@fontsource-variable/league-spartan/files/league-spartan-latin-wght-normal.woff2")
-		format("woff2");
-}
 :root {
 	--pohhu-accent: #a78bfa;
 	--site-font-heading: "League Spartan", Arial, sans-serif;

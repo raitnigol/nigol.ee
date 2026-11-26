@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { IntentLink } from "./IntentLink";
 
 import { copypastas } from "../data/copypastas";
 import {
@@ -82,12 +82,12 @@ export function HomeIntroTerminal() {
 							</p>
 							<p>
 								Founder of{" "}
-								<Link
+								<IntentLink
 									href="/music"
 									className="home__link home__link--pohhu pohhu-wordmark pohhu-wordmark--inline focus-ring"
 								>
 									$.pohhu¥
-								</Link>
+								</IntentLink>
 								, a creative collective from Tartu.
 							</p>
 						</div>

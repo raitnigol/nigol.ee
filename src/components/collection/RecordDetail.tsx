@@ -93,7 +93,7 @@ export function RecordDetail({
 			</header>
 			<div className="rr-detail-content">
 				<div className="rr-detail-art">
-					<RecordArt record={record} />
+					<RecordArt record={record} slot="detail" />
 					{credit && (
 						<p className="rr-credit">Artwork via {credit}</p>
 					)}

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { IntentLink } from "./IntentLink";
 import { usePathname } from "next/navigation";
 
 const pages = [
@@ -22,27 +22,27 @@ export default function SiteHeader() {
 	return (
 		<header className="site-header">
 			<div className="site-shell site-header__inner">
-				<Link
+				<IntentLink
 					href="/"
 					aria-label="nigol.ee home"
 					className="site-logo focus-ring font-heading text-xl font-extrabold tracking-tighter text-white sm:text-2xl"
 				>
 					nigol<span className="text-blue-400">.ee</span>
-				</Link>
+				</IntentLink>
 				<nav className="site-nav primary-nav" aria-label="Primary">
 					{pages.map(({ href, title, color }) => {
 						const active =
 							pathname === href ||
 							(href !== "/" && pathname?.startsWith(href + "/"));
 						return (
-							<Link
+							<IntentLink
 								key={href}
 								href={href}
 								aria-current={active ? "page" : undefined}
 								className={`site-nav__link focus-ring ${color}`}
 							>
 								{title}
-							</Link>
+							</IntentLink>
 						);
 					})}
 				</nav>

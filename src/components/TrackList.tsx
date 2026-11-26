@@ -2,11 +2,11 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { getReleaseYear } from "../lib/spotify";
+import type { RankedTrack } from "../lib/listeningHistory";
 import { RankBadge } from "./RankBadge";
 
 interface TrackListProps {
-	tracks?: SpotifyApi.TrackObjectFull[];
+	tracks?: RankedTrack[];
 	priority?: boolean;
 	isActive?: boolean;
 	onActivate?: () => void;
@@ -163,19 +163,17 @@ function CarouselArrow({
 }
 
 interface TrackProps {
-	track: SpotifyApi.TrackObjectFull;
+	track: RankedTrack;
 	rank: number;
 	priority: boolean;
 }
 
 function Track({ track, rank, priority }: TrackProps) {
-	const coverUrl = track.album.images[0]?.url;
-	const artistLine = track.artists.map(artist => artist.name).join(", ");
-	const releaseYear = getReleaseYear(track.album.release_date);
+	const { image: coverUrl, artists: artistLine, year: releaseYear } = track;
 
 	return (
 		<a
-			href={track.external_urls.spotify}
+			href={track.url}
 			target="_blank"
 			rel="noopener noreferrer"
 			className="group flex snap-start snap-always flex-col"
