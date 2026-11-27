@@ -154,7 +154,7 @@ export function PlinthNowPlaying({
 					>
 						{(
 							[
-								["studio", "Café"],
+								["studio", "Room"],
 								["overhead", "Record"]
 							] as const
 						).map(([value, label]) => (

@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 const projectId = "appgprj_6b05663709c481919c6e05051d3a85bd";
 const modules = [
 	"deck.js",
+	"pressing-art.js",
 	"victor-render.js",
 	"victor-cpu.js",
 	"victor-camera.js",
@@ -49,22 +50,6 @@ files.set(
 	"LeagueSpartan-OFL.txt",
 	await readFile(path.join(checkout, "model/fonts/LeagueSpartan-OFL.txt"))
 );
-// Reuse Plinth's printed label without its per-visitor MusicBrainz/CAA searches.
-const artwork = await readFile(
-	path.join(checkout, "dist/pressing-art.js"),
-	"utf8"
-);
-const labelStart = artwork.indexOf("function fitText(");
-const labelEnd = artwork.indexOf("function backOff(", labelStart);
-if (labelStart < 0 || labelEnd < 0)
-	throw new Error("Review the upstream printed-label implementation.");
-files.set(
-	"record-label.js",
-	Buffer.from(
-		artwork.slice(labelStart, labelEnd) + "\nexport {printedLabel};\n"
-	)
-);
-
 // Both renderers support suspension; the upstream facade does not forward it yet.
 // Keep this one compatibility patch explicit, and fail if upstream changes it.
 const facade = files.get("deck.js").toString();

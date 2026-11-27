@@ -22,28 +22,31 @@ type RendererModule = {
 		}
 	): Engine;
 };
-type LabelModule = { printedLabel(track: PlinthTrack): string };
+type ArtworkModule = {
+	createPressingArtwork(options: { onArtwork(url: string | null): void }): {
+		setTrack(track: PlinthTrack | null): void;
+		destroy(): void;
+	};
+};
 
 export async function loadPlinthViewer() {
 	// These same-origin, content-addressed ES modules keep the upstream renderer
 	// and its relative mesh/texture URLs intact. Nothing from spotify.js is loaded.
-	const [renderer, labels]: [RendererModule, LabelModule] = await Promise.all(
-		[
+	const [renderer, artwork]: [RendererModule, ArtworkModule] =
+		await Promise.all([
 			import(
 				/* webpackIgnore: true */ /* turbopackIgnore: true */ `${upstream.basePath}/deck.js`
 			),
 			import(
-				/* webpackIgnore: true */ /* turbopackIgnore: true */ `${upstream.basePath}/record-label.js`
+				/* webpackIgnore: true */ /* turbopackIgnore: true */ `${upstream.basePath}/pressing-art.js`
 			)
-		]
-	);
+		]);
 	return function mountViewer(
 		container: HTMLElement,
 		onReady: () => void,
 		onError: () => void
 	) {
 		let disposed = false;
-		let printed = "";
 		const timeout = window.setTimeout(onError, 45_000);
 		const engine = renderer.createDeck(container, {
 			onFrame() {
@@ -64,6 +67,9 @@ export async function loadPlinthViewer() {
 				if (!disposed) onError();
 			}
 		});
+		const pressing = artwork.createPressingArtwork({
+			onArtwork: url => engine.setCover(url)
+		});
 		engine.setPitchEnabled(false);
 		engine.setNeedleDropEnabled(false);
 		engine.setOrbitEnabled(false);
@@ -72,15 +78,7 @@ export async function loadPlinthViewer() {
 				if (disposed) return;
 				engine.setPlaying(display.playing);
 				engine.setProgress(display.progress);
-				const signature = JSON.stringify(display.track);
-				if (signature !== printed) {
-					printed = signature;
-					engine.setCover(
-						display.track
-							? labels.printedLabel(display.track)
-							: null
-					);
-				}
+				pressing.setTrack(display.track);
 			},
 			setVisible(visible: boolean) {
 				engine.setSuspended(!visible);
@@ -91,6 +89,7 @@ export async function loadPlinthViewer() {
 			destroy() {
 				disposed = true;
 				window.clearTimeout(timeout);
+				pressing.destroy();
 				engine.destroy();
 			}
 		};

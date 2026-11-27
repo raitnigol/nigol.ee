@@ -1,31 +1,31 @@
 {
   "projectId": "appgprj_6b05663709c481919c6e05051d3a85bd",
   "sourceUrl": "https://plinth-listening-deck.nixol.chatgpt.site",
-  "commit": "bbda5615e9d5c96b5e08a58fa5412e9708c790ee",
-  "basePath": "/plinth/ccf1b7800f30461c",
+  "commit": "77421b6606b6931029f1188c2670e040d849e6bc",
+  "basePath": "/plinth/85846c35819de931",
   "patches": [
     "Forward setSuspended to both renderers"
   ],
   "files": {
     "deck.js": "37a9c525f86a194573fdae06bac5ba6978a5132a5887b6208353eb02aa8da460",
-    "victor-render.js": "09af70e8a5d9eeeb73711955e0cd083ee36096d04d81f73ef1983cdf7fd90083",
-    "victor-cpu.js": "571d52e6b32120247cbb0ec60b3811673f9ac214ae0cc9f24cd61e821a84c252",
-    "victor-camera.js": "c4785528827d8d7b571a3556b456da38d98a2adca229b1cc7508abd65145e465",
-    "victor-lighting.js": "b6cc0ced0b86cc9276e9a3abf5236ed73c4b06640baf1495d77a35514ff53e5a",
+    "pressing-art.js": "4b3ec04b7afd82b34ed5bad2f7b0bc234fcfe34077d8e93a7bce6da50543c9ae",
+    "victor-render.js": "2a4be0bfe82c5391cca4471db39e5525d252f08b5757aa1237fad9f3d8c20826",
+    "victor-cpu.js": "c22ba3dbbcc515382662a3988d034d33777f0a7526f42dd3787a8b145fe7e3dd",
+    "victor-camera.js": "589a42ba48eee38e10cbf815c841bf477abb9fdad939b2cda246cb5d800a1cae",
+    "victor-lighting.js": "d2c219ed225fd9354d01949a68762ce86f58691f8c5b4ef396c288991d638dab",
     "scene-finish.js": "d42b2ca1410a0f37adaf514a1c99798bfcd9a7809cb0cf406000934494d54bff",
     "needle-drop.js": "e86b5dc6db62613ffb2c08db48848ed3aa6de2902ff5e15a64e54ab481f1b368",
     "listening-angle.js": "c423d893f3d5f16df6843790a7b794cb009c2cdd20d5e1f22ed2b2ffaebf9f94",
     "victor-model.json": "f586d7ac801992e4a82ab157e809f7aaf4c024c5b1bd6a2407a9903fa6c1afe3",
     "victor-model.bin": "f7d9929b7aef4ba86b8286b45c33bb3141973af18ba798035f69c3ec626ad91a",
-    "cafe-model.json": "109bfa7443d78ada607c9a55cccf8508c50659836ba54bc5455c439d3ad2b97f",
-    "cafe-model.bin": "668a402fcca7719c29c5f18ecc8d94d337faf195d530e238c723fad6264072a0",
+    "cafe-model.json": "8126ebf1a911e50d1eadcba6f3921eca21409c1d4170d649bdc5d6ba52ba2815",
+    "cafe-model.bin": "09f1ae726d93388e6c7ce70cfe0e0a71ac6f74fcad17198c4d0e53d2fd5c4866",
     "cafe-textures/plaster.webp": "5317dabe847ebb3414c8c013d14562c4897bbdf2e634816bd0618570155dd3e0",
     "cafe-textures/counter.webp": "c043ca0587110ce4fdb60c8e968a5daa876ebc177e96906f3f7c55633f8609ba",
     "cafe-textures/menu.webp": "d0afa9a33601e8fbb4ee20e2cbe7ebf6a54a25cd625c537890908a4be16c608e",
     "cafe-textures/leather.webp": "bdd73bcfd9111ca574ca0f1c74da4bf34f0c20c0d57347b73b3eb2d5e9983705",
     "cafe-textures/marble.webp": "9bc66e225725d91c847e2ece32657955936a9ee14895718baa88f9ed929da8db",
     "cafe-textures/wood.webp": "f9445fd7170db476aa33eee03f3ac81afb42e8060f179f9c2d3c57c50e515347",
-    "LeagueSpartan-OFL.txt": "1d5d005eb7fc4bb0e70410e0e1b6364893691a8e7b7adaae624805465120fbe6",
-    "record-label.js": "adaa19b3b917fc0e7692414956b488792c6065700e42231289863007225db469"
+    "LeagueSpartan-OFL.txt": "1d5d005eb7fc4bb0e70410e0e1b6364893691a8e7b7adaae624805465120fbe6"
   }
 }

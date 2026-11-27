@@ -35,7 +35,8 @@ test("the gramophone follows playback, pauses, and replaces a skipped track", ()
 		id: "track-b",
 		title: "Track B",
 		artist: "Artist",
-		album: "Album"
+		album: "Album",
+		art: ""
 	});
 });
 
@@ -101,4 +102,23 @@ test("pinned Plinth modules and meshes match their digest and omit the private p
 			}
 		}
 	}
+});
+
+test("the record receives the largest Spotify album or single cover without leaking credentials", () => {
+	const data = sample();
+	data.track!.album.images = [
+		{ url: "https://i.scdn.co/image/small", width: 64, height: 64 },
+		{ url: "https://i.scdn.co/image/cover", width: 640, height: 640 },
+		{
+			url: "https://user:secret@i.scdn.co/image/invalid",
+			width: 1024,
+			height: 1024
+		}
+	];
+	assert.equal(
+		plinthDisplay(data, 0).track?.art,
+		"https://i.scdn.co/image/cover"
+	);
+	data.track!.album.images = [];
+	assert.equal(plinthDisplay(data, 0).track?.art, "");
 });

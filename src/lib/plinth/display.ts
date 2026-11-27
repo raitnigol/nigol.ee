@@ -5,7 +5,31 @@ export type PlinthTrack = {
 	title: string;
 	artist: string;
 	album: string;
+	art: string;
 };
+
+function coverUrl(images: SpotifyApi.ImageObject[] | undefined) {
+	let best = "",
+		width = -1;
+	for (const image of images || []) {
+		try {
+			const url = new URL(image.url);
+			const size = image.width || 0;
+			if (
+				url.protocol === "https:" &&
+				!url.username &&
+				!url.password &&
+				size > width
+			) {
+				best = url.href;
+				width = size;
+			}
+		} catch {
+			/* Sparse metadata falls back to the printed label. */
+		}
+	}
+	return best;
+}
 
 /** A display projection only. No Spotify token, device or command is accepted. */
 export function plinthDisplay(
@@ -26,7 +50,8 @@ export function plinthDisplay(
 					id: track.id,
 					title: track.name,
 					artist: track.artists.map(artist => artist.name).join(", "),
-					album: track.album.name
+					album: track.album.name,
+					art: coverUrl(track.album.images)
 			  }
 			: null
 	};
