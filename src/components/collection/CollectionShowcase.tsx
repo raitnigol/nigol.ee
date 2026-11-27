@@ -233,7 +233,6 @@ export function CollectionShowcase({
 		if (pool.length)
 			openRecord(pool[Math.floor(Math.random() * pool.length)]);
 	}
-	const hasSpotify = records.some(record => record.spotifyUrl);
 	return (
 		<div className="rr-room" id="physical-media">
 			<section className="rr-hero rr-section" aria-labelledby="rr-title">
@@ -279,9 +278,7 @@ export function CollectionShowcase({
 							className="rr-index"
 						>
 							<a href="#collection">Browse records</a>
-							{hasSpotify && (
-								<a href="#listening">Listening room</a>
-							)}
+							<a href="#listening">Listening room</a>
 							<a href="#spotify-listening">Listening history</a>
 						</nav>
 					</div>
@@ -480,7 +477,7 @@ export function CollectionShowcase({
 					</div>
 				)}
 			</section>
-			{hasSpotify && <LazyListeningRoom records={records} />}
+			<LazyListeningRoom records={records} onOpenRecord={openRecord} />
 			<section
 				id="spotify-listening"
 				className="rr-section rr-rankings"

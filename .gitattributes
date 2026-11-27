@@ -1,0 +1,2 @@
+# Keep imported renderer files and upstream licence text byte-for-byte.
+public/plinth/** -whitespace

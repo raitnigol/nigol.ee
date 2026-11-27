@@ -1,0 +1,32 @@
+{
+  "projectId": "appgprj_6b05663709c481919c6e05051d3a85bd",
+  "sourceUrl": "https://plinth-listening-deck.nixol.chatgpt.site",
+  "commit": "772b75a6febe2b06e6cbef01cf91e74fcfd7c982",
+  "basePath": "/plinth/acc4f459728a6c25",
+  "patches": [
+    "Forward setSuspended to both renderers"
+  ],
+  "files": {
+    "deck.js": "37a9c525f86a194573fdae06bac5ba6978a5132a5887b6208353eb02aa8da460",
+    "pressing-art.js": "2650d2471d6c1ce01e394e749902c8f47eb9e09e11df07b6357a05b9e7ef878b",
+    "sleeve-display.js": "92d324f5918ef0936e45d32f507705a51c19e342b061ab69a56eb60de6f9e7ac",
+    "victor-render.js": "670cd4975c21f3a9217ed1833d0fc6891690ff7f67af8babd04dad80fd4bd8e0",
+    "victor-cpu.js": "bcd1b10a20c51e5cc3170515faf4423fff5a103760ca19c261900bb0b305ac92",
+    "victor-camera.js": "7581d4487a128a2c13221009c55908cb87c770822951440b712a19c3f2f6e3e7",
+    "victor-lighting.js": "d2c219ed225fd9354d01949a68762ce86f58691f8c5b4ef396c288991d638dab",
+    "scene-finish.js": "d42b2ca1410a0f37adaf514a1c99798bfcd9a7809cb0cf406000934494d54bff",
+    "needle-drop.js": "e86b5dc6db62613ffb2c08db48848ed3aa6de2902ff5e15a64e54ab481f1b368",
+    "listening-angle.js": "c423d893f3d5f16df6843790a7b794cb009c2cdd20d5e1f22ed2b2ffaebf9f94",
+    "victor-model.json": "f586d7ac801992e4a82ab157e809f7aaf4c024c5b1bd6a2407a9903fa6c1afe3",
+    "victor-model.bin": "f7d9929b7aef4ba86b8286b45c33bb3141973af18ba798035f69c3ec626ad91a",
+    "cafe-model.json": "5944da788c2a5be82d844c119b14ad4069b846c60d05b00bf715bb392a283cfb",
+    "cafe-model.bin": "facc4f110901be0d4fd58a4cf9117eacd7e0410e459cbb6b7ddbc3614c24314e",
+    "cafe-textures/plaster.webp": "5317dabe847ebb3414c8c013d14562c4897bbdf2e634816bd0618570155dd3e0",
+    "cafe-textures/counter.webp": "c043ca0587110ce4fdb60c8e968a5daa876ebc177e96906f3f7c55633f8609ba",
+    "cafe-textures/menu.webp": "d0afa9a33601e8fbb4ee20e2cbe7ebf6a54a25cd625c537890908a4be16c608e",
+    "cafe-textures/leather.webp": "bdd73bcfd9111ca574ca0f1c74da4bf34f0c20c0d57347b73b3eb2d5e9983705",
+    "cafe-textures/marble.webp": "9bc66e225725d91c847e2ece32657955936a9ee14895718baa88f9ed929da8db",
+    "cafe-textures/wood.webp": "f9445fd7170db476aa33eee03f3ac81afb42e8060f179f9c2d3c57c50e515347",
+    "LeagueSpartan-OFL.txt": "1d5d005eb7fc4bb0e70410e0e1b6364893691a8e7b7adaae624805465120fbe6"
+  }
+}

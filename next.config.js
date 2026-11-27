@@ -58,6 +58,16 @@ const config = {
 				]
 			})),
 			{
+				// Imported Plinth assets include a digest of every module and mesh.
+				source: "/plinth/:digest/:path*",
+				headers: [
+					{
+						key: "Cache-Control",
+						value: "public, max-age=31536000, immutable"
+					}
+				]
+			},
+			{
 				// The preparation script puts a content hash in every filename here.
 				source: "/images/pohhu/opening/:path*",
 				headers: [

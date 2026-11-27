@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState, type ReactNode } from "react";
 import useSWR from "swr";
 
@@ -51,7 +53,7 @@ function refreshInterval(sample?: PlaybackSample) {
 	return IDLE_POLL_MS;
 }
 
-function useNowPlaying(isVisible: boolean) {
+export function useNowPlaying(isVisible: boolean) {
 	const { data: sample } = useSWR<PlaybackSample>(
 		isVisible ? NOW_PLAYING_KEY : null,
 		fetchPlayback,

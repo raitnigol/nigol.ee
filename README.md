@@ -20,6 +20,8 @@ Start with the trusted feature branch’s **Preview** environment, then redeploy
 
 The homepage player and listening charts use the existing `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET` and `SPOTIFY_REFRESH_TOKEN` server variables. Album links and click-to-load players work independently of the personal listening API.
 
+The collection listening room also displays the owner's Spotify session through a read-only Plinth gramophone. See [Plinth integration](docs/plinth.md) for its loading behaviour and the source update workflow.
+
 ## Review and deployment
 
 Feature branches receive a Vercel preview through the repository's Git integration. Review the preview before merging the pull request into the production branch.
