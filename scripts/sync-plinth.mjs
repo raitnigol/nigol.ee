@@ -9,6 +9,7 @@ const projectId = "appgprj_6b05663709c481919c6e05051d3a85bd";
 const modules = [
 	"deck.js",
 	"pressing-art.js",
+	"sleeve-display.js",
 	"victor-render.js",
 	"victor-cpu.js",
 	"victor-camera.js",
