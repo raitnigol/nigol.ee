@@ -11,8 +11,17 @@ const ListeningRoom = dynamic(
 		loading: () => <p role="status">Loading listening room…</p>
 	}
 );
+const PlinthNowPlaying = dynamic(() =>
+	import("./PlinthNowPlaying").then(module => module.PlinthNowPlaying)
+);
 
-export function LazyListeningRoom({ records }: { records: PublishedRecord[] }) {
+export function LazyListeningRoom({
+	records,
+	onOpenRecord
+}: {
+	records: PublishedRecord[];
+	onOpenRecord: (record: PublishedRecord) => void;
+}) {
 	const { ref, inView } = useInView({
 		rootMargin: "320px 0px",
 		triggerOnce: true,
@@ -32,7 +41,13 @@ export function LazyListeningRoom({ records }: { records: PublishedRecord[] }) {
 			</h2>
 			<div className="rr-listening-content">
 				{inView || requested ? (
-					<ListeningRoom records={records} />
+					<>
+						<PlinthNowPlaying
+							records={records}
+							onOpenRecord={onOpenRecord}
+						/>
+						<ListeningRoom records={records} />
+					</>
 				) : (
 					<button
 						type="button"

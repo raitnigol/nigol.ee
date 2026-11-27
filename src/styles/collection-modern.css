@@ -13,6 +13,195 @@
 	min-width: 0;
 	overflow-wrap: anywhere;
 }
+
+.rr-plinth {
+	display: grid;
+	grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+	align-items: center;
+	gap: clamp(1.5rem, 3vw, 3rem);
+	margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+.rr-plinth-stage {
+	position: relative;
+	aspect-ratio: 1.4;
+	min-width: 0;
+	background: #111012;
+	overflow: hidden;
+}
+.rr-plinth-scene {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+.rr-plinth-placeholder {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1.25rem;
+	padding: 1.5rem;
+	text-align: center;
+	background: #111012;
+}
+.rr-plinth-placeholder p {
+	margin: 0;
+	color: var(--rr-muted);
+}
+.rr-plinth-record {
+	display: grid;
+	place-items: center;
+	width: min(45%, 10rem);
+	aspect-ratio: 1;
+	border-radius: 50%;
+	border: 1px solid #37343b;
+	background: repeating-radial-gradient(
+		circle,
+		#121115 0 2px,
+		#29262d 3px,
+		#141218 4px
+	);
+}
+.rr-plinth-record span {
+	display: grid;
+	place-items: center;
+	width: 49%;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	font: 700 1rem var(--site-font-heading);
+	color: var(--rr-accent);
+	background: #292038;
+}
+.rr-plinth-views {
+	position: absolute;
+	bottom: 1rem;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	background: #09090de8;
+	border: 1px solid #ffffff30;
+	border-radius: 0.3rem;
+	padding: 0.2rem;
+}
+.rr-plinth-views button {
+	min-height: 44px;
+	padding: 0.5rem 1.15rem;
+	color: #cecad3;
+	background: transparent;
+	border: 0;
+	border-radius: 0.15rem;
+}
+.rr-plinth-views button[aria-pressed="true"] {
+	background: #ffffff1f;
+	color: #fff;
+}
+.rr-plinth-info {
+	min-width: 0;
+}
+.rr-plinth-status {
+	color: var(--rr-accent);
+	font-size: 0.875rem;
+	margin: 0 0 1.25rem;
+}
+.rr-plinth-track {
+	display: flex;
+	align-items: flex-start;
+	gap: 1.25rem;
+}
+.rr-plinth-cover {
+	width: 7rem;
+	height: 7rem;
+	flex-shrink: 0;
+	object-fit: contain;
+}
+.rr-plinth-track h3 {
+	font: 650 clamp(1.6rem, 2.6vw, 2.4rem) / 1.05 var(--site-font-heading);
+	letter-spacing: -0.025em;
+	margin: 0.15rem 0 0.5rem;
+}
+.rr-plinth-track p {
+	margin: 0.3rem 0 0;
+}
+.rr-plinth-album,
+.rr-plinth-last-played {
+	color: var(--rr-muted);
+	font-size: 0.875rem;
+}
+.rr-plinth-progress {
+	margin-top: 1.5rem;
+}
+.rr-plinth-progress progress {
+	display: block;
+	width: 100%;
+	height: 3px;
+	border: 0;
+	appearance: none;
+	accent-color: var(--rr-accent);
+	background: #303034;
+}
+.rr-plinth-progress progress::-webkit-progress-bar {
+	background: #303034;
+}
+.rr-plinth-progress progress::-webkit-progress-value {
+	background: var(--rr-accent);
+}
+.rr-plinth-progress progress::-moz-progress-bar {
+	background: var(--rr-accent);
+}
+.rr-plinth-progress > div {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 0.5rem;
+	color: var(--rr-muted);
+	font: 0.8125rem var(--rr-mono);
+}
+.rr-plinth-info > .rr-spotify-link {
+	margin-top: 1.5rem;
+}
+.rr-plinth-copies {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 1.5rem;
+}
+.rr-plinth-copies p {
+	width: 100%;
+	font-size: 0.875rem;
+	margin: 0 0 0.2rem;
+	color: var(--rr-muted);
+}
+.rr-plinth-note {
+	margin: 1.5rem 0 0;
+	font-size: 0.8125rem;
+	line-height: 1.5;
+	color: var(--rr-muted);
+}
+.rr-plinth-empty {
+	margin: 0;
+	color: var(--rr-muted);
+}
+@media (max-width: 58rem) {
+	.rr-plinth {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.rr-plinth-stage {
+		aspect-ratio: 1.65;
+	}
+}
+@media (max-width: 44rem) {
+	.rr-plinth-stage {
+		aspect-ratio: 1.15;
+	}
+	.rr-plinth-cover {
+		width: 5rem;
+		height: 5rem;
+	}
+	.rr-plinth-track {
+		gap: 1rem;
+	}
+}
 .rr-room *,
 .rr-room *::before,
 .rr-room *::after {

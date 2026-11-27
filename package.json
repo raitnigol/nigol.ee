@@ -14,6 +14,7 @@
 		"build": "next build",
 		"start": "next start",
 		"spotify:sync": "tsx scripts/fetch-spotify-artists-metadata.ts",
+		"plinth:sync": "node scripts/sync-plinth.mjs",
 		"spotify:auth": "tsx scripts/spotify-get-refresh-token.ts",
 		"typecheck": "next typegen && tsc --noEmit",
 		"test": "node --import tsx --test scripts/*.test.ts"
